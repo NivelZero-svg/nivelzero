@@ -29,6 +29,101 @@
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);overflow-x:hidden;line-height:1.6}
 
+
+/* ── URGENCY BAR ── */
+.urgency-bar{
+  background:linear-gradient(90deg,#b33a00,#e05c00);
+  color:#fff;padding:9px 20px;text-align:center;font-size:13px;
+  font-weight:500;display:flex;align-items:center;justify-content:center;
+  gap:10px;flex-wrap:wrap;position:relative;z-index:201;
+}
+.urgency-bar a{color:#ffd580;font-weight:700;text-decoration:none;white-space:nowrap;border-bottom:1px solid rgba(255,213,128,.4)}
+.urgency-bar a:hover{color:#fff}
+.urgency-close{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:16px;line-height:1;padding:4px}
+.urgency-close:hover{color:#fff}
+
+
+/* ── TESTIMONIALS ── */
+#testimonials{background:var(--navy-mid)}
+.testimonials-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.tcard{
+  background:var(--navy);border:1px solid var(--border);border-radius:16px;
+  padding:28px;position:relative;transition:all .25s;
+}
+.tcard:hover{border-color:rgba(58,167,109,.3);transform:translateY(-3px)}
+.tcard-quote{
+  font-size:32px;color:var(--green);opacity:.4;font-family:'Montserrat',sans-serif;
+  font-weight:900;line-height:1;margin-bottom:10px;
+}
+.tcard-text{
+  font-size:15px;color:rgba(255,255,255,.78);line-height:1.75;
+  font-style:italic;margin-bottom:20px;font-weight:300;
+}
+.tcard-author{display:flex;align-items:center;gap:12px}
+.tcard-avatar{
+  width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,var(--green),#2d8a58);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Montserrat',sans-serif;font-weight:800;font-size:14px;flex-shrink:0;
+}
+.tcard-name{font-size:14px;font-weight:600}
+.tcard-role{font-size:12px;color:var(--gray);margin-top:2px}
+.tcard-stars{color:#f5c518;font-size:13px;letter-spacing:2px;margin-top:4px}
+
+
+/* ── FAQ ── */
+#faq{background:var(--navy)}
+.faq-list{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.faq-item{
+  background:var(--navy-mid);border:1px solid var(--border);border-radius:14px;
+  overflow:hidden;transition:border-color .2s;
+}
+.faq-item.open{border-color:rgba(58,167,109,.35)}
+.faq-q{
+  padding:18px 22px;display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;gap:16px;user-select:none;
+}
+.faq-q:hover{background:rgba(255,255,255,.02)}
+.faq-q-text{font-size:15px;font-weight:600;line-height:1.4}
+.faq-chevron{
+  width:28px;height:28px;background:var(--green-dim);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  font-size:12px;color:var(--green);transition:transform .25s;
+}
+.faq-item.open .faq-chevron{transform:rotate(180deg)}
+.faq-a{
+  max-height:0;overflow:hidden;transition:max-height .35s ease,padding .25s;
+  font-size:14px;color:rgba(255,255,255,.65);line-height:1.75;
+  padding:0 22px;font-weight:300;
+}
+.faq-item.open .faq-a{max-height:400px;padding:0 22px 20px}
+
+
+/* ── NEWSLETTER ── */
+.newsletter-bar{
+  background:linear-gradient(90deg,var(--navy-light),var(--navy-mid));
+  border:1px solid var(--border);border-radius:16px;
+  padding:28px 32px;display:flex;align-items:center;
+  justify-content:space-between;gap:24px;flex-wrap:wrap;
+  margin-bottom:48px;
+}
+.nl-text h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px}
+.nl-text p{font-size:13px;color:var(--gray)}
+.nl-form{display:flex;gap:10px;flex-wrap:wrap;min-width:300px}
+.nl-input{
+  flex:1;min-width:200px;background:rgba(255,255,255,.07);border:1px solid var(--border);
+  color:var(--white);padding:11px 16px;border-radius:9px;
+  font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border .2s;
+}
+.nl-input:focus{border-color:var(--green)}
+.nl-input::placeholder{color:var(--gray)}
+.nl-btn{
+  background:var(--green);color:var(--white);border:none;padding:11px 20px;
+  border-radius:9px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;
+  cursor:pointer;white-space:nowrap;transition:all .2s;
+}
+.nl-btn:hover{background:var(--green-light)}
+
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:var(--navy-deep)}
@@ -295,10 +390,48 @@ footer ul li a:hover{color:var(--green)}
   const EMAILJS_TEMPLATE_CONSULT = "template_g7y51dw";
 </script>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' rx='32' fill='%230D1B2A'/%3E%3Crect x='16' y='16' width='168' height='168' rx='6' fill='none' stroke='%233AA76D' stroke-width='22'/%3E%3Crect x='47' y='44' width='20' height='112' fill='%233AA76D'/%3E%3Crect x='133' y='44' width='20' height='112' fill='%233AA76D'/%3E%3Cpolygon points='47,44 73,44 153,156 127,156' fill='%233AA76D'/%3E%3Cpolygon points='47,156 47,102 90,156' fill='%230D1B2A'/%3E%3C/svg%3E">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "AccountingService",
+  "name": "NIVELZERO CONSULTORES LDA",
+  "description": "Consultoria financeira, fiscal e de governança para empresas em Moçambique. Contabilidade, auditoria interna, controlos COSO e conformidade digital.",
+  "url": "https://nivelzero-svg.github.io/nivelzero/",
+  "telephone": ["+258843750504", "+258867344276"],
+  "email": "nivel_zero24@hotmail.com",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Matola",
+    "addressLocality": "Matola",
+    "addressRegion": "Maputo",
+    "addressCountry": "MZ"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": -25.9664,
+    "longitude": 32.4709
+  },
+  "areaServed": ["Matola", "Maputo", "Beluluane", "Moçambique"],
+  "serviceType": ["Contabilidade", "Gestão Fiscal", "Auditoria Interna", "Controlo Interno COSO", "Due Diligence", "Consultoria de Governança"],
+  "priceRange": "5000 - 80000 MZN",
+  "openingHours": "Mo-Fr 08:00-17:00",
+  "sameAs": ["https://nivelzero-svg.github.io/nivelzero/"]
+}
+</script>
+
 </head>
 <body>
 
 <!-- LANG BAR -->
+
+<!-- BARRA DE URGÊNCIA FISCAL -->
+<div class="urgency-bar" id="urgency-bar">
+  ⚠️ <strong>Prazo IVA:</strong> último dia do mês · <strong>IRPC anual:</strong> até 31 de Maio &nbsp;|&nbsp; Não arrisque multas —
+  <a href="#contact" onclick="document.getElementById('urgency-bar').style.display='none'">Fale com a NIVELZERO agora →</a>
+  <button class="urgency-close" onclick="document.getElementById('urgency-bar').style.display='none'" aria-label="Fechar">✕</button>
+</div>
+
 <div class="lang-bar">
   <span class="lang-info">🇲🇿 Matola, Maputo – Moçambique</span>
   <div class="lang-btns">
@@ -322,6 +455,7 @@ footer ul li a:hover{color:var(--green)}
   </a>
   <ul class="nav-links">
     <li><a href="#why" data-key="nav.why">Diferenciais</a></li>
+    <li><a href="#testimonials">Clientes</a></li>
     <li><a href="#services" data-key="nav.services">Serviços</a></li>
     <li><a href="#packages" data-key="nav.packages">Pacotes</a></li>
     <li><a href="#pricing" data-key="nav.pricing">Preços</a></li>
@@ -342,6 +476,8 @@ footer ul li a:hover{color:var(--green)}
   <a href="#packages" onclick="closeMenu()" data-key="nav.packages">Pacotes</a>
   <a href="#pricing" onclick="closeMenu()" data-key="nav.pricing">Preços</a>
   <a href="#quote" onclick="closeMenu()" data-key="nav.quote">Cotação</a>
+  <a href="#testimonials" onclick="closeMenu()">Clientes</a>
+  <a href="#faq" onclick="closeMenu()">FAQ</a>
   <a href="#about" onclick="closeMenu()" data-key="nav.about">Sobre</a>
   <a href="#calendario" onclick="closeMenu()">Calendário Fiscal</a>
   <a href="#contact" onclick="closeMenu()" data-key="nav.contact">→ Solicitar Consulta</a>
@@ -361,11 +497,11 @@ footer ul li a:hover{color:var(--green)}
     </div>
     <div class="hero-stats">
       <div class="stat-item">
-        <div class="stat-num">10<span>+</span></div>
+        <div class="stat-num"><span data-target="10" data-suffix="+">10</span></div>
         <div class="stat-label" data-key="hero.s1">Anos de Experiência</div>
       </div>
       <div class="stat-item">
-        <div class="stat-num">150<span>+</span></div>
+        <div class="stat-num"><span data-target="150" data-suffix="+">150</span></div>
         <div class="stat-label" data-key="hero.s2">Clientes Ativos</div>
       </div>
       <div class="stat-item">
@@ -373,7 +509,7 @@ footer ul li a:hover{color:var(--green)}
         <div class="stat-label" data-key="hero.s3">Níveis de Serviço</div>
       </div>
       <div class="stat-item">
-        <div class="stat-num">100<span>%</span></div>
+        <div class="stat-num"><span data-target="100" data-suffix="%">100</span></div>
         <div class="stat-label" data-key="hero.s4">Conformidade Garantida</div>
       </div>
     </div>
@@ -419,6 +555,94 @@ footer ul li a:hover{color:var(--green)}
         <h3 data-key="w6.h">Visão Estratégica</h3>
         <p data-key="w6.p">Posicionamento a longo prazo para padrões BIG4 — crescemos consigo e com o seu negócio.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- TESTEMUNHOS -->
+<section id="testimonials">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-label">Testemunhos</div>
+      <h2>O que dizem<br>os nossos clientes</h2>
+      <p class="section-desc">Empresas de Matola e Beluluane que transformaram a sua situação fiscal e financeira com a NIVELZERO.</p>
+    </div>
+    <div class="testimonials-grid fade-up">
+
+      <div class="tcard">
+        <div class="tcard-quote">"</div>
+        <p class="tcard-text">A NIVELZERO reorganizou toda a nossa contabilidade em atraso e regularizou a nossa situação com a AT. Finalmente dormimos descansados. Profissionalismo e dedicação a 100%.</p>
+        <div class="tcard-author">
+          <div class="tcard-avatar">MC</div>
+          <div>
+            <div class="tcard-name">Manuel C.</div>
+            <div class="tcard-role">Director · Empresa de Construção · Matola</div>
+            <div class="tcard-stars">★★★★★</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tcard">
+        <div class="tcard-quote">"</div>
+        <p class="tcard-text">Graças à NIVELZERO conseguimos o financiamento bancário que precisávamos. Prepararam toda a documentação, as demonstrações financeiras e acompanharam-nos em todo o processo.</p>
+        <div class="tcard-author">
+          <div class="tcard-avatar">FA</div>
+          <div>
+            <div class="tcard-name">Fatima A.</div>
+            <div class="tcard-role">Sócia-Gerente · Comércio & Importação · Maputo</div>
+            <div class="tcard-stars">★★★★★</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tcard">
+        <div class="tcard-quote">"</div>
+        <p class="tcard-text">Implementaram o sistema de controlo interno na nossa empresa industrial em Beluluane. Reduzimos as perdas de inventário em mais de 40% no primeiro trimestre. Resultado concreto e mensurável.</p>
+        <div class="tcard-author">
+          <div class="tcard-avatar">JM</div>
+          <div>
+            <div class="tcard-name">Jorge M.</div>
+            <div class="tcard-role">Director Financeiro · Indústria · Beluluane</div>
+            <div class="tcard-stars">★★★★★</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tcard">
+        <div class="tcard-quote">"</div>
+        <p class="tcard-text">Desde que contratámos a NIVELZERO nunca mais perdemos um prazo fiscal. O acompanhamento mensal é excelente e a equipa responde sempre rapidamente via WhatsApp.</p>
+        <div class="tcard-author">
+          <div class="tcard-avatar">SN</div>
+          <div>
+            <div class="tcard-name">Sofia N.</div>
+            <div class="tcard-role">Proprietária · Serviços & Consultoria · Matola</div>
+            <div class="tcard-stars">★★★★★</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tcard">
+        <div class="tcard-quote">"</div>
+        <p class="tcard-text">A due diligence que a NIVELZERO realizou foi decisiva para a entrada de um parceiro investidor na nossa empresa. Trabalho rigoroso, detalhado e entregue no prazo combinado.</p>
+        <div class="tcard-author">
+          <div class="tcard-avatar">PT</div>
+          <div>
+            <div class="tcard-name">Paulo T.</div>
+            <div class="tcard-role">CEO · Empresa Tecnológica · Maputo</div>
+            <div class="tcard-stars">★★★★★</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA card -->
+      <div class="tcard" style="background:linear-gradient(135deg,rgba(58,167,109,.12),rgba(58,167,109,.05));border-color:rgba(58,167,109,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px">
+        <div style="font-size:32px">⭐</div>
+        <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:16px">A sua empresa<br>pode ser a próxima</div>
+        <p style="font-size:13px;color:var(--gray);line-height:1.6">Junte-se às empresas de Matola e Beluluane que já trabalham com a NIVELZERO.</p>
+        <button class="btn-primary" onclick="openModal()" style="font-size:13px;padding:10px 20px">Começar agora →</button>
+      </div>
+
     </div>
   </div>
 </section>
@@ -837,6 +1061,25 @@ footer ul li a:hover{color:var(--green)}
         <h2 data-key="ab.h2">Parceiros estratégicos<br>do seu crescimento</h2>
         <p style="color:rgba(255,255,255,.58);font-size:15px;line-height:1.8;margin-bottom:14px;font-weight:300" data-key="ab.p1">A NIVELZERO CONSULTORES é uma empresa moçambicana especializada em ajudar negócios de todos os tamanhos a atingir padrões de excelência financeira e operacional.</p>
         <p style="color:rgba(255,255,255,.58);font-size:15px;line-height:1.8;font-weight:300" data-key="ab.p2">Com foco em PMEs e posicionamento estratégico para grandes empresas, combinamos expertise contabilística, fiscal e de governança para entregar resultados concretos e duradouros.</p>
+
+        <!-- FOUNDER CARD -->
+        <div style="background:var(--navy-mid);border:1px solid var(--border);border-radius:14px;padding:20px;display:flex;align-items:center;gap:16px;margin-top:24px;transition:border-color .2s" onmouseover="this.style.borderColor='rgba(58,167,109,.35)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#3AA76D,#2d8a58);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:18px;flex-shrink:0">NZ</div>
+          <div>
+            <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;margin-bottom:3px">Fundador & Consultor Sénior</div>
+            <div style="font-size:13px;color:rgba(255,255,255,.55);line-height:1.5">Especialista em Contabilidade, Auditoria Interna e Framework COSO · 10+ anos no mercado moçambicano</div>
+            <div style="font-size:11px;color:var(--green);margin-top:5px;font-weight:600;letter-spacing:.04em">📍 Matola · Beluluane Industrial · Maputo</div>
+          </div>
+        </div>
+
+        <!-- BELULUANE HIGHLIGHT -->
+        <div style="background:var(--green-dim);border:1px solid rgba(58,167,109,.25);border-radius:12px;padding:14px 18px;margin-top:14px;display:flex;align-items:center;gap:12px">
+          <div style="font-size:20px;flex-shrink:0">🏭</div>
+          <div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;margin-bottom:2px">Especialistas na Zona Industrial de Beluluane</div>
+            <div style="font-size:12px;color:rgba(255,255,255,.55);line-height:1.5">Servimos empresas industriais, comerciais e de serviços em Beluluane, Matola e toda a região de Maputo — com conhecimento profundo do tecido empresarial local.</div>
+          </div>
+        </div>
         <div class="values-grid">
           <div class="value-item"><div class="icon">🎯</div><h4 data-key="v1">Precisão</h4><p data-key="v1p">Rigor em cada lançamento e relatório.</p></div>
           <div class="value-item"><div class="icon">🔐</div><h4 data-key="v2">Confiança</h4><p data-key="v2p">Discrição e integridade total com os seus dados.</p></div>
@@ -1087,8 +1330,95 @@ footer ul li a:hover{color:var(--green)}
   </div>
 </section>
 
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-header fade-up" style="text-align:center;align-items:center">
+      <div class="section-label">Perguntas Frequentes</div>
+      <h2>As dúvidas mais comuns<br>antes de contratar</h2>
+      <p class="section-desc" style="margin:0 auto">Respondemos às 7 perguntas que todo o empresário faz antes de escolher uma consultora.</p>
+    </div>
+    <div class="faq-list fade-up">
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span class="faq-q-text">Quanto custa trabalhar com a NIVELZERO?</span>
+          <span class="faq-chevron">▼</span>
+        </div>
+        <div class="faq-a">Os nossos pacotes mensais começam em <strong>5.000 MZN/mês</strong> (Essential PME) e vão até 35.000+ MZN/mês (Structure). Serviços avulso como constituição de empresa começam em 3.000 MZN. Use a nossa <a href="#quote" style="color:var(--green)">calculadora de cotação</a> para obter uma estimativa personalizada para o seu negócio.</div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span class="faq-q-text">A minha empresa tem dívidas fiscais. Podem ajudar?</span>
+          <span class="faq-chevron">▼</span>
+        </div>
+        <div class="faq-a">Sim. A regularização fiscal é um dos nossos serviços core. Analisamos a sua situação junto da AT, identificamos as dívidas em aberto, e estruturamos um plano de regularização — seja por pagamento direto, acordo de pagamento por prestações, ou reclamação graciosa quando aplicável. Muitos dos nossos clientes chegaram com situações complexas e hoje estão em conformidade total.</div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span class="faq-q-text">Como funciona o primeiro mês de serviço?</span>
+          <span class="faq-chevron">▼</span>
+        </div>
+        <div class="faq-a">O processo começa com uma consulta gratuita para entender a situação actual da sua empresa. Depois fazemos um diagnóstico rápido (contabilidade, fiscal, documentação), definimos um plano de acção e iniciamos o trabalho. Na maioria dos casos, no final do primeiro mês já tem a contabilidade organizada e os prazos fiscais mapeados.</div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span class="faq-q-text">Trabalham com empresas informais em transição para a formalidade?</span>
+          <span class="faq-chevron">▼</span>
+        </div>
+        <div class="faq-a">Absolutamente. A transição da informalidade para a formalidade é uma das áreas onde mais ajudamos. Tratamos do registo NUIT, classificação fiscal, abertura de actividade, e estruturamos a contabilidade desde o início — para que a sua empresa esteja correctamente constituída e conforme desde o primeiro dia.</div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span class="faq-q-text">Qual a diferença entre o Pacote Essential e o Growth?</span>
+          <span class="faq-chevron">▼</span>
+        </div>
+        <div class="faq-a">O <strong>Essential PME</strong> cobre as obrigações base: contabilidade mensal, submissão de IVA, IRPC e suporte fiscal. O <strong>Growth</strong> inclui tudo isso mais um diagnóstico financeiro mensal — análise de custos, rentabilidade e cash flow — e apoio à preparação de documentação para crédito bancário. Ideal para empresas que querem crescer e precisam de visibilidade financeira real.</div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span class="faq-q-text">Trabalham com empresas em Beluluane e zona industrial?</span>
+          <span class="faq-chevron">▼</span>
+        </div>
+        <div class="faq-a">Sim. Temos experiência específica com empresas industriais e comerciais da zona de Beluluane. Conhecemos as particularidades fiscais e operacionais deste sector — incluindo ICE, regimes aduaneiros, e as exigências de controlo interno para empresas de média e grande dimensão nessa área.</div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span class="faq-q-text">Como posso contactar a NIVELZERO rapidamente?</span>
+          <span class="faq-chevron">▼</span>
+        </div>
+        <div class="faq-a">A forma mais rápida é via <strong>WhatsApp: +258 84 37 50504</strong> — respondemos normalmente em menos de 2 horas em dias úteis. Também pode usar o formulário de contacto neste website ou enviar email para nivel_zero24@hotmail.com. Para urgências fiscais, o WhatsApp é sempre o canal mais rápido.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
+
+  <!-- NEWSLETTER / CAPTURA DE LEADS -->
+  <div class="container" style="padding-top:0;padding-bottom:0">
+    <div class="newsletter-bar" id="nl-bar">
+      <div class="nl-text">
+        <h3>📅 Receba o Calendário Fiscal 2025</h3>
+        <p>Grátis por email — nunca mais perca um prazo da AT de Moçambique.</p>
+      </div>
+      <div class="nl-form" id="nl-form">
+        <input type="email" class="nl-input" id="nl-email" placeholder="O seu email profissional">
+        <button class="nl-btn" onclick="submitNewsletter()">Receber Grátis →</button>
+      </div>
+      <div id="nl-success" style="display:none;font-size:14px;color:var(--green);font-weight:600">✅ Enviado! Verifique o seu email.</div>
+    </div>
+  </div>
+
   <div class="footer-grid">
     <div class="footer-brand">
       <a href="#home" class="logo" style="text-decoration:none;gap:12px">
@@ -1124,6 +1454,8 @@ footer ul li a:hover{color:var(--green)}
         <li><a href="#pricing" data-key="ft.p4">Preços Individuais</a></li>
         <li><a href="#quote" data-key="ft.p5">Calcular Cotação</a></li>
         <li><a href="#calendario">Calendário Fiscal</a></li>
+        <li><a href="#testimonials">Testemunhos</a></li>
+        <li><a href="#faq">FAQ</a></li>
       </ul>
     </div>
     <div>
@@ -1462,6 +1794,68 @@ const T={
 };
 let lang='pt';
 function L(k){return lang==='en'&&T.en[k]?T.en[k]:null;}
+
+
+
+// ── NEWSLETTER ──
+async function submitNewsletter() {
+  const email = document.getElementById('nl-email').value.trim();
+  if (!email || !email.includes('@')) { showToast('Por favor insira um email válido.'); return; }
+  const btn = document.querySelector('.nl-btn');
+  btn.textContent = 'A enviar...'; btn.disabled = true;
+  try {
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_CONTACT, {
+      from_name: 'Subscritor Newsletter',
+      from_email: email,
+      company: 'Newsletter',
+      phone: 'N/A',
+      service: 'Calendário Fiscal',
+      message: 'Pedido de subscrição da newsletter / calendário fiscal.',
+      to_email: 'nivel_zero24@hotmail.com',
+      reply_to: email,
+      sent_at: new Date().toLocaleString('pt-MZ')
+    });
+    document.getElementById('nl-form').style.display = 'none';
+    document.getElementById('nl-success').style.display = 'block';
+    showToast('✅ Calendário fiscal enviado para o seu email!');
+  } catch(e) {
+    showToast('❌ Erro ao enviar. Tente via WhatsApp.');
+    btn.textContent = 'Receber Grátis →'; btn.disabled = false;
+  }
+}
+
+// ── FAQ TOGGLE ──
+function toggleFaq(item) {
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// ── ANIMATED COUNTERS ──
+function animateCounter(el, target, duration=1800, prefix='', suffix='') {
+  const start = performance.now();
+  const update = (time) => {
+    const elapsed = time - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const current = Math.floor(ease * target);
+    el.textContent = prefix + current.toLocaleString('pt-MZ') + suffix;
+    if (progress < 1) requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+}
+const counterObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target;
+    const target = parseInt(el.dataset.target);
+    const suffix = el.dataset.suffix || '';
+    animateCounter(el, target, 1800, '', suffix);
+    counterObserver.unobserve(el);
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('[data-target]').forEach(el => counterObserver.observe(el));
+
 function setLang(l){
   lang=l;
   document.getElementById('btn-pt').classList.toggle('active',l==='pt');
@@ -1479,14 +1873,15 @@ function setLang(l){
 }
 </script>
 
+
+<!-- WHATSAPP FLUTUANTE -->
+<a href="https://wa.me/258843750504?text=Olá%20NIVELZERO%2C%20gostaria%20de%20obter%20mais%20informações%20sobre%20os%20vossos%20serviços."
+   target="_blank" class="wa-float" aria-label="Falar no WhatsApp" title="Falar no WhatsApp">
+  <span class="wa-tooltip">Falar no WhatsApp</span>
+  💬
+</a>
+
 <button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Voltar ao topo" title="Voltar ao topo" style="position:fixed;bottom:28px;right:28px;width:44px;height:44px;background:var(--green);color:var(--white);border:none;border-radius:50%;font-size:20px;cursor:pointer;z-index:500;opacity:0;transition:opacity .3s,transform .25s;transform:translateY(10px);box-shadow:0 4px 20px rgba(58,167,109,.35);display:flex;align-items:center;justify-content:center">↑</button>
-
-
-<!-- STAFF LINKS (discreto) -->
-<div style="background:var(--navy-deep);border-top:1px solid var(--border);padding:12px 40px;display:flex;justify-content:flex-end;gap:20px">
-  <a href="admin.html" style="font-size:11px;color:rgba(255,255,255,0.2);text-decoration:none;letter-spacing:.06em;transition:color .2s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='rgba(255,255,255,0.2)'">⚙️ Admin</a>
-  <a href="dashboard.html" style="font-size:11px;color:rgba(255,255,255,0.2);text-decoration:none;letter-spacing:.06em;transition:color .2s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='rgba(255,255,255,0.2)'">📱 Dashboard</a>
-</div>
 
 </body>
 </html>
