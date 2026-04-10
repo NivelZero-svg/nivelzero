@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NIVELZERO · Dashboard Cliente</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0D1B2A;--navy-mid:#152338;--navy-light:#1e3350;--navy-deep:#080f18;
+  --green:#3AA76D;--green-light:#4dc983;--green-dim:rgba(58,167,109,0.12);--green-glow:rgba(58,167,109,0.2);
+  --red:#e05555;--red-dim:rgba(224,85,85,0.12);
+  --amber:#e0a030;--amber-dim:rgba(224,160,48,0.12);
+  --blue:#4a90d9;--blue-dim:rgba(74,144,217,0.12);
+  --white:#fff;--gray:#8895A7;--border:rgba(255,255,255,0.07);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;display:flex;flex-direction:column}
+
+/* ── WIREFRAME BADGE ── */
+.wf-notice{
+  background:var(--amber-dim);border-bottom:1px solid rgba(224,160,48,.25);
+  text-align:center;padding:8px;font-size:12px;color:var(--amber);letter-spacing:.04em;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+
+/* ── TOP BAR ── */
+.topbar{
+  background:var(--navy-deep);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;height:60px;
+}
+.topbar-logo{font-family:'Montserrat',sans-serif;font-weight:900;font-size:18px;display:flex;align-items:center;gap:8px}
+.topbar-logo span{color:var(--green)}
+.logo-mark{width:28px;height:28px;background:var(--green);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900}
+.topbar-right{display:flex;align-items:center;gap:14px}
+.notif-btn{
+  width:34px;height:34px;background:rgba(255,255,255,.05);border:1px solid var(--border);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;
+  position:relative;font-size:15px;transition:border-color .2s;
+}
+.notif-btn:hover{border-color:var(--green)}
+.notif-dot{
+  position:absolute;top:6px;right:6px;width:7px;height:7px;
+  background:var(--red);border-radius:50%;border:1.5px solid var(--navy-deep);
+}
+.user-pill{
+  display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.05);
+  border:1px solid var(--border);border-radius:9px;padding:6px 12px;cursor:pointer;transition:border-color .2s;
+}
+.user-pill:hover{border-color:var(--green)}
+.user-avatar{width:26px;height:26px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.user-name{font-size:13px;font-weight:500}
+
+/* ── LAYOUT ── */
+.shell{display:flex;flex:1}
+.sidebar{
+  width:210px;flex-shrink:0;background:var(--navy-mid);border-right:1px solid var(--border);
+  padding:20px 0;display:flex;flex-direction:column;
+}
+.sidebar-section{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);padding:0 18px;margin:18px 0 6px}
+.nav-item{
+  display:flex;align-items:center;gap:10px;padding:10px 18px;cursor:pointer;
+  transition:all .2s;font-size:14px;color:var(--gray);border-left:2px solid transparent;
+}
+.nav-item:hover{color:var(--white);background:rgba(255,255,255,.03)}
+.nav-item.active{color:var(--green);border-left-color:var(--green);background:var(--green-dim)}
+.nav-item .ni{font-size:15px;width:18px;text-align:center}
+.nav-badge{
+  margin-left:auto;background:var(--red);color:var(--white);font-size:10px;font-weight:700;
+  padding:2px 6px;border-radius:10px;min-width:18px;text-align:center;
+}
+.sidebar-footer{margin-top:auto;padding:14px 18px;border-top:1px solid var(--border)}
+.pkg-card{background:var(--navy);border:1px solid var(--border);border-radius:10px;padding:14px}
+.pkg-card-label{font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.pkg-card-name{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:800;color:var(--green)}
+.pkg-card-next{font-size:11px;color:var(--gray);margin-top:4px}
+
+/* ── MAIN ── */
+.main{flex:1;padding:28px;overflow-y:auto}
+.page{display:none}
+.page.active{display:block}
+
+/* ── PAGE HEADER ── */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:26px;flex-wrap:wrap;gap:12px}
+.page-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.02em}
+.page-sub{font-size:13px;color:var(--gray);margin-top:4px}
+.action-btn{
+  background:var(--green);color:var(--white);border:none;padding:10px 18px;
+  border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:7px;
+}
+.action-btn:hover{background:var(--green-light)}
+.action-btn.outline{background:transparent;border:1px solid var(--border);color:var(--gray)}
+.action-btn.outline:hover{border-color:var(--green);color:var(--green)}
+
+/* ── STAT CARDS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.sc{background:var(--navy-mid);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;overflow:hidden;transition:border-color .25s}
+.sc:hover{border-color:rgba(58,167,109,.2)}
+.sc::after{content:'';position:absolute;top:-30px;right:-30px;width:80px;height:80px;border-radius:50%;background:var(--sc-glow,rgba(58,167,109,.05))}
+.sc-icon{font-size:22px;margin-bottom:10px}
+.sc-label{font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.sc-value{font-family:'Montserrat',sans-serif;font-weight:800;font-size:24px;letter-spacing:-.02em}
+.sc-delta{font-size:12px;margin-top:4px}
+.delta-up{color:var(--green)}
+.delta-down{color:var(--red)}
+.delta-neutral{color:var(--gray)}
+
+/* ── GRID LAYOUTS ── */
+.two-col{display:grid;grid-template-columns:1.6fr 1fr;gap:20px;margin-bottom:20px}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+.card{background:var(--navy-mid);border:1px solid var(--border);border-radius:14px;padding:22px}
+.card-title{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.card-title a{font-size:12px;color:var(--green);text-decoration:none;font-family:'DM Sans',sans-serif;font-weight:400}
+
+/* ── DEADLINES ── */
+.deadline-list{display:flex;flex-direction:column;gap:10px}
+.deadline-item{display:flex;align-items:center;gap:12px;padding:10px;background:var(--navy);border:1px solid var(--border);border-radius:10px;transition:border-color .2s}
+.deadline-item:hover{border-color:var(--border-hover,rgba(58,167,109,.3))}
+.dl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dl-red{background:var(--red)}
+.dl-amber{background:var(--amber)}
+.dl-green{background:var(--green)}
+.dl-info{flex:1}
+.dl-title{font-size:13px;font-weight:500}
+.dl-date{font-size:11px;color:var(--gray);margin-top:2px}
+.dl-badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:5px;white-space:nowrap}
+.dl-urgent{background:var(--red-dim);color:var(--red)}
+.dl-soon{background:var(--amber-dim);color:var(--amber)}
+.dl-ok{background:var(--green-dim);color:var(--green)}
+
+/* ── SERVICES LIST ── */
+.service-list{display:flex;flex-direction:column;gap:8px}
+.service-item{display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--navy);border:1px solid var(--border);border-radius:10px}
+.si-left{display:flex;align-items:center;gap:10px}
+.si-icon{width:34px;height:34px;background:var(--green-dim);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.si-name{font-size:13px;font-weight:500}
+.si-type{font-size:11px;color:var(--gray);margin-top:1px}
+.si-status{font-size:11px;font-weight:600;padding:3px 9px;border-radius:6px}
+.status-active{background:var(--green-dim);color:var(--green)}
+.status-review{background:var(--amber-dim);color:var(--amber)}
+.status-pending{background:var(--blue-dim);color:var(--blue)}
+
+/* ── ACTIVITY FEED ── */
+.activity-list{display:flex;flex-direction:column;gap:0}
+.activity-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.activity-item:last-child{border-bottom:none}
+.ai-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:2px}
+.ai-green{background:var(--green-dim)}
+.ai-amber{background:var(--amber-dim)}
+.ai-blue{background:var(--blue-dim)}
+.ai-text{font-size:13px;color:rgba(255,255,255,.8);line-height:1.5}
+.ai-time{font-size:11px;color:var(--gray);margin-top:3px}
+
+/* ── CHART BAR ── */
+.mini-chart{display:flex;align-items:flex-end;gap:4px;height:60px;margin-top:8px}
+.bar{flex:1;border-radius:4px 4px 0 0;transition:height .3s;cursor:pointer;position:relative}
+.bar:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100%+6px);left:50%;transform:translateX(-50%);background:var(--navy-deep);border:1px solid var(--border);padding:4px 8px;border-radius:6px;font-size:11px;white-space:nowrap;pointer-events:none}
+.bar-green{background:var(--green)}
+.bar-dim{background:rgba(58,167,109,.25)}
+.chart-labels{display:flex;gap:4px;margin-top:6px}
+.chart-label{flex:1;text-align:center;font-size:10px;color:var(--gray)}
+
+/* ── DOCS ── */
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.doc-card{background:var(--navy);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all .25s}
+.doc-card:hover{border-color:var(--green);transform:translateY(-2px)}
+.doc-icon{font-size:28px;margin-bottom:10px}
+.doc-name{font-size:13px;font-weight:500;margin-bottom:3px}
+.doc-meta{font-size:11px;color:var(--gray)}
+.doc-badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;margin-top:6px}
+.doc-new{background:var(--green-dim);color:var(--green)}
+.doc-old{background:rgba(255,255,255,.06);color:var(--gray)}
+
+/* ── UPLOAD ZONE ── */
+.upload-zone{
+  border:2px dashed var(--border);border-radius:12px;padding:32px;text-align:center;
+  cursor:pointer;transition:all .2s;
+}
+.upload-zone:hover{border-color:var(--green);background:var(--green-dim)}
+.upload-zone .uz-icon{font-size:32px;margin-bottom:8px}
+.upload-zone p{font-size:13px;color:var(--gray)}
+.upload-zone span{color:var(--green);font-weight:600}
+
+/* ── REQUEST TRACKER ── */
+.request-list{display:flex;flex-direction:column;gap:10px}
+.req-item{background:var(--navy);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;align-items:flex-start;gap:14px;transition:border-color .2s}
+.req-item:hover{border-color:rgba(255,255,255,.15)}
+.req-step{width:32px;height:32px;border-radius:50%;background:var(--navy-light);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;font-family:'Montserrat',sans-serif}
+.req-step.done{background:var(--green-dim);border-color:var(--green);color:var(--green)}
+.req-step.active{background:var(--amber-dim);border-color:var(--amber);color:var(--amber)}
+.req-info{flex:1}
+.req-title{font-size:14px;font-weight:600}
+.req-desc{font-size:12px;color:var(--gray);margin-top:3px}
+.req-progress{margin-top:10px}
+.progress-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:var(--green);border-radius:2px;transition:width .5s}
+
+/* ── NOTIFICATIONS PANEL ── */
+.notif-panel{
+  position:fixed;top:60px;right:0;width:340px;height:calc(100vh - 60px);
+  background:var(--navy-mid);border-left:1px solid var(--border);
+  z-index:300;transform:translateX(100%);transition:transform .3s;
+  display:flex;flex-direction:column;
+}
+.notif-panel.open{transform:translateX(0)}
+.notif-header{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.notif-header h3{font-family:'Montserrat',sans-serif;font-size:15px;font-weight:700}
+.notif-close{background:none;border:none;color:var(--gray);cursor:pointer;font-size:18px;padding:4px}
+.notif-list{flex:1;overflow-y:auto;padding:16px}
+.notif-item{background:var(--navy);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}
+.notif-item.unread{border-color:rgba(58,167,109,.25);background:var(--green-dim)}
+.ni-title{font-size:13px;font-weight:500;margin-bottom:3px}
+.ni-body{font-size:12px;color:var(--gray);line-height:1.5}
+.ni-time{font-size:11px;color:var(--gray);margin-top:6px}
+
+/* ── PROFILE ── */
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.profile-section{background:var(--navy-mid);border:1px solid var(--border);border-radius:14px;padding:22px}
+.ps-title{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;margin-bottom:16px;color:var(--gray)}
+.profile-field{margin-bottom:14px}
+.pf-label{font-size:12px;color:var(--gray);margin-bottom:5px}
+.pf-value{font-size:14px;font-weight:500}
+.pf-input{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--white);padding:9px 12px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none}
+.pf-input:focus{border-color:var(--green)}
+
+/* ── OVERLAY ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:none}
+.overlay.show{display:block}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--navy-light);border:1px solid var(--green);color:var(--white);padding:10px 20px;border-radius:9px;font-size:14px;font-weight:500;z-index:9999;transition:transform .3s;pointer-events:none;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .sidebar{display:none}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .two-col,.profile-grid{grid-template-columns:1fr}
+  .three-col{grid-template-columns:1fr 1fr}
+}
+@media(max-width:580px){
+  .stats-grid,.three-col{grid-template-columns:1fr}
+  .main{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- WIREFRAME NOTICE -->
+
+<div style="background:#080f18;border-bottom:1px solid rgba(255,255,255,0.07);padding:7px 28px;display:flex;align-items:center;justify-content:space-between">
+  <a href="index.html" style="font-size:12px;color:#8895A7;text-decoration:none;display:inline-flex;align-items:center;gap:6px" onmouseover="this.style.color='#3AA76D'" onmouseout="this.style.color='#8895A7'">← Voltar ao website</a>
+  <span style="font-size:11px;color:#4a5a6a;letter-spacing:.06em">NIVELZERO · App Futura</span>
+</div>
+
+<div class="wf-notice">
+  🎨 <strong>WIREFRAME</strong> — Dashboard Cliente · App NIVELZERO (versão futura) · Dados de demonstração
+</div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="28" height="28" style="flex-shrink:0;display:block">
+      <rect width="200" height="200" rx="36" fill="#0D1B2A"/>
+      <rect x="16" y="16" width="168" height="168" rx="6" fill="none" stroke="#3AA76D" stroke-width="22"/>
+      <rect x="47" y="44" width="20" height="112" fill="#3AA76D"/>
+      <rect x="133" y="44" width="20" height="112" fill="#3AA76D"/>
+      <polygon points="47,44 73,44 153,156 127,156" fill="#3AA76D"/>
+      <polygon points="47,156 47,102 90,156" fill="#0D1B2A"/>
+    </svg>
+    NIVEL<span>ZERO</span>
+  </div>
+  <div class="topbar-right">
+    <div class="notif-btn" onclick="toggleNotifs()">
+      🔔<div class="notif-dot"></div>
+    </div>
+    <div class="user-pill" onclick="goPage('profile')">
+      <div class="user-avatar">MC</div>
+      <span class="user-name">MozaCargo Lda</span>
+    </div>
+  </div>
+</div>
+
+<div class="shell">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-section">Menu</div>
+    <div class="nav-item active" onclick="goPage('overview',this)" role="button" tabindex="0"><span class="ni">🏠</span> Visão Geral</div>
+    <div class="nav-item" onclick="goPage('taxes',this)"><span class="ni">🧾</span> Fiscal <span class="nav-badge">2</span></div>
+    <div class="nav-item" onclick="goPage('docs',this)"><span class="ni">📁</span> Documentos</div>
+    <div class="nav-item" onclick="goPage('requests',this)"><span class="ni">📋</span> Pedidos</div>
+    <div class="nav-item" onclick="goPage('profile',this)"><span class="ni">⚙️</span> Perfil</div>
+
+    <div class="sidebar-footer">
+      <div class="pkg-card">
+        <div class="pkg-card-label">Pacote Ativo</div>
+        <div class="pkg-card-name">Growth</div>
+        <div class="pkg-card-next">Renovação: 01 Mai 2025</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ── OVERVIEW ── -->
+    <div class="page active" id="page-overview">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Bom dia, MozaCargo! 👋</div>
+          <div class="page-sub">Aqui está o resumo da sua situação financeira e fiscal.</div>
+        </div>
+        <button class="action-btn" onclick="showToast('📋 Pedido aberto — escolha o serviço desejado.')">+ Pedir Serviço</button>
+      </div>
+
+      <div class="stats-grid">
+        <div class="sc" style="--sc-glow:rgba(58,167,109,.08)">
+          <div class="sc-icon">📊</div>
+          <div class="sc-label">Conformidade Fiscal</div>
+          <div class="sc-value" style="color:var(--green)">98%</div>
+          <div class="sc-delta delta-up">▲ +2% vs mês anterior</div>
+        </div>
+        <div class="sc" style="--sc-glow:rgba(224,85,85,.06)">
+          <div class="sc-icon">⏰</div>
+          <div class="sc-label">Prazos em Aberto</div>
+          <div class="sc-value" style="color:var(--amber)">3</div>
+          <div class="sc-delta delta-neutral">2 urgentes este mês</div>
+        </div>
+        <div class="sc" style="--sc-glow:rgba(74,144,217,.06)">
+          <div class="sc-icon">📁</div>
+          <div class="sc-label">Documentos</div>
+          <div class="sc-value">24</div>
+          <div class="sc-delta delta-up">▲ 3 novos este mês</div>
+        </div>
+        <div class="sc" style="--sc-glow:rgba(58,167,109,.06)">
+          <div class="sc-icon">✅</div>
+          <div class="sc-label">Pedidos Ativos</div>
+          <div class="sc-value">2</div>
+          <div class="sc-delta delta-neutral">Em processamento</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <!-- Deadlines -->
+        <div class="card">
+          <div class="card-title">Prazos Fiscais <a href="#" onclick="goPage('taxes')">Ver todos →</a></div>
+          <div class="deadline-list">
+            <div class="deadline-item">
+              <div class="dl-dot dl-red"></div>
+              <div class="dl-info">
+                <div class="dl-title">Submissão IVA – Março 2025</div>
+                <div class="dl-date">Prazo: 20 Abril 2025 · AT</div>
+              </div>
+              <span class="dl-badge dl-urgent">Urgente</span>
+            </div>
+            <div class="deadline-item">
+              <div class="dl-dot dl-amber"></div>
+              <div class="dl-info">
+                <div class="dl-title">IRPC – Declaração Anual</div>
+                <div class="dl-date">Prazo: 30 Abril 2025 · AT</div>
+              </div>
+              <span class="dl-badge dl-soon">Em breve</span>
+            </div>
+            <div class="deadline-item">
+              <div class="dl-dot dl-green"></div>
+              <div class="dl-info">
+                <div class="dl-title">Submissão IVA – Abril 2025</div>
+                <div class="dl-date">Prazo: 20 Maio 2025 · AT</div>
+              </div>
+              <span class="dl-badge dl-ok">Em dia</span>
+            </div>
+            <div class="deadline-item">
+              <div class="dl-dot dl-green"></div>
+              <div class="dl-info">
+                <div class="dl-title">SAF-T – Q1 2025</div>
+                <div class="dl-date">Prazo: 31 Maio 2025 · AT</div>
+              </div>
+              <span class="dl-badge dl-ok">Em dia</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity -->
+        <div class="card">
+          <div class="card-title">Atividade Recente</div>
+          <div class="activity-list">
+            <div class="activity-item">
+              <div class="ai-icon ai-green">📄</div>
+              <div>
+                <div class="ai-text">Balancete de Março carregado pelo consultor</div>
+                <div class="ai-time">Hoje, 09:42</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="ai-icon ai-amber">🧾</div>
+              <div>
+                <div class="ai-text">Lembrete: IVA de Março vence em 5 dias</div>
+                <div class="ai-time">Ontem, 08:00</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="ai-icon ai-green">✅</div>
+              <div>
+                <div class="ai-text">Submissão ISPC Fevereiro concluída com sucesso</div>
+                <div class="ai-time">14 Abr, 14:20</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="ai-icon ai-blue">📋</div>
+              <div>
+                <div class="ai-text">Pedido de Diagnóstico Financeiro recebido</div>
+                <div class="ai-time">12 Abr, 10:05</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services + Chart -->
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">Serviços Ativos</div>
+          <div class="service-list">
+            <div class="service-item">
+              <div class="si-left"><div class="si-icon">📒</div><div><div class="si-name">Contabilidade Mensal</div><div class="si-type">Pacote Growth · Recorrente</div></div></div>
+              <span class="si-status status-active">Ativo</span>
+            </div>
+            <div class="service-item">
+              <div class="si-left"><div class="si-icon">🧾</div><div><div class="si-name">Gestão Fiscal (IVA, IRPC)</div><div class="si-type">Pacote Growth · Recorrente</div></div></div>
+              <span class="si-status status-active">Ativo</span>
+            </div>
+            <div class="service-item">
+              <div class="si-left"><div class="si-icon">📊</div><div><div class="si-name">Diagnóstico Financeiro</div><div class="si-type">Serviço avulso · Em revisão</div></div></div>
+              <span class="si-status status-review">Em Revisão</span>
+            </div>
+            <div class="service-item">
+              <div class="si-left"><div class="si-icon">💻</div><div><div class="si-name">Implementação SAF-T</div><div class="si-type">Serviço avulso · Pendente</div></div></div>
+              <span class="si-status status-pending">Pendente</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Conformidade – Últimos 6 meses</div>
+          <div class="mini-chart">
+            <div class="bar bar-dim" style="height:70%" data-tip="Nov: 90%"></div>
+            <div class="bar bar-dim" style="height:75%" data-tip="Dez: 92%"></div>
+            <div class="bar bar-dim" style="height:80%" data-tip="Jan: 94%"></div>
+            <div class="bar bar-dim" style="height:85%" data-tip="Fev: 96%"></div>
+            <div class="bar bar-dim" style="height:90%" data-tip="Mar: 97%"></div>
+            <div class="bar bar-green" style="height:98%" data-tip="Abr: 98%"></div>
+          </div>
+          <div class="chart-labels">
+            <span class="chart-label">Nov</span><span class="chart-label">Dez</span>
+            <span class="chart-label">Jan</span><span class="chart-label">Fev</span>
+            <span class="chart-label">Mar</span><span class="chart-label">Abr</span>
+          </div>
+          <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px">
+            <span style="color:var(--gray)">Média do período</span>
+            <span style="color:var(--green);font-weight:700">94.5%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAXES ── -->
+    <div class="page" id="page-taxes">
+      <div class="page-header">
+        <div><div class="page-title">Gestão Fiscal</div><div class="page-sub">Prazos, submissões e estado das obrigações fiscais.</div></div>
+        <button class="action-btn outline" onclick="showToast('📧 Mensagem enviada ao consultor NIVELZERO!')">Contactar Consultor</button>
+      </div>
+      <div class="three-col">
+        <div class="sc"><div class="sc-icon">✅</div><div class="sc-label">Submetidos YTD</div><div class="sc-value" style="color:var(--green)">8</div><div class="sc-delta delta-neutral">Jan–Abr 2025</div></div>
+        <div class="sc"><div class="sc-icon">⚠️</div><div class="sc-label">Urgentes</div><div class="sc-value" style="color:var(--red)">2</div><div class="sc-delta delta-down">Ação necessária</div></div>
+        <div class="sc"><div class="sc-icon">📅</div><div class="sc-label">Próximo Prazo</div><div class="sc-value" style="font-size:18px">20 Abr</div><div class="sc-delta delta-neutral">IVA Março</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Calendário Fiscal 2025</div>
+        <div class="deadline-list">
+          <div class="deadline-item"><div class="dl-dot dl-red"></div><div class="dl-info"><div class="dl-title">IVA – Março 2025</div><div class="dl-date">Prazo: 20/04/2025 · Multa até 5.000 MZN</div></div><span class="dl-badge dl-urgent">Urgente</span></div>
+          <div class="deadline-item"><div class="dl-dot dl-amber"></div><div class="dl-info"><div class="dl-title">IRPC – Declaração Anual 2024</div><div class="dl-date">Prazo: 30/04/2025 · Modelo 22</div></div><span class="dl-badge dl-soon">10 dias</span></div>
+          <div class="deadline-item"><div class="dl-dot dl-green"></div><div class="dl-info"><div class="dl-title">IVA – Abril 2025</div><div class="dl-date">Prazo: 20/05/2025</div></div><span class="dl-badge dl-ok">30 dias</span></div>
+          <div class="deadline-item"><div class="dl-dot dl-green"></div><div class="dl-info"><div class="dl-title">SAF-T – Q1 2025</div><div class="dl-date">Prazo: 31/05/2025</div></div><span class="dl-badge dl-ok">40 dias</span></div>
+          <div class="deadline-item"><div class="dl-dot dl-green"></div><div class="dl-info"><div class="dl-title">ISPC – 2º Trimestre</div><div class="dl-date">Prazo: 30/06/2025</div></div><span class="dl-badge dl-ok">70 dias</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DOCUMENTS ── -->
+    <div class="page" id="page-docs">
+      <div class="page-header">
+        <div><div class="page-title">Documentos</div><div class="page-sub">Arquivo digital dos seus documentos financeiros e fiscais.</div></div>
+        <button class="action-btn" onclick="showToast('📎 Selecione o ficheiro para carregar.')">+ Carregar Documento</button>
+      </div>
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-title">Carregar Ficheiro</div>
+        <div class="upload-zone" onclick="showToast('📎 Selecione o ficheiro...')">
+          <div class="uz-icon">📎</div>
+          <p>Arraste ficheiros aqui ou <span>clique para selecionar</span></p>
+          <p style="margin-top:6px;font-size:11px">PDF, Excel, Word · Máx. 10MB por ficheiro</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Documentos Recentes <a href="#">Ver arquivo →</a></div>
+        <div class="doc-grid">
+          <div class="doc-card" onclick="showToast('📄 A carregar documento...')"><div class="doc-icon">📊</div><div class="doc-name">Balancete Mar 2025</div><div class="doc-meta">NIVELZERO · 2.1 MB</div><span class="doc-badge doc-new">Novo</span></div>
+          <div class="doc-card" onclick="showToast('📄 A carregar documento...')"><div class="doc-icon">🧾</div><div class="doc-name">Decl. IVA Fev 2025</div><div class="doc-meta">Submetido AT · 340 KB</div><span class="doc-badge doc-new">Novo</span></div>
+          <div class="doc-card" onclick="showToast('📄 A carregar documento...')"><div class="doc-icon">📋</div><div class="doc-name">Relatório Anual 2024</div><div class="doc-meta">NIVELZERO · 5.8 MB</div><span class="doc-badge doc-old">Jan 2025</span></div>
+          <div class="doc-card" onclick="showToast('📄 A carregar documento...')"><div class="doc-icon">📈</div><div class="doc-name">Diag. Financeiro Q4</div><div class="doc-meta">NIVELZERO · 1.2 MB</div><span class="doc-badge doc-old">Dez 2024</span></div>
+          <div class="doc-card" onclick="showToast('📄 A carregar documento...')"><div class="doc-icon">🔍</div><div class="doc-name">Auditoria Interna 2024</div><div class="doc-meta">NIVELZERO · 3.4 MB</div><span class="doc-badge doc-old">Nov 2024</span></div>
+          <div class="doc-card" onclick="showToast('📄 A carregar documento...')"><div class="doc-icon">⚖️</div><div class="doc-name">Contrato de Serviços</div><div class="doc-meta">Assinado · 890 KB</div><span class="doc-badge doc-old">Jan 2024</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── REQUESTS ── -->
+    <div class="page" id="page-requests">
+      <div class="page-header">
+        <div><div class="page-title">Pedidos de Serviço</div><div class="page-sub">Acompanhe o estado dos seus pedidos em tempo real.</div></div>
+        <button class="action-btn" onclick="showToast('📋 Formulário de novo pedido — em breve disponível.')">+ Novo Pedido</button>
+      </div>
+      <div class="request-list">
+        <div class="req-item">
+          <div class="req-step done">✓</div>
+          <div class="req-info">
+            <div class="req-title">Diagnóstico Financeiro Q1 2025</div>
+            <div class="req-desc">Em revisão pelo consultor · Solicitado: 12 Abr 2025</div>
+            <div class="req-progress" style="margin-top:10px">
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gray);margin-bottom:5px"><span>Progresso</span><span style="color:var(--amber)">75%</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width:75%"></div></div>
+              <div style="font-size:11px;color:var(--amber);margin-top:5px">⏳ Em revisão — entrega prevista: 25 Abr</div>
+            </div>
+          </div>
+        </div>
+        <div class="req-item">
+          <div class="req-step active">2</div>
+          <div class="req-info">
+            <div class="req-title">Implementação SAF-T</div>
+            <div class="req-desc">Aguarda documentação · Solicitado: 8 Abr 2025</div>
+            <div class="req-progress" style="margin-top:10px">
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gray);margin-bottom:5px"><span>Progresso</span><span style="color:var(--blue)">30%</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width:30%;background:var(--blue)"></div></div>
+              <div style="font-size:11px;color:var(--blue);margin-top:5px">📋 Ação necessária — envie os ficheiros de exportação</div>
+            </div>
+          </div>
+        </div>
+        <div class="req-item" style="opacity:.6">
+          <div class="req-step done" style="opacity:.5">✓</div>
+          <div class="req-info">
+            <div class="req-title">Saneamento Contabilístico 2023</div>
+            <div class="req-desc">Concluído · Entregue: 15 Mar 2025</div>
+            <div class="req-progress" style="margin-top:10px">
+              <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+              <div style="font-size:11px;color:var(--green);margin-top:5px">✅ Concluído — relatório disponível em Documentos</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PROFILE ── -->
+    <div class="page" id="page-profile">
+      <div class="page-header">
+        <div><div class="page-title">Perfil da Empresa</div><div class="page-sub">Informações e preferências da sua conta.</div></div>
+        <button class="action-btn" onclick="showToast('✅ Alterações guardadas com sucesso!')">Guardar Alterações</button>
+      </div>
+      <div class="profile-grid">
+        <div class="profile-section">
+          <div class="ps-title">DADOS DA EMPRESA</div>
+          <div class="profile-field"><div class="pf-label">Nome da Empresa</div><input class="pf-input" value="MozaCargo Lda"></div>
+          <div class="profile-field"><div class="pf-label">NUIT</div><input class="pf-input" value="400 123 456"></div>
+          <div class="profile-field"><div class="pf-label">Setor</div><input class="pf-input" value="Transportes e Logística"></div>
+          <div class="profile-field"><div class="pf-label">Localização</div><input class="pf-input" value="Beluluane, Matola"></div>
+        </div>
+        <div class="profile-section">
+          <div class="ps-title">CONTACTOS</div>
+          <div class="profile-field"><div class="pf-label">Email</div><input class="pf-input" value="geral@mozacargo.co.mz" type="email"></div>
+          <div class="profile-field"><div class="pf-label">Telefone / WhatsApp</div><input class="pf-input" value="+258 84 XXX XXXX" type="tel"></div>
+          <div class="profile-field"><div class="pf-label">Responsável</div><input class="pf-input" value="Manuel Cossa"></div>
+        </div>
+        <div class="profile-section">
+          <div class="ps-title">PACOTE ATIVO</div>
+          <div class="profile-field"><div class="pf-label">Pacote</div><div class="pf-value" style="color:var(--green);font-family:'Montserrat',sans-serif;font-weight:700">Growth</div></div>
+          <div class="profile-field"><div class="pf-label">Valor Mensal</div><div class="pf-value">12.000 MZN / mês</div></div>
+          <div class="profile-field"><div class="pf-label">Renovação</div><div class="pf-value">01 Mai 2025</div></div>
+          <button class="action-btn outline" style="width:100%;justify-content:center;margin-top:8px" onclick="showToast('📦 Contacte a NIVELZERO para upgrade de pacote.')">Upgrade de Pacote</button>
+        </div>
+        <div class="profile-section">
+          <div class="ps-title">NOTIFICAÇÕES</div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:14px">
+              <span>Lembretes fiscais</span>
+              <div style="width:38px;height:22px;background:var(--green);border-radius:11px;cursor:pointer;position:relative"><div style="position:absolute;right:3px;top:3px;width:16px;height:16px;background:white;border-radius:50%"></div></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:14px">
+              <span>Novos documentos</span>
+              <div style="width:38px;height:22px;background:var(--green);border-radius:11px;cursor:pointer;position:relative"><div style="position:absolute;right:3px;top:3px;width:16px;height:16px;background:white;border-radius:50%"></div></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:14px">
+              <span>Atualizações de pedidos</span>
+              <div style="width:38px;height:22px;background:var(--navy-light);border-radius:11px;cursor:pointer;position:relative;border:1px solid var(--border)"><div style="position:absolute;left:3px;top:2px;width:16px;height:16px;background:var(--gray);border-radius:50%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- NOTIFICATIONS PANEL -->
+<div class="overlay" id="overlay" onclick="closeNotifs()"></div>
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-header">
+    <h3>Notificações</h3>
+    <button class="notif-close" onclick="closeNotifs()">✕</button>
+  </div>
+  <div class="notif-list">
+    <div class="notif-item unread">
+      <div class="ni-title">⚠️ IVA Março vence em 5 dias</div>
+      <div class="ni-body">A submissão do IVA relativo a Março de 2025 tem prazo até 20 de Abril. O seu consultor já está a preparar a declaração.</div>
+      <div class="ni-time">Hoje, 08:00</div>
+    </div>
+    <div class="notif-item unread">
+      <div class="ni-title">📄 Novo documento disponível</div>
+      <div class="ni-body">O balancete de Março 2025 foi carregado pelo seu consultor e está disponível em Documentos.</div>
+      <div class="ni-time">Hoje, 09:42</div>
+    </div>
+    <div class="notif-item">
+      <div class="ni-title">✅ ISPC Fevereiro submetido</div>
+      <div class="ni-body">A declaração ISPC de Fevereiro foi submetida com sucesso à AT em 14 de Abril.</div>
+      <div class="ni-time">14 Abr, 14:20</div>
+    </div>
+    <div class="notif-item">
+      <div class="ni-title">📋 Pedido recebido</div>
+      <div class="ni-body">O seu pedido de Diagnóstico Financeiro foi recebido e está a ser processado.</div>
+      <div class="ni-time">12 Abr, 10:05</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function goPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const pg = document.getElementById('page-' + id);
+  if (pg) pg.classList.add('active');
+  if (el) el.classList.add('active');
+  else {
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.getAttribute('onclick') && n.getAttribute('onclick').includes(id)) n.classList.add('active');
+    });
+  }
+}
+
+function toggleNotifs() {
+  document.getElementById('notif-panel').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+function closeNotifs() {
+  document.getElementById('notif-panel').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
