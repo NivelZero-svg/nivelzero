@@ -273,6 +273,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);
       <div class="sidebar-item" onclick="goPanel('formula',this)">
         <span class="icon">🧮</span> Fórmula Cotação
       </div>
+      <div class="sidebar-item" onclick="goPanel('content',this)">
+        <span class="icon">✏️</span> Conteúdos
+      </div>
       <div class="sidebar-section">Sistema</div>
       <div class="sidebar-item" onclick="goPanel('preview',this)">
         <span class="icon">👁️</span> Pré-visualização
@@ -378,6 +381,121 @@ body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);
         <div id="preview-content"></div>
       </div>
 
+
+      <!-- CONTENT EDITOR -->
+      <div class="panel" id="panel-content">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Editar Conteúdos</div>
+            <div class="panel-desc">Edite textos do website sem tocar no código.</div>
+          </div>
+          <button class="save-btn" onclick="saveContent()">💾 Guardar Alterações</button>
+        </div>
+
+        <div id="content-editor" style="display:flex;flex-direction:column;gap:16px">
+
+          <!-- Hero -->
+          <div class="price-section open" id="cs-hero">
+            <div class="price-section-header" onclick="toggleSection('cs-hero')">
+              <div class="psh-left"><span class="psh-icon">🏠</span><span class="psh-title">Secção Hero (Início)</span></div>
+              <span class="chevron">▼</span>
+            </div>
+            <div class="price-section-body">
+              <div class="form-group">
+                <label>Título Principal</label>
+                <input class="price-input" id="ct-hero-h1" value="Consultoria financeira, fiscal e de gestão para empresas em crescimento" style="font-size:14px;height:auto">
+              </div>
+              <div class="form-group" style="margin-top:12px">
+                <label>Subtítulo</label>
+                <input class="price-input" id="ct-hero-sub" value="Ajudamos empresas a organizar, controlar e crescer com segurança — da conformidade fiscal à governança corporativa." style="font-size:14px;height:auto">
+              </div>
+              <div class="form-group" style="margin-top:12px">
+                <label>Tag de localização (hero badge)</label>
+                <input class="price-input" id="ct-hero-tag" value="Matola · Maputo · Moçambique" style="font-size:14px;height:auto">
+              </div>
+            </div>
+          </div>
+
+          <!-- About/Founder -->
+          <div class="price-section" id="cs-founder">
+            <div class="price-section-header" onclick="toggleSection('cs-founder')">
+              <div class="psh-left"><span class="psh-icon">👤</span><span class="psh-title">Secção Fundador</span></div>
+              <span class="chevron">▼</span>
+            </div>
+            <div class="price-section-body">
+              <div class="form-group">
+                <label>Título do Fundador</label>
+                <input class="price-input" id="ct-founder-title" value="Fundador & Consultor Sénior" style="font-size:14px">
+              </div>
+              <div class="form-group" style="margin-top:12px">
+                <label>Cargo</label>
+                <input class="price-input" id="ct-founder-role" value="Director Executivo · NIVELZERO CONSULTORES LDA" style="font-size:14px">
+              </div>
+              <div class="form-group" style="margin-top:12px">
+                <label>Bio (texto principal)</label>
+                <textarea id="ct-founder-bio" style="width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--white);padding:10px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;resize:vertical;min-height:80px;outline:none">Com mais de 10 anos de experiência no mercado moçambicano, especializou-se em consultoria financeira, fiscal e de governança para empresas de todos os sectores.</textarea>
+              </div>
+              <div class="form-group" style="margin-top:12px">
+                <label>Citação do Fundador</label>
+                <textarea id="ct-founder-quote" style="width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--white);padding:10px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;resize:vertical;min-height:60px;outline:none">O nosso compromisso é simples: ajudar cada empresa a crescer com estrutura sólida, conformidade fiscal e controlo real sobre as suas finanças.</textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonials -->
+          <div class="price-section" id="cs-testi">
+            <div class="price-section-header" onclick="toggleSection('cs-testi')">
+              <div class="psh-left"><span class="psh-icon">💬</span><span class="psh-title">Testemunhos</span></div>
+              <span class="chevron">▼</span>
+            </div>
+            <div class="price-section-body">
+              <div id="testi-editor" style="display:flex;flex-direction:column;gap:16px"></div>
+            </div>
+          </div>
+
+          <!-- CTA -->
+          <div class="price-section" id="cs-cta">
+            <div class="price-section-header" onclick="toggleSection('cs-cta')">
+              <div class="psh-left"><span class="psh-icon">📣</span><span class="psh-title">Secção CTA</span></div>
+              <span class="chevron">▼</span>
+            </div>
+            <div class="price-section-body">
+              <div class="form-group">
+                <label>Título CTA</label>
+                <input class="price-input" id="ct-cta-h" value="Evite multas e organize a sua empresa hoje" style="font-size:14px">
+              </div>
+              <div class="form-group" style="margin-top:12px">
+                <label>Subtexto CTA</label>
+                <textarea id="ct-cta-sub" style="width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--white);padding:10px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;resize:vertical;min-height:60px;outline:none">Cada dia sem estrutura fiscal é um risco. A consulta inicial é gratuita — sem compromisso.</textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contacts -->
+          <div class="price-section" id="cs-contacts">
+            <div class="price-section-header" onclick="toggleSection('cs-contacts')">
+              <div class="psh-left"><span class="psh-icon">📞</span><span class="psh-title">Informações de Contacto</span></div>
+              <span class="chevron">▼</span>
+            </div>
+            <div class="price-section-body">
+              <div class="price-row" style="grid-template-columns:1fr 1fr">
+                <div class="price-input-wrap"><label>Telefone Principal (WhatsApp)</label><input class="price-input" id="ct-phone1" value="+258 86 73 44276" style="font-size:14px"></div>
+                <div class="price-input-wrap"><label>Telefone Alternativo</label><input class="price-input" id="ct-phone2" value="+258 84 37 50504" style="font-size:14px"></div>
+              </div>
+              <div class="price-row" style="grid-template-columns:1fr 1fr;margin-top:12px">
+                <div class="price-input-wrap"><label>Email</label><input class="price-input" id="ct-email" value="nivel_zero24@hotmail.com" style="font-size:14px"></div>
+                <div class="price-input-wrap"><label>Localização</label><input class="price-input" id="ct-location" value="Matola, Maputo — Moçambique" style="font-size:14px"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div style="margin-top:20px;background:var(--amber-dim);border:1px solid rgba(224,160,48,.25);border-radius:12px;padding:16px;font-size:13px;color:var(--amber)">
+          ⚠️ <strong>Nota:</strong> As alterações são guardadas localmente. Para actualizar o website em produção, exporte o ficheiro e faça upload no GitHub.
+        </div>
+      </div>
+
       <!-- LOG -->
       <div class="panel" id="panel-log">
         <div class="panel-header">
@@ -481,6 +599,7 @@ function initApp() {
   renderDashboard();
   renderPreview();
   renderLog();
+  renderTestimonialEditor();
 }
 
 // ══════════════════════════════════════
