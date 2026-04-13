@@ -3,676 +3,1388 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NIVELZERO · Dashboard Cliente</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>NIVELZERO · Sistema de Gestão Interno</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+/* ═══════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════ */
 :root{
-  --navy:#0D1B2A;--navy-mid:#152338;--navy-light:#1e3350;--navy-deep:#080f18;
-  --green:#3AA76D;--green-light:#4dc983;--green-dim:rgba(58,167,109,0.12);--green-glow:rgba(58,167,109,0.2);
-  --red:#e05555;--red-dim:rgba(224,85,85,0.12);
-  --amber:#e0a030;--amber-dim:rgba(224,160,48,0.12);
-  --blue:#4a90d9;--blue-dim:rgba(74,144,217,0.12);
-  --white:#fff;--gray:#8895A7;--border:rgba(255,255,255,0.07);
+  --bg:#07101E;
+  --bg2:#0D1B2E;
+  --bg3:#132338;
+  --bg4:#1B2F48;
+  --bg5:#243855;
+  --blue:#3B7BF8;
+  --blue-lt:#6099FF;
+  --blue-dim:rgba(59,123,248,.12);
+  --teal:#12C2A8;
+  --teal-dim:rgba(18,194,168,.12);
+  --amber:#F5A623;
+  --amber-dim:rgba(245,166,35,.12);
+  --red:#F04949;
+  --red-dim:rgba(240,73,73,.12);
+  --green:#22C55E;
+  --green-dim:rgba(34,197,94,.12);
+  --purple:#9B72F8;
+  --purple-dim:rgba(155,114,248,.12);
+  --white:#F0F4FF;
+  --text:#B8C8E0;
+  --text-low:#6B82A0;
+  --border:rgba(255,255,255,.07);
+  --border2:rgba(255,255,255,.04);
+  --shadow:0 4px 20px rgba(0,0,0,.35);
+  --shadow-lg:0 8px 40px rgba(0,0,0,.45);
 }
+
+/* ═══════════════════════════════════════
+   RESET + BASE
+═══════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;display:flex;flex-direction:column}
+html,body{height:100%;background:var(--bg);color:var(--white);-webkit-font-smoothing:antialiased;overflow:hidden}
+body{font-family:'Inter',sans-serif;font-size:13px;line-height:1.5}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.2)}
+button{cursor:pointer;font-family:'Inter',sans-serif}
+a{text-decoration:none}
+select{cursor:pointer}
 
-/* ── WIREFRAME BADGE ── */
-.wf-notice{
-  background:var(--amber-dim);border-bottom:1px solid rgba(224,160,48,.25);
-  text-align:center;padding:8px;font-size:12px;color:var(--amber);letter-spacing:.04em;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-}
+/* ═══════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════ */
+.shell{display:flex;height:100vh;flex-direction:column}
 
-/* ── TOP BAR ── */
+/* ── TOPBAR ── */
 .topbar{
-  background:var(--navy-deep);border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 28px;height:60px;
+  height:52px;background:var(--bg);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 18px;gap:12px;
+  flex-shrink:0;z-index:300;position:relative;
 }
-.topbar-logo{font-family:'Montserrat',sans-serif;font-weight:900;font-size:18px;display:flex;align-items:center;gap:8px}
-.topbar-logo span{color:var(--green)}
-.logo-mark{width:28px;height:28px;background:var(--green);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900}
-.topbar-right{display:flex;align-items:center;gap:14px}
-.notif-btn{
-  width:34px;height:34px;background:rgba(255,255,255,.05);border:1px solid var(--border);
-  border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;
-  position:relative;font-size:15px;transition:border-color .2s;
-}
-.notif-btn:hover{border-color:var(--green)}
-.notif-dot{
-  position:absolute;top:6px;right:6px;width:7px;height:7px;
-  background:var(--red);border-radius:50%;border:1.5px solid var(--navy-deep);
-}
-.user-pill{
-  display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.05);
-  border:1px solid var(--border);border-radius:9px;padding:6px 12px;cursor:pointer;transition:border-color .2s;
-}
-.user-pill:hover{border-color:var(--green)}
-.user-avatar{width:26px;height:26px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
-.user-name{font-size:13px;font-weight:500}
+.tb-logo{display:flex;align-items:center;gap:9px;margin-right:8px}
+.tb-logo-text{font-family:'Montserrat',sans-serif;font-weight:800;font-size:16px;letter-spacing:-.02em;color:var(--white)}
+.tb-logo-text span{color:var(--teal)}
+.tb-divider{width:1px;height:20px;background:var(--border)}
+.tb-breadcrumb{font-size:12px;color:var(--text-low);display:flex;align-items:center;gap:6px}
+.tb-breadcrumb span{color:var(--text)}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.tb-search{display:flex;align-items:center;gap:7px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--text-low);width:200px;cursor:text}
+.tb-search input{background:none;border:none;outline:none;font-family:'Inter',sans-serif;font-size:12px;color:var(--white);width:100%}
+.tb-search input::placeholder{color:var(--text-low)}
+.icon-btn{width:32px;height:32px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text);transition:all .15s;position:relative}
+.icon-btn:hover{background:var(--bg4);color:var(--white)}
+.notif-dot{position:absolute;top:6px;right:6px;width:6px;height:6px;background:var(--red);border-radius:50%;border:1.5px solid var(--bg)}
+.tb-user{display:flex;align-items:center;gap:8px;padding:5px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;transition:background .15s}
+.tb-user:hover{background:var(--bg4)}
+.avatar{border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:700;flex-shrink:0}
+.tb-uname{font-size:12.5px;font-weight:600;color:var(--white)}
+.role-chip{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:4px;white-space:nowrap}
+.rc-admin{background:var(--amber-dim);color:var(--amber)}
+.rc-gestor{background:var(--blue-dim);color:var(--blue-lt)}
+.rc-tecnico{background:var(--teal-dim);color:var(--teal)}
+.rc-viewer{background:rgba(255,255,255,.05);color:var(--text-low)}
+.demo-bar{background:rgba(245,166,35,.08);border-bottom:1px solid rgba(245,166,35,.15);padding:4px 18px;display:flex;align-items:center;gap:10px;font-size:11px;color:var(--amber);flex-shrink:0}
+.demo-sel{background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);color:var(--amber);padding:2px 8px;border-radius:4px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;outline:none}
+.demo-back{margin-left:auto;color:var(--amber);font-weight:600;font-size:11px;opacity:.8;transition:opacity .15s}
+.demo-back:hover{opacity:1}
 
-/* ── LAYOUT ── */
-.shell{display:flex;flex:1}
+/* ── BODY AREA ── */
+.body-area{display:flex;flex:1;overflow:hidden}
+
+/* ── SIDEBAR ── */
 .sidebar{
-  width:210px;flex-shrink:0;background:var(--navy-mid);border-right:1px solid var(--border);
-  padding:20px 0;display:flex;flex-direction:column;
+  width:220px;flex-shrink:0;background:var(--bg2);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow-y:auto;
 }
-.sidebar-section{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);padding:0 18px;margin:18px 0 6px}
-.nav-item{
-  display:flex;align-items:center;gap:10px;padding:10px 18px;cursor:pointer;
-  transition:all .2s;font-size:14px;color:var(--gray);border-left:2px solid transparent;
+.sb-group-label{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-low);padding:16px 16px 5px;opacity:.6}
+.sb-item{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 14px;font-size:13px;color:var(--text);
+  border-left:2px solid transparent;transition:all .15s;
+  position:relative;
 }
-.nav-item:hover{color:var(--white);background:rgba(255,255,255,.03)}
-.nav-item.active{color:var(--green);border-left-color:var(--green);background:var(--green-dim)}
-.nav-item .ni{font-size:15px;width:18px;text-align:center}
-.nav-badge{
-  margin-left:auto;background:var(--red);color:var(--white);font-size:10px;font-weight:700;
-  padding:2px 6px;border-radius:10px;min-width:18px;text-align:center;
-}
-.sidebar-footer{margin-top:auto;padding:14px 18px;border-top:1px solid var(--border)}
-.pkg-card{background:var(--navy);border:1px solid var(--border);border-radius:10px;padding:14px}
-.pkg-card-label{font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
-.pkg-card-name{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:800;color:var(--green)}
-.pkg-card-next{font-size:11px;color:var(--gray);margin-top:4px}
+.sb-item:hover{background:rgba(255,255,255,.04);color:var(--white)}
+.sb-item.active{background:var(--teal-dim);color:var(--white);border-left-color:var(--teal);font-weight:500}
+.sb-ico{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+.sb-label{flex:1}
+.sb-count{font-size:10px;font-weight:700;padding:1px 6px;border-radius:9px;white-space:nowrap}
+.sb-c-red{background:var(--red);color:#fff}
+.sb-c-amber{background:var(--amber);color:var(--bg)}
+.sb-c-blue{background:var(--blue);color:#fff}
+.sb-footer{margin-top:auto;padding:14px;border-top:1px solid var(--border)}
+.sb-period{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.sbp-label{font-size:10px;color:var(--text-low);margin-bottom:2px}
+.sbp-val{font-size:13px;font-weight:700;color:var(--teal);font-family:'Montserrat',sans-serif}
+.sbp-sub{font-size:11px;color:var(--text-low);margin-top:1px}
 
-/* ── MAIN ── */
-.main{flex:1;padding:28px;overflow-y:auto}
-.page{display:none}
+/* ── CONTENT ── */
+.content{flex:1;overflow-y:auto;background:var(--bg)}
+.page{display:none;padding:24px}
 .page.active{display:block}
 
-/* ── PAGE HEADER ── */
-.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:26px;flex-wrap:wrap;gap:12px}
-.page-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.02em}
-.page-sub{font-size:13px;color:var(--gray);margin-top:4px}
-.action-btn{
-  background:var(--green);color:var(--white);border:none;padding:10px 18px;
-  border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;
-  cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:7px;
-}
-.action-btn:hover{background:var(--green-light)}
-.action-btn.outline{background:transparent;border:1px solid var(--border);color:var(--gray)}
-.action-btn.outline:hover{border-color:var(--green);color:var(--green)}
+/* ═══════════════════════════════════════
+   COMPONENTS
+═══════════════════════════════════════ */
 
-/* ── STAT CARDS ── */
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
-.sc{background:var(--navy-mid);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;overflow:hidden;transition:border-color .25s}
-.sc:hover{border-color:rgba(58,167,109,.2)}
-.sc::after{content:'';position:absolute;top:-30px;right:-30px;width:80px;height:80px;border-radius:50%;background:var(--sc-glow,rgba(58,167,109,.05))}
-.sc-icon{font-size:22px;margin-bottom:10px}
-.sc-label{font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
-.sc-value{font-family:'Montserrat',sans-serif;font-weight:800;font-size:24px;letter-spacing:-.02em}
-.sc-delta{font-size:12px;margin-top:4px}
-.delta-up{color:var(--green)}
-.delta-down{color:var(--red)}
-.delta-neutral{color:var(--gray)}
+/* Page header */
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px}
+.ph-left h1{font-family:'Montserrat',sans-serif;font-size:19px;font-weight:800;letter-spacing:-.02em;color:var(--white)}
+.ph-left p{font-size:12.5px;color:var(--text-low);margin-top:3px}
+.ph-actions{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
 
-/* ── GRID LAYOUTS ── */
-.two-col{display:grid;grid-template-columns:1.6fr 1fr;gap:20px;margin-bottom:20px}
-.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
-.card{background:var(--navy-mid);border:1px solid var(--border);border-radius:14px;padding:22px}
-.card-title{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
-.card-title a{font-size:12px;color:var(--green);text-decoration:none;font-family:'DM Sans',sans-serif;font-weight:400}
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:7px 14px;border-radius:8px;font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;transition:all .15s;white-space:nowrap}
+.btn:hover{background:var(--bg4);color:var(--white);border-color:rgba(255,255,255,.12)}
+.btn.primary{background:var(--teal);color:var(--bg);border-color:var(--teal);font-weight:700}
+.btn.primary:hover{background:#1FDABF}
+.btn.blue{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn.blue:hover{background:var(--blue-lt)}
+.btn.danger{background:var(--red-dim);color:var(--red);border-color:rgba(240,73,73,.25)}
+.btn.danger:hover{background:var(--red);color:#fff}
+.btn.sm{padding:4px 10px;font-size:11.5px}
+.btn.xs{padding:3px 8px;font-size:11px}
+.btn.icon-only{width:30px;height:30px;padding:0;justify-content:center}
 
-/* ── DEADLINES ── */
-.deadline-list{display:flex;flex-direction:column;gap:10px}
-.deadline-item{display:flex;align-items:center;gap:12px;padding:10px;background:var(--navy);border:1px solid var(--border);border-radius:10px;transition:border-color .2s}
-.deadline-item:hover{border-color:var(--border-hover,rgba(58,167,109,.3))}
-.dl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.dl-red{background:var(--red)}
-.dl-amber{background:var(--amber)}
-.dl-green{background:var(--green)}
-.dl-info{flex:1}
-.dl-title{font-size:13px;font-weight:500}
-.dl-date{font-size:11px;color:var(--gray);margin-top:2px}
-.dl-badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:5px;white-space:nowrap}
-.dl-urgent{background:var(--red-dim);color:var(--red)}
-.dl-soon{background:var(--amber-dim);color:var(--amber)}
-.dl-ok{background:var(--green-dim);color:var(--green)}
+/* Cards */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px}
+.card:last-child{margin-bottom:0}
+.card-header{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.card-title{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;color:var(--white);display:flex;align-items:center;gap:7px}
+.card-subtitle{font-size:11.5px;color:var(--text-low);margin-top:1px}
+.card-body{padding:16px}
+.card-body.no-pad{padding:0}
 
-/* ── SERVICES LIST ── */
-.service-list{display:flex;flex-direction:column;gap:8px}
-.service-item{display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--navy);border:1px solid var(--border);border-radius:10px}
-.si-left{display:flex;align-items:center;gap:10px}
-.si-icon{width:34px;height:34px;background:var(--green-dim);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
-.si-name{font-size:13px;font-weight:500}
-.si-type{font-size:11px;color:var(--gray);margin-top:1px}
-.si-status{font-size:11px;font-weight:600;padding:3px 9px;border-radius:6px}
-.status-active{background:var(--green-dim);color:var(--green)}
-.status-review{background:var(--amber-dim);color:var(--amber)}
-.status-pending{background:var(--blue-dim);color:var(--blue)}
+/* KPI metric cards */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:18px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;position:relative;overflow:hidden;transition:border-color .2s}
+.kpi:hover{border-color:rgba(255,255,255,.12)}
+.kpi-icon{position:absolute;top:14px;right:14px;font-size:20px;opacity:.25}
+.kpi-label{font-size:11px;color:var(--text-low);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;font-weight:500}
+.kpi-value{font-family:'Montserrat',sans-serif;font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1;margin-bottom:5px}
+.kpi-sub{font-size:11.5px;color:var(--text-low)}
+.kpi-delta{font-size:11.5px;font-weight:600;margin-top:5px;display:flex;align-items:center;gap:4px}
+.delta-up{color:var(--teal)}.delta-dn{color:var(--red)}.delta-neu{color:var(--text-low)}
 
-/* ── ACTIVITY FEED ── */
-.activity-list{display:flex;flex-direction:column;gap:0}
-.activity-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+/* Tables */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:500px}
+th{background:rgba(255,255,255,.03);font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-low);padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:11px 14px;border-bottom:1px solid var(--border2);color:var(--text);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.025)}
+td .actions{display:flex;gap:5px;opacity:0;transition:opacity .15s}
+tr:hover td .actions{opacity:1}
+
+/* Status badges */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:5px;white-space:nowrap}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.b-active{background:var(--teal-dim);color:var(--teal)}.b-active::before{background:var(--teal)}
+.b-pending{background:var(--amber-dim);color:var(--amber)}.b-pending::before{background:var(--amber)}
+.b-late{background:var(--red-dim);color:var(--red)}.b-late::before{background:var(--red)}
+.b-done{background:var(--green-dim);color:var(--green)}.b-done::before{background:var(--green)}
+.b-progress{background:var(--blue-dim);color:var(--blue-lt)}.b-progress::before{background:var(--blue-lt)}
+.b-inactive{background:rgba(255,255,255,.06);color:var(--text-low)}.b-inactive::before{background:var(--text-low)}
+
+/* Client cell */
+.client-cell{display:flex;align-items:center;gap:10px}
+.c-avatar{border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:700;flex-shrink:0;color:#fff;font-size:11px}
+.c-name{font-size:13px;font-weight:600;color:var(--white)}
+.c-meta{font-size:11px;color:var(--text-low);margin-top:1px}
+
+/* Package chips */
+.pkg{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.pkg-ess{background:var(--teal-dim);color:var(--teal)}
+.pkg-cres{background:var(--blue-dim);color:var(--blue-lt)}
+.pkg-est{background:var(--purple-dim);color:var(--purple)}
+.pkg-prem{background:var(--amber-dim);color:var(--amber)}
+
+/* Progress bars */
+.prog{height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;margin-top:4px}
+.prog-fill{height:100%;border-radius:3px;transition:width .8s ease}
+
+/* Two/three column grids */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.grid-2-3{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+.grid-1-2{display:grid;grid-template-columns:1fr 2fr;gap:16px}
+
+/* Alert items */
+.alert-list{display:flex;flex-direction:column;gap:8px}
+.alert-item{display:flex;align-items:flex-start;gap:12px;padding:11px 13px;border-radius:9px;border:1px solid transparent}
+.al-red{background:var(--red-dim);border-color:rgba(240,73,73,.2)}
+.al-amber{background:var(--amber-dim);border-color:rgba(245,166,35,.2)}
+.al-blue{background:var(--blue-dim);border-color:rgba(59,123,248,.2)}
+.al-green{background:var(--green-dim);border-color:rgba(34,197,94,.2)}
+.alert-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.alert-title{font-size:12.5px;font-weight:600;margin-bottom:2px}
+.al-red .alert-title{color:var(--red)}
+.al-amber .alert-title{color:var(--amber)}
+.al-blue .alert-title{color:var(--blue-lt)}
+.al-green .alert-title{color:var(--green)}
+.alert-desc{font-size:11.5px;color:var(--text-low)}
+
+/* Mini bar chart */
+.bar-chart{display:flex;align-items:flex-end;gap:4px;height:56px}
+.bar{flex:1;border-radius:3px 3px 0 0;min-width:8px;cursor:pointer;transition:opacity .15s;position:relative}
+.bar:hover{opacity:.8}
+.bar-x{display:flex;gap:4px;margin-top:5px}
+.bar-xl{flex:1;text-align:center;font-size:9.5px;color:var(--text-low)}
+
+/* Donut */
+.donut-container{display:flex;align-items:center;gap:18px}
+.donut-svg{flex-shrink:0}
+.donut-legend{display:flex;flex-direction:column;gap:8px;flex:1}
+.dl-item{display:flex;align-items:center;gap:9px;font-size:12px}
+.dl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dl-label{color:var(--text-low);flex:1}
+.dl-value{font-weight:700;color:var(--white);font-family:'Montserrat',sans-serif}
+.dl-pct{font-size:11px;color:var(--text-low);margin-left:4px}
+
+/* Activity feed */
+.activity{display:flex;flex-direction:column}
+.activity-item{display:flex;gap:11px;padding:10px 0;border-bottom:1px solid var(--border2)}
 .activity-item:last-child{border-bottom:none}
-.ai-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:2px}
-.ai-green{background:var(--green-dim)}
-.ai-amber{background:var(--amber-dim)}
-.ai-blue{background:var(--blue-dim)}
-.ai-text{font-size:13px;color:rgba(255,255,255,.8);line-height:1.5}
-.ai-time{font-size:11px;color:var(--gray);margin-top:3px}
+.act-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:1px}
+.act-text{font-size:12.5px;color:var(--text);line-height:1.4}
+.act-text strong{color:var(--white)}
+.act-time{font-size:11px;color:var(--text-low);margin-top:2px}
 
-/* ── CHART BAR ── */
-.mini-chart{display:flex;align-items:flex-end;gap:4px;height:60px;margin-top:8px}
-.bar{flex:1;border-radius:4px 4px 0 0;transition:height .3s;cursor:pointer;position:relative}
-.bar:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100%+6px);left:50%;transform:translateX(-50%);background:var(--navy-deep);border:1px solid var(--border);padding:4px 8px;border-radius:6px;font-size:11px;white-space:nowrap;pointer-events:none}
-.bar-green{background:var(--green)}
-.bar-dim{background:rgba(58,167,109,.25)}
-.chart-labels{display:flex;gap:4px;margin-top:6px}
-.chart-label{flex:1;text-align:center;font-size:10px;color:var(--gray)}
+/* Revenue cards */
+.rev-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px}
+.rc-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-low);margin-bottom:5px;font-weight:500}
+.rc-value{font-family:'Montserrat',sans-serif;font-size:22px;font-weight:800;letter-spacing:-.03em}
+.rc-sub{font-size:11.5px;color:var(--text-low);margin-top:4px}
 
-/* ── DOCS ── */
-.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
-.doc-card{background:var(--navy);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all .25s}
-.doc-card:hover{border-color:var(--green);transform:translateY(-2px)}
-.doc-icon{font-size:28px;margin-bottom:10px}
-.doc-name{font-size:13px;font-weight:500;margin-bottom:3px}
-.doc-meta{font-size:11px;color:var(--gray)}
-.doc-badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;margin-top:6px}
-.doc-new{background:var(--green-dim);color:var(--green)}
-.doc-old{background:rgba(255,255,255,.06);color:var(--gray)}
+/* Access matrix */
+.access-matrix td, .access-matrix th{padding:9px 12px}
+.check-ok{color:var(--teal);font-size:14px}
+.check-no{color:rgba(255,255,255,.12);font-size:14px}
+.check-partial{color:var(--amber);font-size:11px;font-weight:600}
 
-/* ── UPLOAD ZONE ── */
-.upload-zone{
-  border:2px dashed var(--border);border-radius:12px;padding:32px;text-align:center;
-  cursor:pointer;transition:all .2s;
-}
-.upload-zone:hover{border-color:var(--green);background:var(--green-dim)}
-.upload-zone .uz-icon{font-size:32px;margin-bottom:8px}
-.upload-zone p{font-size:13px;color:var(--gray)}
-.upload-zone span{color:var(--green);font-weight:600}
+/* Fiscal table */
+.fiscal-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.fiscal-tab{background:var(--bg3);border:1px solid var(--border);color:var(--text-low);padding:4px 11px;border-radius:6px;font-family:'Inter',sans-serif;font-size:11.5px;font-weight:500;transition:all .15s}
+.fiscal-tab:hover,.fiscal-tab.active{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+.fiscal-pane{display:none}.fiscal-pane.active{display:block}
+.ft td, .ft th{padding:8px 12px;font-size:12px}
+.ft th{font-size:10px}
+.fd{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap;letter-spacing:.02em}
+.fd-r{background:rgba(240,73,73,.15);color:#FF8A8A}
+.fd-a{background:rgba(245,166,35,.15);color:#FFC96B}
+.fd-b{background:rgba(59,123,248,.15);color:#8AB4FF}
+.fd-g{background:rgba(34,197,94,.15);color:#6EDA9C}
 
-/* ── REQUEST TRACKER ── */
-.request-list{display:flex;flex-direction:column;gap:10px}
-.req-item{background:var(--navy);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;align-items:flex-start;gap:14px;transition:border-color .2s}
-.req-item:hover{border-color:rgba(255,255,255,.15)}
-.req-step{width:32px;height:32px;border-radius:50%;background:var(--navy-light);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;font-family:'Montserrat',sans-serif}
-.req-step.done{background:var(--green-dim);border-color:var(--green);color:var(--green)}
-.req-step.active{background:var(--amber-dim);border-color:var(--amber);color:var(--amber)}
-.req-info{flex:1}
-.req-title{font-size:14px;font-weight:600}
-.req-desc{font-size:12px;color:var(--gray);margin-top:3px}
-.req-progress{margin-top:10px}
-.progress-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden}
-.progress-fill{height:100%;background:var(--green);border-radius:2px;transition:width .5s}
+/* Form elements */
+.form-group{margin-bottom:13px}
+.form-group label{display:block;font-size:11px;font-weight:600;color:var(--text-low);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.form-control{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--white);padding:9px 13px;border-radius:8px;font-family:'Inter',sans-serif;font-size:13px;outline:none;transition:border .15s;-webkit-appearance:none;appearance:none}
+.form-control:focus{border-color:var(--teal);background:var(--bg4)}
+.form-control option{background:var(--bg2)}
+.form-control::placeholder{color:var(--text-low)}
+textarea.form-control{resize:vertical;min-height:72px;line-height:1.5}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 
-/* ── NOTIFICATIONS PANEL ── */
-.notif-panel{
-  position:fixed;top:60px;right:0;width:340px;height:calc(100vh - 60px);
-  background:var(--navy-mid);border-left:1px solid var(--border);
-  z-index:300;transform:translateX(100%);transition:transform .3s;
-  display:flex;flex-direction:column;
-}
-.notif-panel.open{transform:translateX(0)}
-.notif-header{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.notif-header h3{font-family:'Montserrat',sans-serif;font-size:15px;font-weight:700}
-.notif-close{background:none;border:none;color:var(--gray);cursor:pointer;font-size:18px;padding:4px}
-.notif-list{flex:1;overflow-y:auto;padding:16px}
-.notif-item{background:var(--navy);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}
-.notif-item.unread{border-color:rgba(58,167,109,.25);background:var(--green-dim)}
-.ni-title{font-size:13px;font-weight:500;margin-bottom:3px}
-.ni-body{font-size:12px;color:var(--gray);line-height:1.5}
-.ni-time{font-size:11px;color:var(--gray);margin-top:6px}
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(7,16,30,.88);backdrop-filter:blur(10px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:28px;width:100%;max-width:540px;position:relative;max-height:88vh;overflow-y:auto;animation:modalIn .2s ease;box-shadow:var(--shadow-lg)}
+@keyframes modalIn{from{opacity:0;transform:scale(.97) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-title{font-family:'Montserrat',sans-serif;font-size:17px;font-weight:800;color:var(--white);margin-bottom:4px;letter-spacing:-.02em}
+.modal-subtitle{font-size:12.5px;color:var(--text-low);margin-bottom:20px}
+.modal-close{position:absolute;top:14px;right:14px;background:var(--bg3);border:1px solid var(--border);color:var(--text-low);width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s}
+.modal-close:hover{background:var(--bg4);color:var(--white)}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+.modal-success{text-align:center;padding:12px 0;display:none}
+.modal-success-icon{font-size:44px;margin-bottom:12px}
 
-/* ── PROFILE ── */
-.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.profile-section{background:var(--navy-mid);border:1px solid var(--border);border-radius:14px;padding:22px}
-.ps-title{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;margin-bottom:16px;color:var(--gray)}
-.profile-field{margin-bottom:14px}
-.pf-label{font-size:12px;color:var(--gray);margin-bottom:5px}
-.pf-value{font-size:14px;font-weight:500}
-.pf-input{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--white);padding:9px 12px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none}
-.pf-input:focus{border-color:var(--green)}
+/* Client detail panels */
+.detail-stat{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:13px;text-align:center}
+.ds-label{font-size:10px;color:var(--text-low);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.ds-value{font-family:'Montserrat',sans-serif;font-size:18px;font-weight:800;color:var(--white)}
 
-/* ── OVERLAY ── */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:none}
-.overlay.show{display:block}
+/* Toggles */
+.toggle-track{width:36px;height:20px;background:var(--bg4);border-radius:10px;border:1px solid var(--border);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.toggle-track.on{background:var(--teal);border-color:var(--teal)}
+.toggle-thumb{position:absolute;top:2px;left:2px;width:14px;height:14px;background:rgba(255,255,255,.5);border-radius:50%;transition:all .2s}
+.toggle-track.on .toggle-thumb{left:18px;background:var(--bg)}
 
-/* ── TOAST ── */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--navy-light);border:1px solid var(--green);color:var(--white);padding:10px 20px;border-radius:9px;font-size:14px;font-weight:500;z-index:9999;transition:transform .3s;pointer-events:none;white-space:nowrap}
+/* Toast */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--bg3);border:1px solid var(--teal);color:var(--white);padding:10px 20px;border-radius:9px;font-size:13px;font-weight:500;z-index:9999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none;white-space:nowrap;box-shadow:var(--shadow)}
 .toast.show{transform:translateX(-50%) translateY(0)}
 
-/* ── RESPONSIVE ── */
-@media(max-width:900px){
-  .sidebar{display:none}
-  .stats-grid{grid-template-columns:1fr 1fr}
-  .two-col,.profile-grid{grid-template-columns:1fr}
-  .three-col{grid-template-columns:1fr 1fr}
+/* Responsive */
+@media(max-width:960px){
+  .sidebar{width:52px}
+  .sb-item span:not(.sb-ico){display:none}
+  .sb-group-label,.sb-footer{display:none}
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .grid-2,.grid-2-3,.grid-1-2{grid-template-columns:1fr}
+  .grid-3{grid-template-columns:1fr 1fr}
 }
-@media(max-width:580px){
-  .stats-grid,.three-col{grid-template-columns:1fr}
-  .main{padding:16px}
+@media(max-width:640px){
+  .grid-3{grid-template-columns:1fr}
+  .kpi-grid{grid-template-columns:1fr}
+  .tb-search{display:none}
+  .page{padding:14px}
 }
 </style>
 </head>
 <body>
-
-<!-- WIREFRAME NOTICE -->
-
-<div style="background:#080f18;border-bottom:1px solid rgba(255,255,255,0.07);padding:7px 28px;display:flex;align-items:center;justify-content:space-between">
-  <a href="index.html" style="font-size:12px;color:#8895A7;text-decoration:none;display:inline-flex;align-items:center;gap:6px" onmouseover="this.style.color='#3AA76D'" onmouseout="this.style.color='#8895A7'">← Voltar ao website</a>
-  <span style="font-size:11px;color:#4a5a6a;letter-spacing:.06em">NIVELZERO · App Futura</span>
-</div>
-
-<div class="wf-notice">
-  🎨 <strong>WIREFRAME</strong> — Dashboard Cliente · App NIVELZERO (versão futura) · Dados de demonstração
-</div>
-
-<!-- TOP BAR -->
-<div class="topbar">
-  <div class="topbar-logo">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="28" height="28" style="flex-shrink:0;display:block">
-      <rect width="200" height="200" rx="36" fill="#0D1B2A"/>
-      <rect x="16" y="16" width="168" height="168" rx="6" fill="none" stroke="#3AA76D" stroke-width="22"/>
-      <rect x="47" y="44" width="20" height="112" fill="#3AA76D"/>
-      <rect x="133" y="44" width="20" height="112" fill="#3AA76D"/>
-      <polygon points="47,44 73,44 153,156 127,156" fill="#3AA76D"/>
-      <polygon points="47,156 47,102 90,156" fill="#0D1B2A"/>
-    </svg>
-    NIVEL<span>ZERO</span>
-  </div>
-  <div class="topbar-right">
-    <div class="notif-btn" onclick="toggleNotifs()">
-      🔔<div class="notif-dot"></div>
-    </div>
-    <div class="user-pill" onclick="goPage('profile')">
-      <div class="user-avatar">MC</div>
-      <span class="user-name">MozaCargo Lda</span>
-    </div>
-  </div>
-</div>
-
 <div class="shell">
-  <!-- SIDEBAR -->
-  <nav class="sidebar">
-    <div class="sidebar-section">Menu</div>
-    <div class="nav-item active" onclick="goPage('overview',this)" role="button" tabindex="0"><span class="ni">🏠</span> Visão Geral</div>
-    <div class="nav-item" onclick="goPage('taxes',this)"><span class="ni">🧾</span> Fiscal <span class="nav-badge">2</span></div>
-    <div class="nav-item" onclick="goPage('docs',this)"><span class="ni">📁</span> Documentos</div>
-    <div class="nav-item" onclick="goPage('requests',this)"><span class="ni">📋</span> Pedidos</div>
-    <div class="nav-item" onclick="goPage('profile',this)"><span class="ni">⚙️</span> Perfil</div>
 
-    <div class="sidebar-footer">
-      <div class="pkg-card">
-        <div class="pkg-card-label">Pacote Ativo</div>
-        <div class="pkg-card-name">Growth</div>
-        <div class="pkg-card-next">Renovação: 01 Mai 2025</div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- MAIN -->
-  <main class="main">
-
-    <!-- ── OVERVIEW ── -->
-    <div class="page active" id="page-overview">
-      <div class="page-header">
-        <div>
-          <div class="page-title">Bom dia, MozaCargo! 👋</div>
-          <div class="page-sub">Aqui está o resumo da sua situação financeira e fiscal.</div>
-        </div>
-        <button class="action-btn" onclick="showToast('📋 Pedido aberto — escolha o serviço desejado.')">+ Pedir Serviço</button>
-      </div>
-
-      <div class="stats-grid">
-        <div class="sc" style="--sc-glow:rgba(58,167,109,.08)">
-          <div class="sc-icon">📊</div>
-          <div class="sc-label">Conformidade Fiscal</div>
-          <div class="sc-value" style="color:var(--green)">98%</div>
-          <div class="sc-delta delta-up">▲ +2% vs mês anterior</div>
-        </div>
-        <div class="sc" style="--sc-glow:rgba(224,85,85,.06)">
-          <div class="sc-icon">⏰</div>
-          <div class="sc-label">Prazos em Aberto</div>
-          <div class="sc-value" style="color:var(--amber)">3</div>
-          <div class="sc-delta delta-neutral">2 urgentes este mês</div>
-        </div>
-        <div class="sc" style="--sc-glow:rgba(74,144,217,.06)">
-          <div class="sc-icon">📁</div>
-          <div class="sc-label">Documentos</div>
-          <div class="sc-value">24</div>
-          <div class="sc-delta delta-up">▲ 3 novos este mês</div>
-        </div>
-        <div class="sc" style="--sc-glow:rgba(58,167,109,.06)">
-          <div class="sc-icon">✅</div>
-          <div class="sc-label">Pedidos Ativos</div>
-          <div class="sc-value">2</div>
-          <div class="sc-delta delta-neutral">Em processamento</div>
-        </div>
-      </div>
-
-      <div class="two-col">
-        <!-- Deadlines -->
-        <div class="card">
-          <div class="card-title">Prazos Fiscais <a href="#" onclick="goPage('taxes')">Ver todos →</a></div>
-          <div class="deadline-list">
-            <div class="deadline-item">
-              <div class="dl-dot dl-red"></div>
-              <div class="dl-info">
-                <div class="dl-title">Submissão IVA – Março 2025</div>
-                <div class="dl-date">Prazo: 20 Abril 2025 · AT</div>
-              </div>
-              <span class="dl-badge dl-urgent">Urgente</span>
-            </div>
-            <div class="deadline-item">
-              <div class="dl-dot dl-amber"></div>
-              <div class="dl-info">
-                <div class="dl-title">IRPC – Declaração Anual</div>
-                <div class="dl-date">Prazo: 30 Abril 2025 · AT</div>
-              </div>
-              <span class="dl-badge dl-soon">Em breve</span>
-            </div>
-            <div class="deadline-item">
-              <div class="dl-dot dl-green"></div>
-              <div class="dl-info">
-                <div class="dl-title">Submissão IVA – Abril 2025</div>
-                <div class="dl-date">Prazo: 20 Maio 2025 · AT</div>
-              </div>
-              <span class="dl-badge dl-ok">Em dia</span>
-            </div>
-            <div class="deadline-item">
-              <div class="dl-dot dl-green"></div>
-              <div class="dl-info">
-                <div class="dl-title">SAF-T – Q1 2025</div>
-                <div class="dl-date">Prazo: 31 Maio 2025 · AT</div>
-              </div>
-              <span class="dl-badge dl-ok">Em dia</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Activity -->
-        <div class="card">
-          <div class="card-title">Atividade Recente</div>
-          <div class="activity-list">
-            <div class="activity-item">
-              <div class="ai-icon ai-green">📄</div>
-              <div>
-                <div class="ai-text">Balancete de Março carregado pelo consultor</div>
-                <div class="ai-time">Hoje, 09:42</div>
-              </div>
-            </div>
-            <div class="activity-item">
-              <div class="ai-icon ai-amber">🧾</div>
-              <div>
-                <div class="ai-text">Lembrete: IVA de Março vence em 5 dias</div>
-                <div class="ai-time">Ontem, 08:00</div>
-              </div>
-            </div>
-            <div class="activity-item">
-              <div class="ai-icon ai-green">✅</div>
-              <div>
-                <div class="ai-text">Submissão ISPC Fevereiro concluída com sucesso</div>
-                <div class="ai-time">14 Abr, 14:20</div>
-              </div>
-            </div>
-            <div class="activity-item">
-              <div class="ai-icon ai-blue">📋</div>
-              <div>
-                <div class="ai-text">Pedido de Diagnóstico Financeiro recebido</div>
-                <div class="ai-time">12 Abr, 10:05</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Services + Chart -->
-      <div class="two-col">
-        <div class="card">
-          <div class="card-title">Serviços Ativos</div>
-          <div class="service-list">
-            <div class="service-item">
-              <div class="si-left"><div class="si-icon">📒</div><div><div class="si-name">Contabilidade Mensal</div><div class="si-type">Pacote Growth · Recorrente</div></div></div>
-              <span class="si-status status-active">Ativo</span>
-            </div>
-            <div class="service-item">
-              <div class="si-left"><div class="si-icon">🧾</div><div><div class="si-name">Gestão Fiscal (IVA, IRPC)</div><div class="si-type">Pacote Growth · Recorrente</div></div></div>
-              <span class="si-status status-active">Ativo</span>
-            </div>
-            <div class="service-item">
-              <div class="si-left"><div class="si-icon">📊</div><div><div class="si-name">Diagnóstico Financeiro</div><div class="si-type">Serviço avulso · Em revisão</div></div></div>
-              <span class="si-status status-review">Em Revisão</span>
-            </div>
-            <div class="service-item">
-              <div class="si-left"><div class="si-icon">💻</div><div><div class="si-name">Implementação SAF-T</div><div class="si-type">Serviço avulso · Pendente</div></div></div>
-              <span class="si-status status-pending">Pendente</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Conformidade – Últimos 6 meses</div>
-          <div class="mini-chart">
-            <div class="bar bar-dim" style="height:70%" data-tip="Nov: 90%"></div>
-            <div class="bar bar-dim" style="height:75%" data-tip="Dez: 92%"></div>
-            <div class="bar bar-dim" style="height:80%" data-tip="Jan: 94%"></div>
-            <div class="bar bar-dim" style="height:85%" data-tip="Fev: 96%"></div>
-            <div class="bar bar-dim" style="height:90%" data-tip="Mar: 97%"></div>
-            <div class="bar bar-green" style="height:98%" data-tip="Abr: 98%"></div>
-          </div>
-          <div class="chart-labels">
-            <span class="chart-label">Nov</span><span class="chart-label">Dez</span>
-            <span class="chart-label">Jan</span><span class="chart-label">Fev</span>
-            <span class="chart-label">Mar</span><span class="chart-label">Abr</span>
-          </div>
-          <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px">
-            <span style="color:var(--gray)">Média do período</span>
-            <span style="color:var(--green);font-weight:700">94.5%</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── TAXES ── -->
-    <div class="page" id="page-taxes">
-      <div class="page-header">
-        <div><div class="page-title">Gestão Fiscal</div><div class="page-sub">Prazos, submissões e estado das obrigações fiscais.</div></div>
-        <button class="action-btn outline" onclick="showToast('📧 Mensagem enviada ao consultor NIVELZERO!')">Contactar Consultor</button>
-      </div>
-      <div class="three-col">
-        <div class="sc"><div class="sc-icon">✅</div><div class="sc-label">Submetidos YTD</div><div class="sc-value" style="color:var(--green)">8</div><div class="sc-delta delta-neutral">Jan–Abr 2025</div></div>
-        <div class="sc"><div class="sc-icon">⚠️</div><div class="sc-label">Urgentes</div><div class="sc-value" style="color:var(--red)">2</div><div class="sc-delta delta-down">Ação necessária</div></div>
-        <div class="sc"><div class="sc-icon">📅</div><div class="sc-label">Próximo Prazo</div><div class="sc-value" style="font-size:18px">20 Abr</div><div class="sc-delta delta-neutral">IVA Março</div></div>
-      </div>
-      <div class="card">
-        <div class="card-title">Calendário Fiscal 2025</div>
-        <div class="deadline-list">
-          <div class="deadline-item"><div class="dl-dot dl-red"></div><div class="dl-info"><div class="dl-title">IVA – Março 2025</div><div class="dl-date">Prazo: 20/04/2025 · Multa até 5.000 MZN</div></div><span class="dl-badge dl-urgent">Urgente</span></div>
-          <div class="deadline-item"><div class="dl-dot dl-amber"></div><div class="dl-info"><div class="dl-title">IRPC – Declaração Anual 2024</div><div class="dl-date">Prazo: 30/04/2025 · Modelo 22</div></div><span class="dl-badge dl-soon">10 dias</span></div>
-          <div class="deadline-item"><div class="dl-dot dl-green"></div><div class="dl-info"><div class="dl-title">IVA – Abril 2025</div><div class="dl-date">Prazo: 20/05/2025</div></div><span class="dl-badge dl-ok">30 dias</span></div>
-          <div class="deadline-item"><div class="dl-dot dl-green"></div><div class="dl-info"><div class="dl-title">SAF-T – Q1 2025</div><div class="dl-date">Prazo: 31/05/2025</div></div><span class="dl-badge dl-ok">40 dias</span></div>
-          <div class="deadline-item"><div class="dl-dot dl-green"></div><div class="dl-info"><div class="dl-title">ISPC – 2º Trimestre</div><div class="dl-date">Prazo: 30/06/2025</div></div><span class="dl-badge dl-ok">70 dias</span></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── DOCUMENTS ── -->
-    <div class="page" id="page-docs">
-      <div class="page-header">
-        <div><div class="page-title">Documentos</div><div class="page-sub">Arquivo digital dos seus documentos financeiros e fiscais.</div></div>
-        <button class="action-btn" onclick="showToast('📎 Selecione o ficheiro para carregar.')">+ Carregar Documento</button>
-      </div>
-      <div class="card" style="margin-bottom:20px">
-        <div class="card-title">Carregar Ficheiro</div>
-        <div class="upload-zone" onclick="showToast('📎 Selecione o ficheiro...')">
-          <div class="uz-icon">📎</div>
-          <p>Arraste ficheiros aqui ou <span>clique para selecionar</span></p>
-          <p style="margin-top:6px;font-size:11px">PDF, Excel, Word · Máx. 10MB por ficheiro</p>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-title">Documentos Recentes <a href="#">Ver arquivo →</a></div>
-        <div class="doc-grid">
-          <div class="doc-card" onclick="showToast('📄 A carregar documento...')"><div class="doc-icon">📊</div><div class="doc-name">Balancete Mar 2025</div><div class="doc-meta">NIVELZERO · 2.1 MB</div><span class="doc-badge doc-new">Novo</span></div>
-          <div class="doc-card" onclick="showToast('📄 A carregar documento...')"><div class="doc-icon">🧾</div><div class="doc-name">Decl. IVA Fev 2025</div><div class="doc-meta">Submetido AT · 340 KB</div><span class="doc-badge doc-new">Novo</span></div>
-          <div class="doc-card" onclick="showToast('📄 A carregar documento...')"><div class="doc-icon">📋</div><div class="doc-name">Relatório Anual 2024</div><div class="doc-meta">NIVELZERO · 5.8 MB</div><span class="doc-badge doc-old">Jan 2025</span></div>
-          <div class="doc-card" onclick="showToast('📄 A carregar documento...')"><div class="doc-icon">📈</div><div class="doc-name">Diag. Financeiro Q4</div><div class="doc-meta">NIVELZERO · 1.2 MB</div><span class="doc-badge doc-old">Dez 2024</span></div>
-          <div class="doc-card" onclick="showToast('📄 A carregar documento...')"><div class="doc-icon">🔍</div><div class="doc-name">Auditoria Interna 2024</div><div class="doc-meta">NIVELZERO · 3.4 MB</div><span class="doc-badge doc-old">Nov 2024</span></div>
-          <div class="doc-card" onclick="showToast('📄 A carregar documento...')"><div class="doc-icon">⚖️</div><div class="doc-name">Contrato de Serviços</div><div class="doc-meta">Assinado · 890 KB</div><span class="doc-badge doc-old">Jan 2024</span></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── REQUESTS ── -->
-    <div class="page" id="page-requests">
-      <div class="page-header">
-        <div><div class="page-title">Pedidos de Serviço</div><div class="page-sub">Acompanhe o estado dos seus pedidos em tempo real.</div></div>
-        <button class="action-btn" onclick="showToast('📋 Formulário de novo pedido — em breve disponível.')">+ Novo Pedido</button>
-      </div>
-      <div class="request-list">
-        <div class="req-item">
-          <div class="req-step done">✓</div>
-          <div class="req-info">
-            <div class="req-title">Diagnóstico Financeiro Q1 2025</div>
-            <div class="req-desc">Em revisão pelo consultor · Solicitado: 12 Abr 2025</div>
-            <div class="req-progress" style="margin-top:10px">
-              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gray);margin-bottom:5px"><span>Progresso</span><span style="color:var(--amber)">75%</span></div>
-              <div class="progress-bar"><div class="progress-fill" style="width:75%"></div></div>
-              <div style="font-size:11px;color:var(--amber);margin-top:5px">⏳ Em revisão — entrega prevista: 25 Abr</div>
-            </div>
-          </div>
-        </div>
-        <div class="req-item">
-          <div class="req-step active">2</div>
-          <div class="req-info">
-            <div class="req-title">Implementação SAF-T</div>
-            <div class="req-desc">Aguarda documentação · Solicitado: 8 Abr 2025</div>
-            <div class="req-progress" style="margin-top:10px">
-              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gray);margin-bottom:5px"><span>Progresso</span><span style="color:var(--blue)">30%</span></div>
-              <div class="progress-bar"><div class="progress-fill" style="width:30%;background:var(--blue)"></div></div>
-              <div style="font-size:11px;color:var(--blue);margin-top:5px">📋 Ação necessária — envie os ficheiros de exportação</div>
-            </div>
-          </div>
-        </div>
-        <div class="req-item" style="opacity:.6">
-          <div class="req-step done" style="opacity:.5">✓</div>
-          <div class="req-info">
-            <div class="req-title">Saneamento Contabilístico 2023</div>
-            <div class="req-desc">Concluído · Entregue: 15 Mar 2025</div>
-            <div class="req-progress" style="margin-top:10px">
-              <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
-              <div style="font-size:11px;color:var(--green);margin-top:5px">✅ Concluído — relatório disponível em Documentos</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── PROFILE ── -->
-    <div class="page" id="page-profile">
-      <div class="page-header">
-        <div><div class="page-title">Perfil da Empresa</div><div class="page-sub">Informações e preferências da sua conta.</div></div>
-        <button class="action-btn" onclick="showToast('✅ Alterações guardadas com sucesso!')">Guardar Alterações</button>
-      </div>
-      <div class="profile-grid">
-        <div class="profile-section">
-          <div class="ps-title">DADOS DA EMPRESA</div>
-          <div class="profile-field"><div class="pf-label">Nome da Empresa</div><input class="pf-input" value="MozaCargo Lda"></div>
-          <div class="profile-field"><div class="pf-label">NUIT</div><input class="pf-input" value="400 123 456"></div>
-          <div class="profile-field"><div class="pf-label">Setor</div><input class="pf-input" value="Transportes e Logística"></div>
-          <div class="profile-field"><div class="pf-label">Localização</div><input class="pf-input" value="Beluluane, Matola"></div>
-        </div>
-        <div class="profile-section">
-          <div class="ps-title">CONTACTOS</div>
-          <div class="profile-field"><div class="pf-label">Email</div><input class="pf-input" value="geral@mozacargo.co.mz" type="email"></div>
-          <div class="profile-field"><div class="pf-label">Telefone / WhatsApp</div><input class="pf-input" value="+258 84 XXX XXXX" type="tel"></div>
-          <div class="profile-field"><div class="pf-label">Responsável</div><input class="pf-input" value="Manuel Cossa"></div>
-        </div>
-        <div class="profile-section">
-          <div class="ps-title">PACOTE ATIVO</div>
-          <div class="profile-field"><div class="pf-label">Pacote</div><div class="pf-value" style="color:var(--green);font-family:'Montserrat',sans-serif;font-weight:700">Growth</div></div>
-          <div class="profile-field"><div class="pf-label">Valor Mensal</div><div class="pf-value">12.000 MZN / mês</div></div>
-          <div class="profile-field"><div class="pf-label">Renovação</div><div class="pf-value">01 Mai 2025</div></div>
-          <button class="action-btn outline" style="width:100%;justify-content:center;margin-top:8px" onclick="showToast('📦 Contacte a NIVELZERO para upgrade de pacote.')">Upgrade de Pacote</button>
-        </div>
-        <div class="profile-section">
-          <div class="ps-title">NOTIFICAÇÕES</div>
-          <div style="display:flex;flex-direction:column;gap:12px">
-            <div style="display:flex;justify-content:space-between;align-items:center;font-size:14px">
-              <span>Lembretes fiscais</span>
-              <div style="width:38px;height:22px;background:var(--green);border-radius:11px;cursor:pointer;position:relative"><div style="position:absolute;right:3px;top:3px;width:16px;height:16px;background:white;border-radius:50%"></div></div>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;font-size:14px">
-              <span>Novos documentos</span>
-              <div style="width:38px;height:22px;background:var(--green);border-radius:11px;cursor:pointer;position:relative"><div style="position:absolute;right:3px;top:3px;width:16px;height:16px;background:white;border-radius:50%"></div></div>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;font-size:14px">
-              <span>Atualizações de pedidos</span>
-              <div style="width:38px;height:22px;background:var(--navy-light);border-radius:11px;cursor:pointer;position:relative;border:1px solid var(--border)"><div style="position:absolute;left:3px;top:2px;width:16px;height:16px;background:var(--gray);border-radius:50%"></div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </main>
+<!-- DEMO BAR -->
+<div class="demo-bar">
+  <span>🎨 Demonstração NIVELZERO · Dados simulados</span>
+  <span>Simular como:</span>
+  <select class="demo-sel" id="role-select" onchange="switchRole(this.value)">
+    <option value="admin">👑 Administrador</option>
+    <option value="gestor">👨‍💼 Gestor</option>
+    <option value="tecnico">👩‍💻 Técnico</option>
+    <option value="viewer">👁️ Visualizador</option>
+  </select>
+  <a href="index.html" class="demo-back">← Voltar ao website</a>
 </div>
 
-<!-- NOTIFICATIONS PANEL -->
-<div class="overlay" id="overlay" onclick="closeNotifs()"></div>
-<div class="notif-panel" id="notif-panel">
-  <div class="notif-header">
-    <h3>Notificações</h3>
-    <button class="notif-close" onclick="closeNotifs()">✕</button>
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-logo">
+    <svg width="24" height="24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="64" height="64" rx="10" fill="#0D1B2E"/>
+      <rect x="8" y="8" width="20" height="20" rx="3" fill="white" opacity=".9"/>
+      <rect x="30" y="8" width="14" height="14" rx="2" fill="#12C2A8"/>
+      <rect x="46" y="8" width="10" height="10" rx="2" fill="#F5A623"/>
+    </svg>
+    <span class="tb-logo-text">NIVEL<span>ZERO</span></span>
   </div>
-  <div class="notif-list">
-    <div class="notif-item unread">
-      <div class="ni-title">⚠️ IVA Março vence em 5 dias</div>
-      <div class="ni-body">A submissão do IVA relativo a Março de 2025 tem prazo até 20 de Abril. O seu consultor já está a preparar a declaração.</div>
-      <div class="ni-time">Hoje, 08:00</div>
-    </div>
-    <div class="notif-item unread">
-      <div class="ni-title">📄 Novo documento disponível</div>
-      <div class="ni-body">O balancete de Março 2025 foi carregado pelo seu consultor e está disponível em Documentos.</div>
-      <div class="ni-time">Hoje, 09:42</div>
-    </div>
-    <div class="notif-item">
-      <div class="ni-title">✅ ISPC Fevereiro submetido</div>
-      <div class="ni-body">A declaração ISPC de Fevereiro foi submetida com sucesso à AT em 14 de Abril.</div>
-      <div class="ni-time">14 Abr, 14:20</div>
-    </div>
-    <div class="notif-item">
-      <div class="ni-title">📋 Pedido recebido</div>
-      <div class="ni-body">O seu pedido de Diagnóstico Financeiro foi recebido e está a ser processado.</div>
-      <div class="ni-time">12 Abr, 10:05</div>
+  <div class="tb-divider"></div>
+  <div class="tb-breadcrumb">Sistema de Gestão · <span id="page-title">Dashboard</span></div>
+  <div class="tb-right">
+    <div class="tb-search"><span>🔍</span><input type="text" placeholder="Pesquisar..." oninput="globalSearch(this.value)"></div>
+    <button class="icon-btn" onclick="toast('🔔 3 alertas: 2 pagamentos em atraso, 1 prazo fiscal')">
+      🔔<div class="notif-dot"></div>
+    </button>
+    <button class="icon-btn" onclick="toast('⚙️ Configurações')">⚙️</button>
+    <div class="tb-user">
+      <div class="avatar" id="tb-avatar" style="width:26px;height:26px;font-size:10px;background:var(--amber);color:var(--bg)">AD</div>
+      <span class="tb-uname" id="tb-username">Admin</span>
+      <span class="role-chip rc-admin" id="tb-role-chip">Admin</span>
     </div>
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<!-- MAIN AREA -->
+<div class="body-area">
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sb-group-label">Principal</div>
+  <div class="sb-item active" data-page="dashboard" onclick="navigate('dashboard',this)">
+    <span class="sb-ico">📊</span><span class="sb-label">Dashboard</span>
+  </div>
+  <div class="sb-item" data-page="clientes" onclick="navigate('clientes',this)">
+    <span class="sb-ico">🏢</span><span class="sb-label">Clientes</span>
+  </div>
+  <div class="sb-group-label">Financeiro</div>
+  <div class="sb-item" data-page="financeiro" id="nav-financeiro" onclick="navigate('financeiro',this)">
+    <span class="sb-ico">💰</span><span class="sb-label">Financeiro</span>
+    <span class="sb-count sb-c-amber">2</span>
+  </div>
+  <div class="sb-item" data-page="contratos" id="nav-contratos" onclick="navigate('contratos',this)">
+    <span class="sb-ico">📝</span><span class="sb-label">Contratos</span>
+  </div>
+  <div class="sb-group-label">Operações</div>
+  <div class="sb-item" data-page="servicos" onclick="navigate('servicos',this)">
+    <span class="sb-ico">🧩</span><span class="sb-label">Serviços</span>
+  </div>
+  <div class="sb-item" data-page="tarefas" onclick="navigate('tarefas',this)">
+    <span class="sb-ico">✅</span><span class="sb-label">Tarefas</span>
+    <span class="sb-count sb-c-red" id="tasks-count">5</span>
+  </div>
+  <div class="sb-item" data-page="documentos" onclick="navigate('documentos',this)">
+    <span class="sb-ico">📁</span><span class="sb-label">Documentos</span>
+  </div>
+  <div class="sb-group-label">Equipa</div>
+  <div class="sb-item" data-page="equipa" id="nav-equipa" onclick="navigate('equipa',this)">
+    <span class="sb-ico">👥</span><span class="sb-label">Equipa & Acessos</span>
+  </div>
+  <div class="sb-group-label">Fiscal</div>
+  <div class="sb-item" data-page="fiscal" onclick="navigate('fiscal',this)">
+    <span class="sb-ico">🧾</span><span class="sb-label">Calendário Fiscal</span>
+  </div>
+  <div class="sb-group-label">Análise</div>
+  <div class="sb-item" data-page="relatorios" id="nav-relatorios" onclick="navigate('relatorios',this)">
+    <span class="sb-ico">📈</span><span class="sb-label">Relatórios</span>
+  </div>
+  <div class="sb-footer">
+    <div class="sb-period">
+      <div class="sbp-label">Período activo</div>
+      <div class="sbp-val">Abril 2025</div>
+      <div class="sbp-sub">5 clientes · 23 tarefas</div>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     PAGES
+═══════════════════════════════════════ -->
+<div class="content" id="content">
+
+<!-- ══ DASHBOARD ══ -->
+<div class="page active" id="page-dashboard">
+  <div class="ph">
+    <div class="ph-left">
+      <h1>Bom dia, NIVELZERO 👋</h1>
+      <p>Visão geral do negócio — Abril 2025</p>
+    </div>
+    <div class="ph-actions">
+      <button class="btn" onclick="toast('📊 A exportar relatório...')">↓ Exportar</button>
+      <button class="btn primary" onclick="openModal('new-client')">+ Novo Cliente</button>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi" style="border-top:2px solid var(--teal)">
+      <div class="kpi-icon">💰</div>
+      <div class="kpi-label">Receita Mensal</div>
+      <div class="kpi-value" style="color:var(--teal)">95.500 <span style="font-size:14px;font-weight:400;color:var(--text-low)">MZN</span></div>
+      <div class="kpi-sub">Abril 2025</div>
+      <div class="kpi-delta delta-up">▲ +12% vs Março</div>
+    </div>
+    <div class="kpi" style="border-top:2px solid var(--red)">
+      <div class="kpi-icon">⚠️</div>
+      <div class="kpi-label">Em Atraso</div>
+      <div class="kpi-value" style="color:var(--red)">28.000 <span style="font-size:14px;font-weight:400;color:var(--text-low)">MZN</span></div>
+      <div class="kpi-sub">2 clientes · Acção necessária</div>
+      <div class="kpi-delta delta-dn">▼ Notificar urgente</div>
+    </div>
+    <div class="kpi" style="border-top:2px solid var(--blue)">
+      <div class="kpi-icon">🏢</div>
+      <div class="kpi-label">Clientes Activos</div>
+      <div class="kpi-value" style="color:var(--blue-lt)">5</div>
+      <div class="kpi-sub">3 mensais · 2 pontuais</div>
+      <div class="kpi-delta delta-up">+ 1 este mês</div>
+    </div>
+    <div class="kpi" style="border-top:2px solid var(--amber)">
+      <div class="kpi-icon">📋</div>
+      <div class="kpi-label">Tarefas em Aberto</div>
+      <div class="kpi-value" style="color:var(--amber)">23</div>
+      <div class="kpi-sub">5 urgentes · prazo médio: 4d</div>
+      <div class="kpi-delta delta-neu">2 em atraso</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <!-- Alerts -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🚨 Alertas</div>
+        <button class="btn sm" onclick="navigate('financeiro',document.querySelector('[data-page=financeiro]'))">Ver financeiro</button>
+      </div>
+      <div class="card-body">
+        <div class="alert-list">
+          <div class="alert-item al-red">
+            <div class="alert-icon">💸</div>
+            <div><div class="alert-title">Importações Africanas — Pagamento 12 dias em atraso</div><div class="alert-desc">18.000 MZN · Março 2025 · Notificar imediatamente</div></div>
+            <button class="btn xs danger" style="margin-left:auto;flex-shrink:0" onclick="toast('📧 Lembrete enviado a Importações Africanas')">Notificar</button>
+          </div>
+          <div class="alert-item al-red">
+            <div class="alert-icon">🧾</div>
+            <div><div class="alert-title">IVA Março — Submissão vence amanhã</div><div class="alert-desc">MozaCargo Lda · Prazo: 30 Abril · AT</div></div>
+            <button class="btn xs" style="margin-left:auto;flex-shrink:0" onclick="navigate('fiscal',document.querySelector('[data-page=fiscal]'))">Ver</button>
+          </div>
+          <div class="alert-item al-amber">
+            <div class="alert-icon">📄</div>
+            <div><div class="alert-title">TechSol — Contrato a expirar em 15 dias</div><div class="alert-desc">Essential PME · 8.500 MZN/mês · Renovar</div></div>
+            <button class="btn xs" style="margin-left:auto;flex-shrink:0" onclick="toast('🔄 Email de renovação enviado')">Renovar</button>
+          </div>
+          <div class="alert-item al-blue">
+            <div class="alert-icon">📋</div>
+            <div><div class="alert-title">Modelos 22 e 22A — Prazo: 31 Maio</div><div class="alert-desc">5 clientes com IRPC anual pendente · Iniciar preparação</div></div>
+          </div>
+          <div class="alert-item al-amber">
+            <div class="alert-icon">⏳</div>
+            <div><div class="alert-title">Energia Verde — Pagamento Abril pendente</div><div class="alert-desc">26.000 MZN · Vence em 5 dias</div></div>
+            <button class="btn xs" style="margin-left:auto;flex-shrink:0" onclick="toast('💬 WhatsApp enviado a Energia Verde')">Lembrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Revenue chart -->
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">📊 Evolução da Receita</div><div class="card-subtitle">MZN por mês — 2025</div></div>
+      </div>
+      <div class="card-body">
+        <div class="bar-chart" id="rev-chart">
+          <div class="bar" style="height:58%;background:rgba(59,123,248,.35)" title="Jan: 72.000 MZN"></div>
+          <div class="bar" style="height:63%;background:rgba(59,123,248,.35)" title="Fev: 78.500 MZN"></div>
+          <div class="bar" style="height:68%;background:rgba(59,123,248,.35)" title="Mar: 85.000 MZN"></div>
+          <div class="bar" style="height:77%;background:var(--teal)" title="Abr: 95.500 MZN"></div>
+          <div class="bar" style="height:79%;background:rgba(18,194,168,.2)" title="Mai: ~98.000 MZN (previsão)"></div>
+          <div class="bar" style="height:82%;background:rgba(18,194,168,.12)" title="Jun: ~102.000 MZN (previsão)"></div>
+        </div>
+        <div class="bar-x">
+          <span class="bar-xl">Jan</span><span class="bar-xl">Fev</span><span class="bar-xl">Mar</span>
+          <span class="bar-xl" style="color:var(--teal);font-weight:700">Abr</span>
+          <span class="bar-xl" style="opacity:.5">Mai</span><span class="bar-xl" style="opacity:.5">Jun</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+          <div><div style="font-size:10.5px;color:var(--text-low)">YTD 2025</div><div style="font-size:15px;font-weight:800;color:var(--teal);font-family:'Montserrat',sans-serif;margin-top:2px">330.500 MZN</div></div>
+          <div><div style="font-size:10.5px;color:var(--text-low)">Previsão Maio</div><div style="font-size:15px;font-weight:800;font-family:'Montserrat',sans-serif;margin-top:2px">~98.000 MZN</div></div>
+          <div><div style="font-size:10.5px;color:var(--text-low)">Em atraso</div><div style="font-size:15px;font-weight:800;color:var(--red);font-family:'Montserrat',sans-serif;margin-top:2px">28.000 MZN</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client summary table -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">🏢 Clientes — Resumo Operacional</div>
+      <button class="btn sm" onclick="navigate('clientes',document.querySelector('[data-page=clientes]'))">Ver todos →</button>
+    </div>
+    <div class="card-body no-pad">
+      <div class="table-wrap">
+        <table id="dash-table">
+          <thead><tr><th>Empresa</th><th>Pacote</th><th>Serviços</th><th>Pagamento</th><th>Conformidade</th><th>Responsável</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity -->
+  <div class="card">
+    <div class="card-header"><div class="card-title">🕐 Actividade Recente</div></div>
+    <div class="card-body">
+      <div class="activity">
+        <div class="activity-item"><div class="act-icon" style="background:var(--teal-dim)">📄</div><div><div class="act-text">Balancete Março carregado para <strong>MozaCargo Lda</strong></div><div class="act-time">Hoje, 09:42 · Ana Silva</div></div></div>
+        <div class="activity-item"><div class="act-icon" style="background:var(--red-dim)">💸</div><div><div class="act-text">Pagamento em atraso detectado — <strong>Importações Africanas Lda</strong></div><div class="act-time">Hoje, 08:15 · Sistema</div></div></div>
+        <div class="activity-item"><div class="act-icon" style="background:var(--blue-dim)">✅</div><div><div class="act-text">IVA Fevereiro submetido com sucesso — <strong>Energia Verde Sarl</strong></div><div class="act-time">Ontem, 16:30 · João Machava</div></div></div>
+        <div class="activity-item"><div class="act-icon" style="background:var(--teal-dim)">🏢</div><div><div class="act-text">Novo cliente adicionado — <strong>TechSol Mozambique</strong></div><div class="act-time">14 Abr, 10:05 · Admin</div></div></div>
+        <div class="activity-item"><div class="act-icon" style="background:var(--amber-dim)">📋</div><div><div class="act-text">Modelo 20H entregue — <strong>Construções Beira Mar Lda</strong></div><div class="act-time">12 Abr, 14:20 · Maria Tembe</div></div></div>
+        <div class="activity-item"><div class="act-icon" style="background:var(--purple-dim)">🎓</div><div><div class="act-text">Formação Fiscalidade concluída — <strong>2 membros</strong> da equipa</div><div class="act-time">10 Abr, 11:00 · Admin</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CLIENTES ══ -->
+<div class="page" id="page-clientes">
+  <div class="ph">
+    <div class="ph-left"><h1>Clientes</h1><p>Gestão completa de clientes, serviços e contratos.</p></div>
+    <div class="ph-actions">
+      <input type="text" placeholder="🔍 Pesquisar cliente..." oninput="filterClients(this.value)" style="background:var(--bg3);border:1px solid var(--border);color:var(--white);padding:7px 13px;border-radius:8px;font-family:'Inter',sans-serif;font-size:12.5px;outline:none;width:200px">
+      <button class="btn primary" onclick="openModal('new-client')">+ Novo Cliente</button>
+    </div>
+  </div>
+
+  <!-- Stats row -->
+  <div class="grid-3" style="margin-bottom:16px">
+    <div class="rev-card"><div class="rc-label">Clientes Activos</div><div class="rc-value" style="color:var(--teal)">5</div><div class="rc-sub">4 com contrato activo</div></div>
+    <div class="rev-card"><div class="rc-label">Receita Total / Mês</div><div class="rc-value" style="color:var(--white)">95.500 MZN</div><div class="rc-sub">Baseado em contratos vigentes</div></div>
+    <div class="rev-card"><div class="rc-label">Clientes em Atraso</div><div class="rc-value" style="color:var(--red)">2</div><div class="rc-sub">28.000 MZN em aberto</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Todos os Clientes <span style="font-size:11px;font-weight:400;color:var(--text-low);margin-left:6px">(5 registados)</span></div>
+      <div style="display:flex;gap:8px">
+        <select onchange="filterClientStatus(this.value)" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:7px;font-size:12px;outline:none">
+          <option value="">Todos os estados</option>
+          <option value="active">Pago</option>
+          <option value="pending">Pendente</option>
+          <option value="late">Em atraso</option>
+        </select>
+      </div>
+    </div>
+    <div class="card-body no-pad">
+      <div class="table-wrap">
+        <table id="clients-table">
+          <thead><tr><th>Empresa</th><th>Sector</th><th>Pacote</th><th>Honorário/mês</th><th>Estado pgto.</th><th>Conformidade</th><th>Responsável</th><th>Acções</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FINANCEIRO ══ -->
+<div class="page" id="page-financeiro">
+  <div class="ph">
+    <div class="ph-left"><h1>Financeiro</h1><p>Controlo de receitas, pagamentos e previsões.</p></div>
+    <div class="ph-actions">
+      <button class="btn" onclick="toast('📊 A exportar PDF financeiro...')">↓ PDF</button>
+      <button class="btn primary" onclick="openModal('register-payment')">+ Registar Pagamento</button>
+    </div>
+  </div>
+
+  <!-- Revenue metrics -->
+  <div class="grid-3" style="margin-bottom:16px">
+    <div class="rev-card" style="border-top:2px solid var(--teal)"><div class="rc-label">Receita Mensal</div><div class="rc-value" style="color:var(--teal)">95.500 MZN</div><div class="rc-sub">Abril 2025 · 5 clientes</div></div>
+    <div class="rev-card" style="border-top:2px solid var(--green)"><div class="rc-label">Recebido</div><div class="rc-value" style="color:var(--green)">67.500 MZN</div><div class="rc-sub">3 clientes pagos · 70.7%</div></div>
+    <div class="rev-card" style="border-top:2px solid var(--red)"><div class="rc-label">Em Atraso</div><div class="rc-value" style="color:var(--red)">28.000 MZN</div><div class="rc-sub">2 clientes · Acção necessária</div></div>
+  </div>
+
+  <div class="grid-2">
+    <!-- Payment table -->
+    <div class="card">
+      <div class="card-header"><div class="card-title">💳 Estado de Pagamentos — Abril 2025</div></div>
+      <div class="card-body no-pad">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Cliente</th><th>Valor</th><th>Vencimento</th><th>Estado</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#1B4FBF">MC</div><span class="c-name">MozaCargo Lda</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">15.000 MZN</td><td>05 Abr</td><td><span class="badge b-active">Pago</span></td><td><button class="btn xs" onclick="toast('📄 Recibo gerado para MozaCargo')">Recibo</button></td></tr>
+              <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#1a3a4a">CB</div><span class="c-name">Construções Beira Mar</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">28.000 MZN</td><td>05 Abr</td><td><span class="badge b-active">Pago</span></td><td><button class="btn xs" onclick="toast('📄 Recibo gerado')">Recibo</button></td></tr>
+              <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#4a2070">TS</div><span class="c-name">TechSol Mozambique</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">8.500 MZN</td><td>05 Abr</td><td><span class="badge b-active">Pago</span></td><td><button class="btn xs" onclick="toast('📄 Recibo gerado')">Recibo</button></td></tr>
+              <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#7a3a00">IA</div><span class="c-name">Importações Africanas</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">18.000 MZN</td><td>05 Abr</td><td><span class="badge b-late">Atraso 12d</span></td><td><button class="btn xs danger" onclick="toast('📧 Notificação enviada a Importações Africanas')">Notificar</button></td></tr>
+              <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#0d4a2a">EV</div><span class="c-name">Energia Verde Sarl</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">26.000 MZN</td><td>05 Abr</td><td><span class="badge b-pending">Pendente</span></td><td><button class="btn xs" onclick="toast('💬 WhatsApp enviado a Energia Verde')">Lembrar</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <!-- Donut -->
+      <div class="card">
+        <div class="card-header"><div class="card-title">🥧 Receita por Serviço</div></div>
+        <div class="card-body">
+          <div class="donut-container">
+            <svg class="donut-svg" width="90" height="90" viewBox="0 0 90 90">
+              <circle cx="45" cy="45" r="32" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="13"/>
+              <circle cx="45" cy="45" r="32" fill="none" stroke="#12C2A8" stroke-width="13" stroke-dasharray="80 121" stroke-dashoffset="0" transform="rotate(-90 45 45)"/>
+              <circle cx="45" cy="45" r="32" fill="none" stroke="#3B7BF8" stroke-width="13" stroke-dasharray="60 141" stroke-dashoffset="-80" transform="rotate(-90 45 45)"/>
+              <circle cx="45" cy="45" r="32" fill="none" stroke="#F5A623" stroke-width="13" stroke-dasharray="30 171" stroke-dashoffset="-140" transform="rotate(-90 45 45)"/>
+              <circle cx="45" cy="45" r="32" fill="none" stroke="#9B72F8" stroke-width="13" stroke-dasharray="21 180" stroke-dashoffset="-170" transform="rotate(-90 45 45)"/>
+            </svg>
+            <div class="donut-legend">
+              <div class="dl-item"><div class="dl-dot" style="background:#12C2A8"></div><span class="dl-label">Contabilidade</span><span class="dl-value">40%<span class="dl-pct">38.2k</span></span></div>
+              <div class="dl-item"><div class="dl-dot" style="background:#3B7BF8"></div><span class="dl-label">Gestão Fiscal</span><span class="dl-value">30%<span class="dl-pct">28.7k</span></span></div>
+              <div class="dl-item"><div class="dl-dot" style="background:#F5A623"></div><span class="dl-label">Auditoria</span><span class="dl-value">16%<span class="dl-pct">15.3k</span></span></div>
+              <div class="dl-item"><div class="dl-dot" style="background:#9B72F8"></div><span class="dl-label">Outros</span><span class="dl-value">14%<span class="dl-pct">13.3k</span></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Forecast -->
+      <div class="card">
+        <div class="card-header"><div class="card-title">🔮 Previsão de Faturação</div></div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12.5px;color:var(--text)">Maio 2025</span><span style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:16px">~98.000 MZN</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12.5px;color:var(--text)">Junho 2025</span><span style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:rgba(255,255,255,.55)">~102.000 MZN</span></div>
+            <div style="padding-top:10px;border-top:1px solid var(--border)">
+              <div style="font-size:10.5px;color:var(--text-low);margin-bottom:4px">RECEITA ACUMULADA 2025</div>
+              <div style="font-family:'Montserrat',sans-serif;font-size:22px;font-weight:800;color:var(--teal)">330.500 MZN</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CONTRATOS ══ -->
+<div class="page" id="page-contratos">
+  <div class="ph">
+    <div class="ph-left"><h1>Contratos</h1><p>Contratos activos, tipos e condições de facturação.</p></div>
+    <div class="ph-actions">
+      <button class="btn primary" onclick="openModal('new-contract')">+ Novo Contrato</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">Contratos Activos</div></div>
+    <div class="card-body no-pad">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Cliente</th><th>Tipo</th><th>Valor</th><th>Início</th><th>Frequência</th><th>Próxima Cobrança</th><th>Estado</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#1B4FBF">MC</div><span class="c-name">MozaCargo Lda</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">28.000 MZN</td><td>Jan 2024</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-active">Activo</span></td><td><div class="actions"><button class="btn xs" onclick="toast('✏️ A editar contrato MozaCargo')">Editar</button></div></td></tr>
+            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#1a3a4a">CB</div><span class="c-name">Construções Beira Mar</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">15.000 MZN</td><td>Mar 2024</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-active">Activo</span></td><td><div class="actions"><button class="btn xs" onclick="toast('✏️ A editar contrato Beira Mar')">Editar</button></div></td></tr>
+            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#4a2070">TS</div><span class="c-name">TechSol Mozambique</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">8.500 MZN</td><td>Abr 2025</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-pending">A renovar</span></td><td><div class="actions"><button class="btn xs blue" onclick="toast('🔄 Renovação enviada a TechSol')">Renovar</button></div></td></tr>
+            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#7a3a00">IA</div><span class="c-name">Importações Africanas</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">18.000 MZN</td><td>Jun 2023</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-late">Em atraso</span></td><td><div class="actions"><button class="btn xs danger" onclick="toast('📧 Notif. enviada')">Notificar</button></div></td></tr>
+            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#0d4a2a">EV</div><span class="c-name">Energia Verde Sarl</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">26.000 MZN</td><td>Set 2023</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-pending">Pendente</span></td><td><div class="actions"><button class="btn xs" onclick="toast('💬 Lembrete enviado a Energia Verde')">Lembrar</button></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SERVIÇOS ══ -->
+<div class="page" id="page-servicos">
+  <div class="ph">
+    <div class="ph-left"><h1>Serviços</h1><p>Catálogo de serviços, preços e atribuições.</p></div>
+    <div class="ph-actions"><button class="btn primary" onclick="openModal('new-service')">+ Novo Serviço</button></div>
+  </div>
+  <div class="grid-3" id="services-grid"></div>
+</div>
+
+<!-- ══ TAREFAS ══ -->
+<div class="page" id="page-tarefas">
+  <div class="ph">
+    <div class="ph-left"><h1>Tarefas</h1><p>Controlo operacional por cliente e responsável.</p></div>
+    <div class="ph-actions">
+      <select onchange="filterTasks(this.value)" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:8px;font-size:12px;outline:none">
+        <option value="">Todos os estados</option>
+        <option value="pending">Pendente</option>
+        <option value="progress">Em progresso</option>
+        <option value="done">Concluído</option>
+        <option value="late">Em atraso</option>
+      </select>
+      <button class="btn primary" onclick="openModal('new-task')">+ Nova Tarefa</button>
+    </div>
+  </div>
+  <!-- Kanban-style counts -->
+  <div class="grid-3" style="margin-bottom:16px">
+    <div class="rev-card" style="border-left:3px solid var(--amber)"><div class="rc-label">Pendentes</div><div class="rc-value" style="color:var(--amber)">12</div><div class="rc-sub">Aguardam início</div></div>
+    <div class="rev-card" style="border-left:3px solid var(--blue)"><div class="rc-label">Em Progresso</div><div class="rc-value" style="color:var(--blue-lt)">8</div><div class="rc-sub">A decorrer agora</div></div>
+    <div class="rev-card" style="border-left:3px solid var(--green)"><div class="rc-label">Concluídas (Abr)</div><div class="rc-value" style="color:var(--green)">24</div><div class="rc-sub">Este mês</div></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">Todas as Tarefas</div></div>
+    <div class="card-body no-pad">
+      <div class="table-wrap">
+        <table id="tasks-table">
+          <thead><tr><th>Tarefa</th><th>Cliente</th><th>Prazo</th><th>Responsável</th><th>Prioridade</th><th>Estado</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DOCUMENTOS ══ -->
+<div class="page" id="page-documentos">
+  <div class="ph">
+    <div class="ph-left"><h1>Documentos</h1><p>Arquivo digital por cliente e tipo.</p></div>
+    <div class="ph-actions"><button class="btn primary" onclick="toast('📎 Seleccione ficheiro para carregar')">↑ Carregar</button></div>
+  </div>
+  <div class="grid-3" id="docs-grid"></div>
+</div>
+
+<!-- ══ EQUIPA ══ -->
+<div class="page" id="page-equipa">
+  <div class="ph">
+    <div class="ph-left"><h1>Equipa & Acessos</h1><p>Utilizadores, funções e níveis de permissão.</p></div>
+    <div class="ph-actions"><button class="btn primary" onclick="openModal('new-user')">+ Novo Utilizador</button></div>
+  </div>
+  <!-- Team table -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-header"><div class="card-title">Membros da Equipa</div></div>
+    <div class="card-body no-pad">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Utilizador</th><th>Nível de Acesso</th><th>Clientes Atribuídos</th><th>Tarefas Activas</th><th>Último Acesso</th><th></th></tr></thead>
+          <tbody id="team-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Permissions matrix -->
+  <div class="card">
+    <div class="card-header"><div class="card-title">🔐 Matriz de Permissões</div></div>
+    <div class="card-body no-pad">
+      <div class="table-wrap">
+        <table class="access-matrix">
+          <thead>
+            <tr>
+              <th>Permissão</th>
+              <th><span class="role-chip rc-admin">👑 Admin</span></th>
+              <th><span class="role-chip rc-gestor">👨‍💼 Gestor</span></th>
+              <th><span class="role-chip rc-tecnico">👩‍💻 Técnico</span></th>
+              <th><span class="role-chip rc-viewer">👁️ Viewer</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Ver dashboard e KPIs</td><td><span class="check-ok">✓</span></td><td><span class="check-ok">✓</span></td><td><span class="check-ok">✓</span></td><td><span class="check-ok">✓</span></td></tr>
+            <tr><td>Ver e gerir clientes</td><td><span class="check-ok">✓</span></td><td><span class="check-ok">✓</span></td><td><span class="check-partial">Atribuídos</span></td><td><span class="check-no">✗</span></td></tr>
+            <tr><td>Ver dados financeiros</td><td><span class="check-ok">✓</span></td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td></tr>
+            <tr><td>Criar e gerir contratos</td><td><span class="check-ok">✓</span></td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td></tr>
+            <tr><td>Criar e concluir tarefas</td><td><span class="check-ok">✓</span></td><td><span class="check-ok">✓</span></td><td><span class="check-ok">✓</span></td><td><span class="check-no">✗</span></td></tr>
+            <tr><td>Carregar documentos</td><td><span class="check-ok">✓</span></td><td><span class="check-ok">✓</span></td><td><span class="check-ok">✓</span></td><td><span class="check-no">✗</span></td></tr>
+            <tr><td>Gerir utilizadores</td><td><span class="check-ok">✓</span></td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td></tr>
+            <tr><td>Exportar relatórios</td><td><span class="check-ok">✓</span></td><td><span class="check-ok">✓</span></td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td></tr>
+            <tr><td>Configurações do sistema</td><td><span class="check-ok">✓</span></td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FISCAL ══ -->
+<div class="page" id="page-fiscal">
+  <div class="ph">
+    <div class="ph-left"><h1>Calendário Fiscal</h1><p>Obrigações fiscais em Moçambique — 2025</p></div>
+  </div>
+  <!-- Calendar tabs -->
+  <div class="card">
+    <div class="card-header"><div class="card-title">📅 Obrigações por Mês</div></div>
+    <div class="card-body">
+      <div class="fiscal-tabs">
+        <button class="fiscal-tab active" onclick="showFiscal('rec',this)">Recorrentes</button>
+        <button class="fiscal-tab" onclick="showFiscal('jan',this)">Jan</button>
+        <button class="fiscal-tab" onclick="showFiscal('fev',this)">Fev</button>
+        <button class="fiscal-tab" onclick="showFiscal('mar',this)">Mar</button>
+        <button class="fiscal-tab" onclick="showFiscal('abr',this)">Abr</button>
+        <button class="fiscal-tab" onclick="showFiscal('mai',this)">Mai</button>
+        <button class="fiscal-tab" onclick="showFiscal('jun',this)">Jun</button>
+        <button class="fiscal-tab" onclick="showFiscal('jul',this)">Jul</button>
+        <button class="fiscal-tab" onclick="showFiscal('ago',this)">Ago</button>
+        <button class="fiscal-tab" onclick="showFiscal('set',this)">Set</button>
+        <button class="fiscal-tab" onclick="showFiscal('out',this)">Out</button>
+        <button class="fiscal-tab" onclick="showFiscal('nov',this)">Nov</button>
+        <button class="fiscal-tab" onclick="showFiscal('dez',this)">Dez</button>
+        <button class="fiscal-tab" onclick="showFiscal('anuais',this)">Anuais</button>
+      </div>
+      <div class="fiscal-pane active" id="fp-rec">
+        <table class="ft"><thead><tr><th>Prazo</th><th>Obrigação</th><th>Observação</th></tr></thead><tbody>
+          <tr><td><span class="fd fd-b">Dia 10</span></td><td>Entrega de receitas cobradas pelos Serviços Públicos</td><td>Mês anterior</td></tr>
+          <tr><td><span class="fd fd-a">Dia 20</span></td><td>IRPS retido na fonte</td><td>Mês anterior</td></tr>
+          <tr><td><span class="fd fd-a">Dia 20</span></td><td>IRPC retido na fonte</td><td>Mês anterior</td></tr>
+          <tr><td><span class="fd fd-r">Último dia</span></td><td>Pagamento do IVA</td><td>Regime normal: mês ant. · Simplificado: trimestre</td></tr>
+          <tr><td><span class="fd fd-b">Mensal</span></td><td>INSS — Contribuições à Segurança Social</td><td>Obrigatório</td></tr>
+          <tr><td><span class="fd fd-b">Contínuo</span></td><td>SAF-T / e-Factura — Compliance digital</td><td>Obrigações digitais em vigor</td></tr>
+          <tr><td><span class="fd fd-b">Conforme actividade</span></td><td>Licenças, alvarás e taxas municipais/sectoriais</td><td>Variam por sector</td></tr>
+        </tbody></table>
+      </div>
+      <div class="fiscal-pane" id="fp-jan"><table class="ft"><thead><tr><th>Prazo</th><th>Obrigação</th><th>Modelo/Ref.</th></tr></thead><tbody>
+        <tr><td><span class="fd fd-r">Último dia</span></td><td>ISPC</td><td>Trimestre anterior</td></tr>
+        <tr><td><span class="fd fd-a">Até 31 Mar</span></td><td>ISV — Imposto sobre Veículos</td><td>Exercício corrente</td></tr>
+        <tr><td><span class="fd fd-a">Até 31 Mar</span></td><td>Declaração anual IRPS — 1.ª categoria</td><td>Modelo 10 + Anexos</td></tr>
+        <tr><td><span class="fd fd-a">Até 31 Mar</span></td><td>Comunicação de retenções na fonte</td><td>Modelo 20H · Art. 44 CIRPS</td></tr>
+        <tr><td><span class="fd fd-a">Até 31 Mar</span></td><td>Retenções na fonte a não residentes</td><td>Modelo 20I · Art. 44 CIRPS</td></tr>
+        <tr><td><span class="fd fd-b">Até 30 Abr</span></td><td>Declaração anual IRPS — outras categorias</td><td>Modelo 10</td></tr>
+        <tr><td><span class="fd fd-r">Até 31 Mai</span></td><td>Pagamento final IRPS</td><td>Rendimentos ano anterior</td></tr>
+        <tr><td><span class="fd fd-r">Último dia útil Mai</span></td><td>Declaração anual IRPC + Pagamento final</td><td>Modelos 22 e 22A</td></tr>
+        <tr><td><span class="fd fd-g">Último dia útil Jun</span></td><td>Declaração anual contabilística e fiscal</td><td>Modelo 20 + Anexos</td></tr>
+      </tbody></table></div>
+      <div class="fiscal-pane" id="fp-fev"><table class="ft"><thead><tr><th>Prazo</th><th>Obrigação</th><th>Observação</th></tr></thead><tbody>
+        <tr><td><span class="fd fd-r">Último dia</span></td><td>ISPC</td><td>Trimestre anterior</td></tr>
+        <tr><td><span class="fd fd-a">Até 31 Mar</span></td><td>ISV + Modelo 10 + Modelos 20H/20I</td><td>Prazos anuais em curso</td></tr>
+        <tr><td><span class="fd fd-b">Até 30 Abr</span></td><td>Modelo 10 (outras categorias)</td><td>—</td></tr>
+        <tr><td><span class="fd fd-r">Até 31 Mai</span></td><td>IRPS final + IRPC final + Modelos 22/22A</td><td>—</td></tr>
+        <tr><td><span class="fd fd-g">Último dia útil Jun</span></td><td>Modelo 20 e Anexos</td><td>—</td></tr>
+      </tbody></table></div>
+      <div class="fiscal-pane" id="fp-mar"><table class="ft"><thead><tr><th>Prazo</th><th>Obrigação</th><th>Observação</th></tr></thead><tbody>
+        <tr><td><span class="fd fd-r">Último dia</span></td><td>ISV — último prazo</td><td>—</td></tr>
+        <tr><td><span class="fd fd-r">Último dia</span></td><td>Modelo 10 (1.ª categoria) — último prazo</td><td>—</td></tr>
+        <tr><td><span class="fd fd-r">Último dia</span></td><td>Modelos 20H e 20I — último prazo</td><td>—</td></tr>
+        <tr><td><span class="fd fd-b">Até 30 Abr</span></td><td>Modelo 10 (outras categorias)</td><td>—</td></tr>
+        <tr><td><span class="fd fd-r">Até 31 Mai</span></td><td>IRPS final + IRPC final + Modelos 22/22A</td><td>—</td></tr>
+        <tr><td><span class="fd fd-g">Último dia útil Jun</span></td><td>Modelo 20</td><td>—</td></tr>
+      </tbody></table></div>
+      <div class="fiscal-pane" id="fp-abr"><table class="ft"><thead><tr><th>Prazo</th><th>Obrigação</th><th>Observação</th></tr></thead><tbody>
+        <tr><td><span class="fd fd-r">Último dia</span></td><td>IVA — regime simplificado + ISPC</td><td>Trimestre anterior</td></tr>
+        <tr><td><span class="fd fd-a">Dia 30</span></td><td>Modelo 10 (outras categorias) — último prazo</td><td>—</td></tr>
+        <tr><td><span class="fd fd-r">Até 31 Mai</span></td><td>IRPS final + IRPC final + Modelos 22/22A</td><td>—</td></tr>
+        <tr><td><span class="fd fd-g">Último dia útil Jun</span></td><td>Modelo 20</td><td>—</td></tr>
+      </tbody></table></div>
+      <div class="fiscal-pane" id="fp-mai"><table class="ft"><thead><tr><th>Prazo</th><th>Obrigação</th><th>Modelo/Ref.</th></tr></thead><tbody>
+        <tr><td><span class="fd fd-r">Dia 31</span></td><td>Pagamento final IRPS — 1.ª categoria (trabalho dependente)</td><td>—</td></tr>
+        <tr><td><span class="fd fd-a">Fim do mês</span></td><td>1.ª prestação — Pagamento por Conta IRPC</td><td>Art. 27 CIRPC</td></tr>
+        <tr><td><span class="fd fd-r">Último dia útil</span></td><td>Declaração anual IRPC</td><td>Modelos 22 e 22A</td></tr>
+        <tr><td><span class="fd fd-r">Último dia útil</span></td><td>Pagamento final IRPC</td><td>—</td></tr>
+        <tr><td><span class="fd fd-g">Até último dia útil Jun</span></td><td>Modelo 20 e Anexos</td><td>—</td></tr>
+      </tbody></table></div>
+      <div class="fiscal-pane" id="fp-jun"><table class="ft"><thead><tr><th>Prazo</th><th>Obrigação</th><th>Referência</th></tr></thead><tbody>
+        <tr><td><span class="fd fd-a">Dia 20</span></td><td>1.ª prestação — Pagamento por Conta IRPS (2.ª cat.)</td><td>—</td></tr>
+        <tr><td><span class="fd fd-r">Último dia</span></td><td>1.ª prestação — Pagamento Especial por Conta IRPC</td><td>Ano anterior</td></tr>
+        <tr><td><span class="fd fd-g">Último dia útil</span></td><td>Modelo 20 e Anexos — último prazo</td><td>Modelo 20</td></tr>
+      </tbody></table></div>
+      <div class="fiscal-pane" id="fp-jul"><table class="ft"><thead><tr><th>Prazo</th><th>Obrigação</th><th>Referência</th></tr></thead><tbody>
+        <tr><td><span class="fd fd-r">Último dia</span></td><td>IVA — regime simplificado + ISPC</td><td>Trimestre anterior</td></tr>
+        <tr><td><span class="fd fd-a">Fim do mês</span></td><td>2.ª prestação — Pagamento por Conta IRPC</td><td>Art. 27 CIRPC</td></tr>
+      </tbody></table></div>
+      <div class="fiscal-pane" id="fp-ago"><table class="ft"><thead><tr><th>Prazo</th><th>Obrigação</th><th>Referência</th></tr></thead><tbody>
+        <tr><td><span class="fd fd-a">Último dia</span></td><td>2.ª prestação — Pagamento Especial por Conta IRPC</td><td>Art. 71 CIRPC</td></tr>
+      </tbody></table></div>
+      <div class="fiscal-pane" id="fp-set"><table class="ft"><thead><tr><th>Prazo</th><th>Obrigação</th><th>Referência</th></tr></thead><tbody>
+        <tr><td><span class="fd fd-a">Dia 20</span></td><td>2.ª prestação — Pagamento por Conta IRPS (2.ª cat.)</td><td>—</td></tr>
+        <tr><td><span class="fd fd-a">Fim do mês</span></td><td>3.ª prestação — Pagamento por Conta IRPC</td><td>Art. 27 CIRPC</td></tr>
+      </tbody></table></div>
+      <div class="fiscal-pane" id="fp-out"><table class="ft"><thead><tr><th>Prazo</th><th>Obrigação</th><th>Referência</th></tr></thead><tbody>
+        <tr><td><span class="fd fd-r">Último dia</span></td><td>IVA — regime simplificado + ISPC</td><td>Trimestre anterior</td></tr>
+        <tr><td><span class="fd fd-a">Último dia</span></td><td>3.ª prestação — Pagamento Especial por Conta IRPC</td><td>Art. 71 CIRPC</td></tr>
+      </tbody></table></div>
+      <div class="fiscal-pane" id="fp-nov"><table class="ft"><thead><tr><th>Prazo</th><th>Obrigação</th><th>Referência</th></tr></thead><tbody>
+        <tr><td><span class="fd fd-a">Dia 20</span></td><td>3.ª prestação — Pagamento por Conta IRPS (2.ª cat.)</td><td>—</td></tr>
+      </tbody></table></div>
+      <div class="fiscal-pane" id="fp-dez"><table class="ft"><thead><tr><th>Prazo</th><th>Obrigação</th><th>Observação</th></tr></thead><tbody>
+        <tr><td><span class="fd fd-b">Todo o mês</span></td><td>Preparação do ciclo fiscal seguinte</td><td>Revisão contabilística anual</td></tr>
+      </tbody></table></div>
+      <div class="fiscal-pane" id="fp-anuais"><table class="ft"><thead><tr><th>Prazo</th><th>Obrigação</th><th>Modelo</th></tr></thead><tbody>
+        <tr><td><span class="fd fd-a">Fim de Março</span></td><td>Declaração anual IRPS (1.ª cat.) + Retenções fonte + ISV</td><td>Modelo 10 · 20H · 20I</td></tr>
+        <tr><td><span class="fd fd-b">30 de Abril</span></td><td>Declaração anual IRPS — outras categorias</td><td>Modelo 10</td></tr>
+        <tr><td><span class="fd fd-r">31 de Maio</span></td><td>Pagamento final IRPS</td><td>—</td></tr>
+        <tr><td><span class="fd fd-r">Último dia útil Mai</span></td><td>Declaração anual IRPC + Pagamento final</td><td>Modelos 22 e 22A</td></tr>
+        <tr><td><span class="fd fd-g">Último dia útil Jun</span></td><td>Declaração anual contabilística e fiscal</td><td>Modelo 20 + Anexos</td></tr>
+      </tbody></table></div>
+    </div>
+  </div>
+
+  <!-- Fiscal by client -->
+  <div class="card">
+    <div class="card-header"><div class="card-title">🏢 Obrigações por Cliente — Abr/Mai 2025</div></div>
+    <div class="card-body no-pad">
+      <div class="table-wrap">
+        <table><thead><tr><th>Obrigação</th><th>Prazo</th><th>Clientes</th><th>Estado</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>IVA Março 2025</td><td><span class="badge b-late">30 Abr · Urgente</span></td><td>5 clientes</td><td><span class="badge b-pending">Em curso</span></td><td><button class="btn sm blue">Gerir</button></td></tr>
+          <tr><td>IRPC retido — Março</td><td>20 Abr</td><td>3 clientes</td><td><span class="badge b-active">Concluído</span></td><td><button class="btn sm">Ver</button></td></tr>
+          <tr><td>Pagamento final IRPS</td><td>31 Mai</td><td>5 clientes</td><td><span class="badge b-progress">Preparar</span></td><td><button class="btn sm">Iniciar</button></td></tr>
+          <tr><td>Modelos 22 e 22A (IRPC)</td><td>Último dia útil Mai</td><td>5 clientes</td><td><span class="badge b-progress">Preparar</span></td><td><button class="btn sm">Iniciar</button></td></tr>
+          <tr><td>1.ª Prestação — Pagamento por Conta IRPC</td><td>Fim de Maio</td><td>3 clientes</td><td><span class="badge b-pending">Pendente</span></td><td><button class="btn sm">Gerir</button></td></tr>
+          <tr><td>Modelo 20 e Anexos</td><td>Último dia útil Jun</td><td>5 clientes</td><td><span class="badge b-pending">Pendente</span></td><td><button class="btn sm">Iniciar</button></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RELATÓRIOS ══ -->
+<div class="page" id="page-relatorios">
+  <div class="ph">
+    <div class="ph-left"><h1>Relatórios</h1><p>Análises financeiras e operacionais.</p></div>
+    <div class="ph-actions"><button class="btn primary" onclick="toast('📊 A gerar relatório...')">Gerar Relatório</button></div>
+  </div>
+  <div class="grid-3" id="reports-grid"></div>
+</div>
+
+</div><!-- end content -->
+</div><!-- end body-area -->
+</div><!-- end shell -->
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast-el"></div>
 
 <script>
-function goPage(id, el) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const pg = document.getElementById('page-' + id);
-  if (pg) pg.classList.add('active');
-  if (el) el.classList.add('active');
-  else {
-    document.querySelectorAll('.nav-item').forEach(n => {
-      if (n.getAttribute('onclick') && n.getAttribute('onclick').includes(id)) n.classList.add('active');
-    });
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+const CLIENTS = [
+  {id:'MC',name:'MozaCargo Lda',sector:'Logística',loc:'Beluluane',pkg:'structure',contract:'Mensal',value:28000,status:'active',compliance:97,owner:'Ana Silva',color:'#1B4FBF',services:['Contabilidade','Gestão Fiscal','Controlo Interno']},
+  {id:'CB',name:'Construções Beira Mar Lda',sector:'Construção',loc:'Maputo',pkg:'growth',contract:'Mensal',value:15000,status:'active',compliance:94,owner:'João Machava',color:'#1a3a4a',services:['Contabilidade','Gestão Fiscal','Análise Financeira']},
+  {id:'TS',name:'TechSol Mozambique',sector:'Tecnologia',loc:'Maputo',pkg:'essential',contract:'Mensal',value:8500,status:'pending',compliance:88,owner:'Ana Silva',color:'#4a2070',services:['Contabilidade','Gestão Fiscal']},
+  {id:'IA',name:'Importações Africanas Lda',sector:'Comércio',loc:'Matola',pkg:'growth',contract:'Mensal',value:18000,status:'late',compliance:72,owner:'Maria Tembe',color:'#7a3a00',services:['Gestão Fiscal','Regularização','Auditoria Interna']},
+  {id:'EV',name:'Energia Verde Sarl',sector:'Energia',loc:'Maputo',pkg:'structure',contract:'Mensal',value:26000,status:'pending',compliance:96,owner:'João Machava',color:'#0d4a2a',services:['Contabilidade','Gestão Fiscal','Planeamento Financeiro','Controlo Interno']},
+];
+const TASKS = [
+  {title:'Submissão IVA Março 2025',client:'MozaCargo Lda',deadline:'30 Abr',owner:'Ana Silva',priority:'urgente',status:'progress'},
+  {title:'Balancete Março — preparação',client:'Importações Africanas Lda',deadline:'30 Abr',owner:'Maria Tembe',priority:'urgente',status:'progress'},
+  {title:'Modelo 20H — entrega',client:'TechSol Mozambique',deadline:'02 Mai',owner:'Ana Silva',priority:'alta',status:'pending'},
+  {title:'Conciliação bancária Q1',client:'Energia Verde Sarl',deadline:'05 Mai',owner:'João Machava',priority:'normal',status:'progress'},
+  {title:'1.ª Prestação Pgto. por Conta IRPC',client:'Construções Beira Mar',deadline:'31 Mai',owner:'João Machava',priority:'alta',status:'pending'},
+  {title:'IRPS final 2024 — cálculo',client:'MozaCargo Lda',deadline:'31 Mai',owner:'Ana Silva',priority:'alta',status:'pending'},
+  {title:'Modelos 22 e 22A — todos os clientes',client:'Todos',deadline:'Último dia Mai',owner:'João Machava',priority:'urgente',status:'pending'},
+  {title:'Modelo 20 e Anexos',client:'Importações Africanas Lda',deadline:'Último dia Jun',owner:'Maria Tembe',priority:'normal',status:'pending'},
+  {title:'Due Diligence — MozaCargo',client:'MozaCargo Lda',deadline:'15 Mai',owner:'Ana Silva',priority:'normal',status:'pending'},
+  {title:'Relatório Auditoria Q1',client:'Energia Verde Sarl',deadline:'20 Mai',owner:'João Machava',priority:'normal',status:'pending'},
+  {title:'ISPC Abril',client:'Construções Beira Mar',deadline:'30 Abr',owner:'Maria Tembe',priority:'alta',status:'done'},
+  {title:'Reconciliação bancária Mar',client:'TechSol Mozambique',deadline:'25 Abr',owner:'Ana Silva',priority:'normal',status:'done'},
+];
+const TEAM = [
+  {id:'AD',name:'Admin NIVELZERO',email:'nivel_zero24@hotmail.com',role:'admin',clients:'Todos',tasks:0,lastAccess:'Agora',color:'#F5A623',textColor:'#07101E'},
+  {id:'AS',name:'Ana Silva',email:'ana.silva@nivelzero.co.mz',role:'gestor',clients:'MozaCargo, TechSol',tasks:8,lastAccess:'Hoje, 09:42',color:'#1B4FBF',textColor:'#fff'},
+  {id:'JM',name:'João Machava',email:'joao.machava@nivelzero.co.mz',role:'tecnico',clients:'Energia Verde, Beira Mar',tasks:10,lastAccess:'Ontem, 16:30',color:'#0d4a2a',textColor:'#fff'},
+  {id:'MT',name:'Maria Tembe',email:'maria.tembe@nivelzero.co.mz',role:'tecnico',clients:'Importações Africanas',tasks:5,lastAccess:'12 Abr',color:'#4a1a5a',textColor:'#fff'},
+];
+const SERVICES = [
+  {name:'Gestão Fiscal',icon:'🧾',desc:'IVA, IRPC, ISPC — submissões mensais e planeamento',clients:5,rev:'38.200 MZN/mês'},
+  {name:'Contabilidade',icon:'📒',desc:'Registo, demonstrações financeiras e reconciliações',clients:5,rev:'28.650 MZN/mês'},
+  {name:'Controlo Interno (COSO)',icon:'🏛️',desc:'Framework COSO — governança e controlos internos',clients:2,rev:'15.300 MZN/mês'},
+  {name:'Auditoria Interna',icon:'🔍',desc:'Auditorias de processos, testes e relatórios de risco',clients:2,rev:'8.200 MZN/mês'},
+  {name:'Análise Financeira',icon:'📊',desc:'Diagnóstico de custos, rentabilidade e cash flow',clients:2,rev:'4.500 MZN/mês'},
+  {name:'Regularização Fiscal',icon:'🔧',desc:'Saneamento e regularização de dívidas à AT',clients:1,rev:'Pontual'},
+  {name:'Planeamento Financeiro',icon:'📐',desc:'Orçamentação, projecções e apoio estratégico',clients:1,rev:'2.300 MZN/mês'},
+  {name:'Digitalização & Compliance',icon:'💻',desc:'e-Faturação, SAF-T e conformidade digital',clients:3,rev:'3.100 MZN/mês'},
+  {name:'Formação Empresarial',icon:'🎓',desc:'Workshops de fiscalidade, gestão e compliance',clients:2,rev:'Pontual'},
+];
+const DOCS = [
+  {icon:'📊',name:'Balancete Março 2025',client:'MozaCargo Lda',size:'2.1 MB',date:'Hoje',badge:'Novo'},
+  {icon:'🧾',name:'Decl. IVA Fevereiro 2025',client:'Energia Verde Sarl',size:'340 KB',date:'14 Abr',badge:null},
+  {icon:'📋',name:'Modelo 20H 2024',client:'Construções Beira Mar',size:'890 KB',date:'12 Abr',badge:null},
+  {icon:'📈',name:'Relatório Auditoria Q1',client:'Importações Africanas',size:'3.4 MB',date:'10 Abr',badge:'Novo'},
+  {icon:'⚖️',name:'Contrato TechSol 2025',client:'TechSol Mozambique',size:'450 KB',date:'Jan 2025',badge:null},
+  {icon:'📑',name:'IRPC Anual 2024 — MozaCargo',client:'MozaCargo Lda',size:'780 KB',date:'Mar 2025',badge:null},
+];
+const REPORTS = [
+  {icon:'📊',name:'Receita por Período',desc:'Análise mensal e anual de faturação'},
+  {icon:'🥧',name:'Receita por Serviço',desc:'Distribuição de receita por tipo de serviço'},
+  {icon:'💸',name:'Pagamentos',desc:'Clientes pagantes vs em atraso'},
+  {icon:'👥',name:'Desempenho da Equipa',desc:'Tarefas concluídas e produtividade'},
+  {icon:'✅',name:'Conformidade Fiscal',desc:'Estado fiscal por cliente'},
+  {icon:'🔮',name:'Previsão de Faturação',desc:'Projecção dos próximos 6 meses'},
+];
+const PKG_MAP = {essential:'Essencial',growth:'Crescimento',structure:'Estrutura',premium:'Premium'};
+const PKG_CLS = {essential:'pkg-ess',growth:'pkg-cres',structure:'pkg-est',premium:'pkg-prem'};
+const STATUS_MAP = {active:'Pago',pending:'Pendente',late:'Em Atraso',done:'Concluído',progress:'Em Progresso',inactive:'Inactivo'};
+const STATUS_CLS = {active:'b-active',pending:'b-pending',late:'b-late',done:'b-done',progress:'b-progress',inactive:'b-inactive'};
+const PRIORITY_MAP = {urgente:'🔴 Urgente',alta:'🟠 Alta',normal:'🟡 Normal'};
+const ROLE_MAP = {admin:'👑 Administrador',gestor:'👨‍💼 Gestor',tecnico:'👩‍💻 Técnico',viewer:'👁️ Visualizador'};
+const ROLE_CLS = {admin:'rc-admin',gestor:'rc-gestor',tecnico:'rc-tecnico',viewer:'rc-viewer'};
+
+// ═══════════════════════════════════════
+// ROLE CONTROL
+// ═══════════════════════════════════════
+let currentRole = 'admin';
+const ROLE_DEFS = {
+  admin:{label:'Administrador',chip:'rc-admin',av:'AD',name:'Admin',bg:'#F5A623',fg:'#07101E'},
+  gestor:{label:'Gestor',chip:'rc-gestor',av:'AS',name:'Ana Silva',bg:'#1B4FBF',fg:'#fff'},
+  tecnico:{label:'Técnico',chip:'rc-tecnico',av:'JM',name:'João Machava',bg:'#0d4a2a',fg:'#fff'},
+  viewer:{label:'Visualizador',chip:'rc-viewer',av:'V',name:'Visualizador',bg:'#333',fg:'#fff'},
+};
+function switchRole(role) {
+  currentRole = role;
+  const r = ROLE_DEFS[role];
+  document.getElementById('tb-username').textContent = r.name;
+  const chip = document.getElementById('tb-role-chip');
+  chip.textContent = r.label; chip.className = 'role-chip '+r.chip;
+  const av = document.getElementById('tb-avatar');
+  av.textContent = r.av; av.style.background = r.bg; av.style.color = r.fg;
+  // Sidebar access
+  const fin = document.getElementById('nav-financeiro');
+  const con = document.getElementById('nav-contratos');
+  const eq = document.getElementById('nav-equipa');
+  const rel = document.getElementById('nav-relatorios');
+  const hide = role==='tecnico'||role==='viewer';
+  fin.style.display = hide?'none':'flex';
+  con.style.display = hide?'none':'flex';
+  eq.style.display = role==='admin'?'flex':'none';
+  rel.style.display = hide?'none':'flex';
+  toast(`🔄 A simular como: ${r.label}`);
+}
+
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
+const PAGE_TITLES = {dashboard:'Dashboard',clientes:'Clientes',financeiro:'Financeiro',contratos:'Contratos',servicos:'Serviços',tarefas:'Tarefas',documentos:'Documentos',equipa:'Equipa & Acessos',fiscal:'Calendário Fiscal',relatorios:'Relatórios'};
+function navigate(id, el) {
+  // Access control
+  if ((id==='financeiro'||id==='contratos') && (currentRole==='tecnico'||currentRole==='viewer')) {
+    toast('🔒 Acesso restrito a Administradores'); return;
   }
+  if (id==='equipa' && currentRole!=='admin') {
+    toast('🔒 Apenas Administradores podem gerir a equipa'); return;
+  }
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('active'));
+  const page = document.getElementById('page-'+id);
+  if (page) page.classList.add('active');
+  if (el) el.classList.add('active');
+  document.getElementById('page-title').textContent = PAGE_TITLES[id]||id;
+  // Render dynamic content
+  if (id==='dashboard') renderDash();
+  if (id==='clientes') renderClients();
+  if (id==='tarefas') renderTasks();
+  if (id==='equipa') renderTeam();
+  if (id==='servicos') renderServices();
+  if (id==='documentos') renderDocs();
+  if (id==='relatorios') renderReports();
+}
+function globalSearch(q) {
+  if (!q) return;
+  const matches = CLIENTS.filter(c=>c.name.toLowerCase().includes(q.toLowerCase()));
+  if (matches.length) toast(`🔍 ${matches.length} cliente(s) encontrado(s): ${matches.map(c=>c.name).join(', ')}`);
+  else toast('🔍 Nenhum resultado encontrado');
 }
 
-function toggleNotifs() {
-  document.getElementById('notif-panel').classList.toggle('open');
-  document.getElementById('overlay').classList.toggle('show');
-}
-function closeNotifs() {
-  document.getElementById('notif-panel').classList.remove('open');
-  document.getElementById('overlay').classList.remove('show');
+// ═══════════════════════════════════════
+// RENDER FUNCTIONS
+// ═══════════════════════════════════════
+function renderDash() {
+  const tb = document.querySelector('#dash-table tbody');
+  if (!tb) return;
+  tb.innerHTML = CLIENTS.map(c=>`
+    <tr>
+      <td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:${c.color}">${c.id}</div><div><div class="c-name">${c.name}</div></div></div></td>
+      <td><span class="pkg ${PKG_CLS[c.pkg]}">${PKG_MAP[c.pkg]}</span></td>
+      <td style="font-size:11.5px;color:var(--text-low)">${c.services.slice(0,2).join(' · ')}${c.services.length>2?` +${c.services.length-2}`:''}</td>
+      <td><span class="badge ${STATUS_CLS[c.status]}">${STATUS_MAP[c.status]}</span></td>
+      <td><div style="font-size:11.5px;margin-bottom:3px">${c.compliance}%</div><div class="prog" style="width:80px"><div class="prog-fill" style="width:${c.compliance}%;background:${c.compliance>90?'var(--teal)':c.compliance>75?'var(--amber)':'var(--red)'}"></div></div></td>
+      <td style="font-size:12px;color:var(--text-low)">${c.owner}</td>
+    </tr>`).join('');
 }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+function renderClients(filter='', statusFilter='') {
+  const tb = document.querySelector('#clients-table tbody');
+  if (!tb) return;
+  let data = CLIENTS.filter(c=>{
+    const matchQ = !filter || c.name.toLowerCase().includes(filter.toLowerCase()) || c.sector.toLowerCase().includes(filter.toLowerCase());
+    const matchS = !statusFilter || c.status===statusFilter;
+    return matchQ && matchS;
+  });
+  tb.innerHTML = data.map(c=>`
+    <tr>
+      <td><div class="client-cell"><div class="c-avatar" style="width:30px;height:30px;background:${c.color}">${c.id}</div><div><div class="c-name">${c.name}</div><div class="c-meta">📍 ${c.loc} · ${c.services.length} serviços</div></div></div></td>
+      <td>${c.sector}</td>
+      <td><span class="pkg ${PKG_CLS[c.pkg]}">${PKG_MAP[c.pkg]}</span></td>
+      <td style="font-family:'Montserrat',sans-serif;font-weight:700">${c.value.toLocaleString('pt-MZ')} MZN</td>
+      <td><span class="badge ${STATUS_CLS[c.status]}">${STATUS_MAP[c.status]}</span></td>
+      <td><div style="font-size:11.5px;margin-bottom:3px">${c.compliance}%</div><div class="prog" style="width:70px"><div class="prog-fill" style="width:${c.compliance}%;background:${c.compliance>90?'var(--teal)':c.compliance>75?'var(--amber)':'var(--red)'}"></div></div></td>
+      <td style="font-size:12px;color:var(--text-low)">${c.owner}</td>
+      <td><div class="actions"><button class="btn xs blue" onclick="openClientDetail('${c.id}')">Ver</button><button class="btn xs" onclick="toast('✏️ A editar ${c.name}')">Editar</button></div></td>
+    </tr>`).join('');
 }
+function filterClients(q) { renderClients(q); }
+function filterClientStatus(s) { renderClients('',s); }
+
+function renderTasks(statusFilter='') {
+  const tb = document.querySelector('#tasks-table tbody');
+  if (!tb) return;
+  let data = statusFilter ? TASKS.filter(t=>t.status===statusFilter) : TASKS;
+  tb.innerHTML = data.map((t,i)=>`
+    <tr>
+      <td style="font-weight:600;color:var(--white)">${t.title}</td>
+      <td style="font-size:12px;color:var(--text-low)">${t.client}</td>
+      <td><span class="badge ${t.status==='late'?'b-late':'b-pending'}" style="font-size:10.5px">${t.deadline}</span></td>
+      <td style="font-size:12px;color:var(--text-low)">${t.owner}</td>
+      <td style="font-size:11px">${PRIORITY_MAP[t.priority]||t.priority}</td>
+      <td><span class="badge ${STATUS_CLS[t.status]}">${STATUS_MAP[t.status]||t.status}</span></td>
+      <td><div class="actions"><button class="btn xs" onclick="completeTask(${TASKS.indexOf(t)})">Concluir</button></div></td>
+    </tr>`).join('');
+}
+function filterTasks(s) { renderTasks(s); }
+function completeTask(i) { TASKS[i].status='done'; renderTasks(); document.getElementById('tasks-count').textContent=TASKS.filter(t=>t.status!=='done').length; toast('✅ Tarefa marcada como concluída!'); }
+
+function renderTeam() {
+  const tb = document.getElementById('team-table');
+  if (!tb) return;
+  tb.innerHTML = TEAM.map(m=>`
+    <tr>
+      <td><div class="client-cell"><div class="c-avatar" style="width:30px;height:30px;background:${m.color};color:${m.textColor}">${m.id}</div><div><div class="c-name">${m.name}</div><div class="c-meta">${m.email}</div></div></div></td>
+      <td><span class="role-chip ${ROLE_CLS[m.role]}">${ROLE_MAP[m.role]}</span></td>
+      <td style="font-size:12px;color:var(--text-low)">${m.clients}</td>
+      <td style="font-family:'Montserrat',sans-serif;font-weight:700">${m.tasks>0?m.tasks:'—'}</td>
+      <td style="font-size:12px;color:var(--text-low)">${m.lastAccess}</td>
+      <td><div class="actions">${m.role!=='admin'?`<button class="btn xs" onclick="toast('✏️ Editar permissões de ${m.name}')">Editar</button>`:'<span style="font-size:11px;color:var(--text-low)">Proprietário</span>'}</div></td>
+    </tr>`).join('');
+}
+
+function renderServices() {
+  const grid = document.getElementById('services-grid');
+  if (!grid) return;
+  grid.innerHTML = SERVICES.map(s=>`
+    <div class="card" style="cursor:pointer;transition:border-color .2s" onmouseover="this.style.borderColor='rgba(255,255,255,.15)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div class="card-body">
+        <div style="font-size:24px;margin-bottom:12px">${s.icon}</div>
+        <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:var(--white);margin-bottom:6px">${s.name}</div>
+        <div style="font-size:12px;color:var(--text-low);line-height:1.55;margin-bottom:14px">${s.desc}</div>
+        <div style="padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between">
+          <div><div style="font-size:10px;color:var(--text-low)">CLIENTES</div><div style="font-size:14px;font-weight:700;color:var(--teal);font-family:'Montserrat',sans-serif;margin-top:2px">${s.clients}</div></div>
+          <div style="text-align:right"><div style="font-size:10px;color:var(--text-low)">RECEITA</div><div style="font-size:13px;font-weight:700;font-family:'Montserrat',sans-serif;margin-top:2px">${s.rev}</div></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderDocs() {
+  const grid = document.getElementById('docs-grid');
+  if (!grid) return;
+  grid.innerHTML = DOCS.map(d=>`
+    <div class="card" style="cursor:pointer" onclick="toast('📄 A abrir: ${d.name}...')">
+      <div class="card-body">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="font-size:28px;flex-shrink:0">${d.icon}</div>
+          <div style="flex:1;min-width:0">
+            ${d.badge?`<span class="badge b-active" style="font-size:9.5px;margin-bottom:5px;display:inline-flex">${d.badge}</span>`:''}
+            <div style="font-size:13px;font-weight:600;color:var(--white);line-height:1.3">${d.name}</div>
+            <div style="font-size:11px;color:var(--text-low);margin-top:3px">${d.client} · ${d.size} · ${d.date}</div>
+          </div>
+        </div>
+      </div>
+    </div>`).join('')
+  + `<div class="card" style="cursor:pointer;border-style:dashed" onclick="toast('📎 Seleccione um ficheiro...')">
+      <div class="card-body" style="display:flex;align-items:center;justify-content:center;height:88px;color:var(--teal);font-size:13px;font-weight:600;gap:7px">
+        + Carregar Documento
+      </div>
+    </div>`;
+}
+
+function renderReports() {
+  const grid = document.getElementById('reports-grid');
+  if (!grid) return;
+  grid.innerHTML = REPORTS.map(r=>`
+    <div class="card" style="cursor:pointer" onclick="toast('📊 A gerar: ${r.name}...')" onmouseover="this.style.borderColor='rgba(255,255,255,.15)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div class="card-body">
+        <div style="font-size:24px;margin-bottom:10px">${r.icon}</div>
+        <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:var(--white);margin-bottom:5px">${r.name}</div>
+        <div style="font-size:12px;color:var(--text-low)">${r.desc}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════
+// CLIENT DETAIL
+// ═══════════════════════════════════════
+function openClientDetail(id) {
+  const c = CLIENTS.find(x=>x.id===id);
+  openModal('client-detail', c);
+}
+
+// ═══════════════════════════════════════
+// MODALS
+// ═══════════════════════════════════════
+const MODAL_TEMPLATES = {
+  'new-client':{
+    title:'Novo Cliente', sub:'Adicionar empresa ao sistema NIVELZERO.',
+    body:`
+      <div class="form-row"><div class="form-group"><label>Nome da Empresa</label><input class="form-control" placeholder="Ex: MozaCargo Lda"></div><div class="form-group"><label>Sector</label><select class="form-control"><option>Comércio</option><option>Indústria</option><option>Serviços</option><option>Construção</option><option>Energia</option><option>Logística</option><option>Tecnologia</option></select></div></div>
+      <div class="form-row"><div class="form-group"><label>Pacote</label><select class="form-control"><option>Essencial</option><option>Crescimento</option><option>Estrutura</option><option>Premium</option></select></div><div class="form-group"><label>Honorário/mês (MZN)</label><input class="form-control" type="number" placeholder="Ex: 15000"></div></div>
+      <div class="form-row"><div class="form-group"><label>Responsável Interno</label><select class="form-control"><option>Ana Silva</option><option>João Machava</option><option>Maria Tembe</option></select></div><div class="form-group"><label>Início do Contrato</label><input class="form-control" type="date"></div></div>
+      <div class="form-group"><label>Email do Cliente</label><input class="form-control" type="email" placeholder="gestor@empresa.co.mz"></div>`,
+    action:'Adicionar Cliente', key:'new-client'
+  },
+  'register-payment':{
+    title:'Registar Pagamento', sub:'Confirmar recebimento de honorários.',
+    body:`
+      <div class="form-group"><label>Cliente</label><select class="form-control"><option>MozaCargo Lda</option><option>Construções Beira Mar Lda</option><option>TechSol Mozambique</option><option>Importações Africanas Lda</option><option>Energia Verde Sarl</option></select></div>
+      <div class="form-row"><div class="form-group"><label>Valor (MZN)</label><input class="form-control" type="number" placeholder="Ex: 15000"></div><div class="form-group"><label>Data de Pagamento</label><input class="form-control" type="date"></div></div>
+      <div class="form-row"><div class="form-group"><label>Método</label><select class="form-control"><option>Transferência Bancária</option><option>M-Pesa</option><option>E-mola</option><option>Numerário</option></select></div><div class="form-group"><label>Referência</label><input class="form-control" placeholder="Ref. da transferência"></div></div>`,
+    action:'Confirmar Pagamento', key:'payment'
+  },
+  'new-contract':{
+    title:'Novo Contrato', sub:'Definir contrato e condições de facturação.',
+    body:`
+      <div class="form-group"><label>Cliente</label><select class="form-control"><option>MozaCargo Lda</option><option>Construções Beira Mar Lda</option><option>TechSol Mozambique</option><option>Importações Africanas Lda</option><option>Energia Verde Sarl</option></select></div>
+      <div class="form-row"><div class="form-group"><label>Tipo de Contrato</label><select class="form-control"><option>Mensal</option><option>Trimestral</option><option>Pontual</option></select></div><div class="form-group"><label>Valor (MZN)</label><input class="form-control" type="number" placeholder="Ex: 15000"></div></div>
+      <div class="form-row"><div class="form-group"><label>Data de Início</label><input class="form-control" type="date"></div><div class="form-group"><label>Frequência de Cobrança</label><select class="form-control"><option>Mensal</option><option>Trimestral</option><option>Pontual</option></select></div></div>
+      <div class="form-group"><label>Serviços Incluídos</label><select class="form-control" multiple style="height:90px"><option>Contabilidade</option><option>Gestão Fiscal</option><option>Controlo Interno</option><option>Auditoria Interna</option><option>Análise Financeira</option></select></div>`,
+    action:'Criar Contrato', key:'contract'
+  },
+  'new-task':{
+    title:'Nova Tarefa', sub:'Criar e atribuir tarefa à equipa.',
+    body:`
+      <div class="form-group"><label>Título da Tarefa</label><input class="form-control" placeholder="Ex: Submissão IVA Abril 2025"></div>
+      <div class="form-row"><div class="form-group"><label>Cliente</label><select class="form-control"><option>MozaCargo Lda</option><option>Construções Beira Mar Lda</option><option>TechSol Mozambique</option><option>Importações Africanas Lda</option><option>Energia Verde Sarl</option><option>Todos</option></select></div><div class="form-group"><label>Responsável</label><select class="form-control"><option>Ana Silva</option><option>João Machava</option><option>Maria Tembe</option></select></div></div>
+      <div class="form-row"><div class="form-group"><label>Prazo</label><input class="form-control" type="date"></div><div class="form-group"><label>Prioridade</label><select class="form-control"><option>Normal</option><option>Alta</option><option>Urgente</option></select></div></div>
+      <div class="form-group"><label>Notas</label><textarea class="form-control" placeholder="Instruções ou detalhes adicionais..."></textarea></div>`,
+    action:'Criar Tarefa', key:'task'
+  },
+  'new-user':{
+    title:'Novo Utilizador', sub:'Convidar membro para a equipa NIVELZERO.',
+    body:`
+      <div class="form-row"><div class="form-group"><label>Nome Completo</label><input class="form-control" placeholder="Ex: Ana Silva"></div><div class="form-group"><label>Email</label><input class="form-control" type="email" placeholder="ana@nivelzero.co.mz"></div></div>
+      <div class="form-row"><div class="form-group"><label>Nível de Acesso</label><select class="form-control"><option>Gestor</option><option>Técnico</option><option>Visualizador</option></select></div><div class="form-group"><label>Clientes Atribuídos</label><select class="form-control" multiple style="height:80px"><option>MozaCargo Lda</option><option>TechSol Mozambique</option><option>Energia Verde Sarl</option><option>Construções Beira Mar</option></select></div></div>`,
+    action:'Enviar Convite', key:'user'
+  },
+  'new-service':{
+    title:'Novo Serviço', sub:'Adicionar serviço ao catálogo.',
+    body:`
+      <div class="form-row"><div class="form-group"><label>Nome do Serviço</label><input class="form-control" placeholder="Ex: Controlo Interno"></div><div class="form-group"><label>Ícone (emoji)</label><input class="form-control" placeholder="🔍"></div></div>
+      <div class="form-group"><label>Descrição</label><textarea class="form-control" placeholder="Breve descrição do serviço..."></textarea></div>
+      <div class="form-row"><div class="form-group"><label>Tipo de Cobrança</label><select class="form-control"><option>Mensal (pacote)</option><option>Por serviço</option><option>Pontual</option></select></div><div class="form-group"><label>Valor Base (MZN)</label><input class="form-control" type="number" placeholder="Ex: 5000"></div></div>`,
+    action:'Adicionar Serviço', key:'service'
+  },
+};
+
+function openModal(type, data) {
+  if (type==='client-detail' && data) {
+    showClientDetail(data); return;
+  }
+  const tpl = MODAL_TEMPLATES[type];
+  if (!tpl) return;
+  document.getElementById('modal-body').innerHTML = `
+    <div class="modal-title">${tpl.title}</div>
+    <div class="modal-subtitle">${tpl.sub}</div>
+    ${tpl.body}
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Cancelar</button>
+      <button class="btn primary" onclick="submitModal('${tpl.key}',this)">${tpl.action}</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function showClientDetail(c) {
+  document.getElementById('modal-body').innerHTML = `
+    <div style="display:flex;align-items:center;gap:13px;margin-bottom:4px">
+      <div class="c-avatar" style="width:44px;height:44px;font-size:15px;flex-shrink:0;background:${c.color}">${c.id}</div>
+      <div><div class="modal-title">${c.name}</div><div class="modal-subtitle" style="margin-bottom:0">${c.sector} · ${c.loc}</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin:18px 0">
+      <div class="detail-stat"><div class="ds-label">Pacote</div><div style="margin-top:4px"><span class="pkg ${PKG_CLS[c.pkg]}">${PKG_MAP[c.pkg]}</span></div></div>
+      <div class="detail-stat"><div class="ds-label">Honorário</div><div class="ds-value" style="color:var(--teal);font-size:16px">${c.value.toLocaleString('pt-MZ')}<span style="font-size:12px;font-weight:400;color:var(--text-low)"> MZN</span></div></div>
+      <div class="detail-stat"><div class="ds-label">Pagamento</div><div style="margin-top:5px"><span class="badge ${STATUS_CLS[c.status]}">${STATUS_MAP[c.status]}</span></div></div>
+      <div class="detail-stat"><div class="ds-label">Conformidade</div><div class="ds-value" style="color:${c.compliance>90?'var(--teal)':c.compliance>75?'var(--amber)':'var(--red)'}">${c.compliance}%</div></div>
+    </div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:14px;margin-bottom:16px">
+      <div style="font-size:10.5px;color:var(--text-low);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">Serviços Contratados</div>
+      <div style="display:flex;flex-wrap:wrap;gap:7px">${c.services.map(s=>`<span style="background:var(--bg4);border:1px solid var(--border);padding:3px 10px;border-radius:5px;font-size:12px;color:var(--text)">${s}</span>`).join('')}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12.5px;color:var(--text);margin-bottom:16px">
+      <div>Responsável: <strong style="color:var(--white)">${c.owner}</strong></div>
+      <div>Contrato: <strong style="color:var(--white)">${c.contract}</strong></div>
+      <div>Localização: <strong style="color:var(--white)">${c.loc}</strong></div>
+      <div>Próxima cobrança: <strong style="color:var(--white)">05 Mai 2025</strong></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Fechar</button>
+      <button class="btn" onclick="toast('📁 Documentos de ${c.name}');closeModal()">Ver Documentos</button>
+      ${c.status==='late'?`<button class="btn danger" onclick="toast('📧 Notificação enviada!');closeModal()">Notificar Atraso</button>`:''}
+      <button class="btn primary" onclick="toast('✏️ Editar ${c.name}');closeModal()">Editar</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function submitModal(key, btn) {
+  btn.textContent='A processar...'; btn.disabled=true;
+  setTimeout(()=>{
+    const msgs = {
+      'new-client':'✅ Cliente adicionado com sucesso!',
+      'payment':'✅ Pagamento registado!',
+      'contract':'✅ Contrato criado!',
+      'task':'✅ Tarefa criada!',
+      'user':'✅ Convite enviado por email!',
+      'service':'✅ Serviço adicionado ao catálogo!',
+    };
+    closeModal();
+    toast(msgs[key]||'✅ Operação concluída!');
+  },700);
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.getElementById('modal-body').innerHTML='';
+}
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+
+// ═══════════════════════════════════════
+// FISCAL TABS
+// ═══════════════════════════════════════
+function showFiscal(id, btn) {
+  document.querySelectorAll('.fiscal-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.fiscal-tab').forEach(b=>b.classList.remove('active'));
+  const pane = document.getElementById('fp-'+id);
+  if (pane) pane.classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+// ═══════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════
+function toast(msg) {
+  const el = document.getElementById('toast-el');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(()=>el.classList.remove('show'), 3200);
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+renderDash();
 </script>
 </body>
 </html>
