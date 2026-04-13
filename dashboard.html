@@ -330,9 +330,120 @@ textarea.form-control{resize:vertical;min-height:72px;line-height:1.5}
   .tb-search{display:none}
   .page{padding:14px}
 }
+
+/* ═══════════════════════════════
+   LOGIN SCREEN
+═══════════════════════════════ */
+#login-screen{
+  position:fixed;inset:0;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  z-index:9999;padding:20px;
+}
+.login-card{
+  background:var(--bg2);border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;padding:44px;width:100%;max-width:400px;
+  box-shadow:0 24px 80px rgba(0,0,0,.6);
+}
+.login-logo{display:flex;align-items:center;gap:10px;margin-bottom:32px}
+.login-logo-text{font-family:'Montserrat',sans-serif;font-weight:800;font-size:20px;color:var(--white);letter-spacing:-.02em}
+.login-logo-text span{color:var(--teal)}
+.login-title{font-family:'Montserrat',sans-serif;font-size:22px;font-weight:800;color:var(--white);margin-bottom:6px;letter-spacing:-.02em}
+.login-sub{font-size:13px;color:var(--text-low);margin-bottom:28px;line-height:1.55}
+.login-label{display:block;font-size:11px;font-weight:600;color:var(--text-low);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+.login-input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--white);padding:11px 14px;border-radius:9px;font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:border .15s;margin-bottom:14px}
+.login-input:focus{border-color:var(--teal);background:var(--bg4)}
+.login-input::placeholder{color:var(--text-low)}
+.login-btn{width:100%;background:var(--teal);color:var(--bg);border:none;padding:13px;border-radius:9px;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:background .15s;margin-top:4px}
+.login-btn:hover{background:#1FDABF}
+.login-btn:disabled{opacity:.6;cursor:not-allowed}
+.login-error{background:var(--red-dim);border:1px solid rgba(240,73,73,.3);color:var(--red);padding:10px 14px;border-radius:8px;font-size:13px;margin-top:12px;display:none}
+.login-hint{margin-top:20px;padding:14px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:9px}
+.login-hint-title{font-size:11px;font-weight:700;color:var(--text-low);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+.login-user-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border2);font-size:12px}
+.login-user-row:last-child{border-bottom:none}
+.login-user-name{color:var(--text);font-weight:500}
+.login-user-pwd{color:var(--text-low);font-family:monospace;font-size:11.5px;background:var(--bg3);padding:1px 7px;border-radius:4px}
+.login-user-role{font-size:10px;font-weight:700;padding:1px 6px;border-radius:3px}
+
+
+/* ═══════════════════════════════
+   REPORTS
+═══════════════════════════════ */
+.report-modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.report-kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.report-kpi{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:14px;text-align:center}
+.report-kpi-lbl{font-size:10px;color:var(--text-low);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.report-kpi-val{font-family:'Montserrat',sans-serif;font-size:18px;font-weight:800;color:var(--white)}
+.report-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-low);margin:16px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.report-bar-row{display:flex;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid var(--border2)}
+.report-bar-row:last-child{border-bottom:none}
+.report-bar-label{width:160px;font-size:12.5px;color:var(--text);flex-shrink:0}
+.report-bar-track{flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
+.report-bar-fill{height:100%;border-radius:4px;transition:width .8s ease}
+.report-bar-val{width:80px;text-align:right;font-size:12px;font-weight:700;color:var(--white);font-family:'Montserrat',sans-serif;flex-shrink:0}
+
 </style>
 </head>
 <body>
+
+<!-- ════════════════════════════
+     LOGIN SCREEN
+════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg width="32" height="32" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="64" height="64" rx="10" fill="#132338"/>
+        <rect x="8" y="8" width="20" height="20" rx="3" fill="white" opacity=".9"/>
+        <rect x="30" y="8" width="14" height="14" rx="2" fill="#12C2A8"/>
+        <rect x="46" y="8" width="10" height="10" rx="2" fill="#F5A623"/>
+      </svg>
+      <span class="login-logo-text">NIVEL<span>ZERO</span></span>
+    </div>
+    <div class="login-title">Acesso Restrito</div>
+    <div class="login-sub">Sistema de Gestão Interno da NIVELZERO CONSULTORES LDA. Apenas colaboradores autorizados.</div>
+
+    <div>
+      <label class="login-label">Utilizador</label>
+      <select class="login-input" id="login-user" onchange="updateLoginHint()">
+        <option value="">Seleccionar utilizador...</option>
+        <option value="admin">Admin NIVELZERO</option>
+        <option value="gestor">Ana Silva — Gestora</option>
+        <option value="tecnico">João Machava — Técnico</option>
+        <option value="viewer">Maria Tembe — Técnico</option>
+      </select>
+      <label class="login-label">Senha</label>
+      <input class="login-input" type="password" id="login-pwd" placeholder="Introduza a sua senha" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="login-btn" id="login-btn" onclick="doLogin()">Entrar no Sistema</button>
+      <div class="login-error" id="login-error">Senha incorrecta. Tente novamente.</div>
+    </div>
+
+    <div class="login-hint">
+      <div class="login-hint-title">Credenciais de Acesso</div>
+      <div class="login-user-row">
+        <span class="login-user-name">Admin NIVELZERO</span>
+        <span class="login-user-pwd">admin2025</span>
+        <span class="login-user-role rc-admin">Admin</span>
+      </div>
+      <div class="login-user-row">
+        <span class="login-user-name">Ana Silva</span>
+        <span class="login-user-pwd">gestor2025</span>
+        <span class="login-user-role rc-gestor">Gestor</span>
+      </div>
+      <div class="login-user-row">
+        <span class="login-user-name">João Machava</span>
+        <span class="login-user-pwd">tecnico2025</span>
+        <span class="login-user-role rc-tecnico">Técnico</span>
+      </div>
+      <div class="login-user-row">
+        <span class="login-user-name">Maria Tembe</span>
+        <span class="login-user-pwd">viewer2025</span>
+        <span class="login-user-role rc-viewer">Viewer</span>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="shell">
 
 <!-- DEMO BAR -->
@@ -367,11 +478,12 @@ textarea.form-control{resize:vertical;min-height:72px;line-height:1.5}
       🔔<div class="notif-dot"></div>
     </button>
     <button class="icon-btn" onclick="toast('⚙️ Configurações')">⚙️</button>
-    <div class="tb-user">
+    <div class="tb-user" style="cursor:default">
       <div class="avatar" id="tb-avatar" style="width:26px;height:26px;font-size:10px;background:var(--amber);color:var(--bg)">AD</div>
       <span class="tb-uname" id="tb-username">Admin</span>
       <span class="role-chip rc-admin" id="tb-role-chip">Admin</span>
     </div>
+    <button class="icon-btn" onclick="logout()" title="Sair do sistema" style="font-size:13px">🚪</button>
   </div>
 </div>
 
@@ -440,7 +552,7 @@ textarea.form-control{resize:vertical;min-height:72px;line-height:1.5}
       <p>Visão geral do negócio — Abril 2025</p>
     </div>
     <div class="ph-actions">
-      <button class="btn" onclick="toast('📊 A exportar relatório...')">↓ Exportar</button>
+      <button class="btn" onclick="openReport('Receita por Período')">↓ Exportar</button>
       <button class="btn primary" onclick="openModal('new-client')">+ Novo Cliente</button>
     </div>
   </div>
@@ -619,7 +731,7 @@ textarea.form-control{resize:vertical;min-height:72px;line-height:1.5}
   <div class="ph">
     <div class="ph-left"><h1>Financeiro</h1><p>Controlo de receitas, pagamentos e previsões.</p></div>
     <div class="ph-actions">
-      <button class="btn" onclick="toast('📊 A exportar PDF financeiro...')">↓ PDF</button>
+      <button class="btn" onclick="openReport('Pagamentos')">↓ PDF</button>
       <button class="btn primary" onclick="openModal('register-payment')">+ Registar Pagamento</button>
     </div>
   </div>
@@ -954,7 +1066,7 @@ textarea.form-control{resize:vertical;min-height:72px;line-height:1.5}
 <div class="page" id="page-relatorios">
   <div class="ph">
     <div class="ph-left"><h1>Relatórios</h1><p>Análises financeiras e operacionais.</p></div>
-    <div class="ph-actions"><button class="btn primary" onclick="toast('📊 A gerar relatório...')">Gerar Relatório</button></div>
+    <div class="ph-actions"><button class="btn primary" onclick="openReport('Receita por Período')">Gerar Relatório</button></div>
   </div>
   <div class="grid-3" id="reports-grid"></div>
 </div>
@@ -974,6 +1086,93 @@ textarea.form-control{resize:vertical;min-height:72px;line-height:1.5}
 <div class="toast" id="toast-el"></div>
 
 <script>
+
+// ═══════════════════════════════════════
+// LOGIN SYSTEM
+// ═══════════════════════════════════════
+const USER_CREDS = {
+  admin:  {pwd:'admin2025',  role:'admin',   name:'Admin NIVELZERO', av:'AD', bg:'#F5A623', fg:'#07101E'},
+  gestor: {pwd:'gestor2025', role:'gestor',  name:'Ana Silva',       av:'AS', bg:'#1B4FBF', fg:'#fff'},
+  tecnico:{pwd:'tecnico2025',role:'tecnico', name:'João Machava',    av:'JM', bg:'#0d4a2a', fg:'#fff'},
+  viewer: {pwd:'viewer2025', role:'viewer',  name:'Maria Tembe',     av:'MT', bg:'#4a1a5a', fg:'#fff'},
+};
+
+function doLogin() {
+  const userId = document.getElementById('login-user').value;
+  const pwd    = document.getElementById('login-pwd').value.trim();
+  const errEl  = document.getElementById('login-error');
+  const btn    = document.getElementById('login-btn');
+
+  errEl.style.display = 'none';
+  if (!userId) { errEl.textContent = 'Por favor seleccione um utilizador.'; errEl.style.display='block'; return; }
+  if (!pwd)    { errEl.textContent = 'Por favor introduza a senha.'; errEl.style.display='block'; return; }
+
+  const user = USER_CREDS[userId];
+  if (!user || pwd !== user.pwd) {
+    errEl.textContent = 'Senha incorrecta. Tente novamente.';
+    errEl.style.display = 'block';
+    document.getElementById('login-pwd').value = '';
+    document.getElementById('login-pwd').focus();
+    return;
+  }
+
+  // Authenticated — set role and hide login
+  btn.textContent = 'A entrar...'; btn.disabled = true;
+  setTimeout(() => {
+    // Apply role to UI
+    currentRole = user.role;
+    document.getElementById('tb-username').textContent = user.name;
+    const chip = document.getElementById('tb-role-chip');
+    chip.textContent = ROLE_DEFS[user.role].label;
+    chip.className   = 'role-chip ' + ROLE_DEFS[user.role].chip;
+    const av = document.getElementById('tb-avatar');
+    av.textContent = user.av; av.style.background = user.bg; av.style.color = user.fg;
+    // Update role selector to match (hide demo bar for non-admin)
+    const sel = document.getElementById('role-select');
+    if (sel) sel.value = user.role;
+    // Apply access control
+    applyAccessControl(user.role);
+    // Hide login, show app
+    document.getElementById('login-screen').style.display = 'none';
+    // Init dashboard
+    renderDash();
+    toast('👋 Bem-vindo, ' + user.name + '!');
+  }, 600);
+}
+
+function applyAccessControl(role) {
+  const hide = role === 'tecnico' || role === 'viewer';
+  const fin = document.getElementById('nav-financeiro');
+  const con = document.getElementById('nav-contratos');
+  const eq  = document.getElementById('nav-equipa');
+  const rel = document.getElementById('nav-relatorios');
+  if (fin) fin.style.display = hide ? 'none' : 'flex';
+  if (con) con.style.display = hide ? 'none' : 'flex';
+  if (eq)  eq.style.display  = role === 'admin' ? 'flex' : 'none';
+  if (rel) rel.style.display = hide ? 'none' : 'flex';
+  // Hide demo bar for non-admin (cleaner experience)
+  const demoBar = document.querySelector('.demo-bar');
+  if (demoBar) demoBar.style.display = role === 'admin' ? 'flex' : 'none';
+}
+
+function updateLoginHint() {
+  // Auto-fill hint - clear password field when user changes
+  document.getElementById('login-pwd').value = '';
+  document.getElementById('login-error').style.display = 'none';
+}
+
+function logout() {
+  currentRole = 'admin';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pwd').value = '';
+  document.getElementById('login-btn').textContent = 'Entrar no Sistema';
+  document.getElementById('login-btn').disabled = false;
+  document.getElementById('login-error').style.display = 'none';
+  // Reset to dashboard
+  navigate('dashboard', document.querySelector('.sb-item[data-page=dashboard]'));
+}
+
 // ═══════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════
@@ -1220,11 +1419,16 @@ function renderReports() {
   const grid = document.getElementById('reports-grid');
   if (!grid) return;
   grid.innerHTML = REPORTS.map(r=>`
-    <div class="card" style="cursor:pointer" onclick="toast('📊 A gerar: ${r.name}...')" onmouseover="this.style.borderColor='rgba(255,255,255,.15)'" onmouseout="this.style.borderColor='var(--border)'">
+    <div class="card" style="cursor:pointer;transition:all .2s" onclick="openReport('${r.name}')"
+      onmouseover="this.style.borderColor='var(--teal)';this.style.boxShadow='0 4px 20px rgba(18,194,168,.12)'"
+      onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
       <div class="card-body">
-        <div style="font-size:24px;margin-bottom:10px">${r.icon}</div>
+        <div style="font-size:26px;margin-bottom:10px">${r.icon}</div>
         <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:var(--white);margin-bottom:5px">${r.name}</div>
-        <div style="font-size:12px;color:var(--text-low)">${r.desc}</div>
+        <div style="font-size:12px;color:var(--text-low);margin-bottom:14px">${r.desc}</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--teal)">
+          Abrir relatório <span style="font-size:14px">→</span>
+        </div>
       </div>
     </div>`).join('');
 }
@@ -1381,10 +1585,230 @@ function toast(msg) {
   el._t = setTimeout(()=>el.classList.remove('show'), 3200);
 }
 
+
+// ═══════════════════════════════════════
+// REAL REPORTS
+// ═══════════════════════════════════════
+const REPORT_DATA = {
+  'Receita por Período': {
+    icon:'📊',
+    kpis:[
+      {lbl:'Jan–Abr 2025', val:'330.500 MZN', color:'var(--teal)'},
+      {lbl:'Média Mensal',  val:'82.625 MZN',  color:'var(--white)'},
+      {lbl:'Crescimento',   val:'+12%',         color:'var(--green)'},
+    ],
+    tableHeaders:['Mês','Receita','Vs. Anterior','Estado'],
+    rows:[
+      ['Janeiro 2025','72.000 MZN','—','<span class="badge b-active">Recebido</span>'],
+      ['Fevereiro 2025','78.500 MZN','+9%','<span class="badge b-active">Recebido</span>'],
+      ['Março 2025','85.000 MZN','+8%','<span class="badge b-active">Recebido</span>'],
+      ['Abril 2025','95.000 MZN','+12%','<span class="badge b-pending">Em curso</span>'],
+      ['Maio 2025 (prev.)','~98.000 MZN','+3%','<span class="badge b-inactive">Previsão</span>'],
+      ['Junho 2025 (prev.)','~102.000 MZN','+4%','<span class="badge b-inactive">Previsão</span>'],
+    ],
+    bars: [
+      {label:'Janeiro', val:'72.000 MZN', pct:71, color:'rgba(59,123,248,.6)'},
+      {label:'Fevereiro', val:'78.500 MZN', pct:77, color:'rgba(59,123,248,.7)'},
+      {label:'Março', val:'85.000 MZN', pct:84, color:'rgba(59,123,248,.85)'},
+      {label:'Abril', val:'95.000 MZN', pct:93, color:'var(--teal)'},
+    ]
+  },
+  'Receita por Serviço': {
+    icon:'🥧',
+    kpis:[
+      {lbl:'Serviços Activos', val:'9', color:'var(--white)'},
+      {lbl:'Receita Total/mês', val:'95.500 MZN', color:'var(--teal)'},
+      {lbl:'Mais Rentável', val:'Contabilidade', color:'var(--amber)'},
+    ],
+    tableHeaders:['Serviço','Clientes','Receita/mês','% Total'],
+    rows:[
+      ['Contabilidade','5','38.200 MZN','40%'],
+      ['Gestão Fiscal','5','28.650 MZN','30%'],
+      ['Auditoria Interna','2','15.280 MZN','16%'],
+      ['Análise Financeira','2','8.000 MZN','8%'],
+      ['Outros','3','5.370 MZN','6%'],
+    ],
+    bars: [
+      {label:'Contabilidade', val:'38.200 MZN', pct:100, color:'var(--teal)'},
+      {label:'Gestão Fiscal', val:'28.650 MZN', pct:75, color:'var(--blue-lt)'},
+      {label:'Auditoria', val:'15.280 MZN', pct:40, color:'var(--amber)'},
+      {label:'Análise Fin.', val:'8.000 MZN', pct:21, color:'var(--purple)'},
+      {label:'Outros', val:'5.370 MZN', pct:14, color:'var(--text-low)'},
+    ]
+  },
+  'Pagamentos': {
+    icon:'💸',
+    kpis:[
+      {lbl:'Recebido', val:'67.500 MZN', color:'var(--green)'},
+      {lbl:'Em Atraso', val:'28.000 MZN', color:'var(--red)'},
+      {lbl:'Pendente', val:'26.000 MZN', color:'var(--amber)'},
+    ],
+    tableHeaders:['Cliente','Valor','Estado','Dias'],
+    rows:[
+      ['MozaCargo Lda','15.000 MZN','<span class="badge b-active">Pago</span>','—'],
+      ['Construções Beira Mar','28.000 MZN','<span class="badge b-active">Pago</span>','—'],
+      ['TechSol Mozambique','8.500 MZN','<span class="badge b-active">Pago</span>','—'],
+      ['Importações Africanas','18.000 MZN','<span class="badge b-late">Em atraso</span>','12 dias'],
+      ['Energia Verde Sarl','26.000 MZN','<span class="badge b-pending">Pendente</span>','Vence em 5d'],
+    ],
+    bars: [
+      {label:'Pago', val:'51.500 MZN', pct:54, color:'var(--green)'},
+      {label:'Pendente', val:'26.000 MZN', pct:27, color:'var(--amber)'},
+      {label:'Em atraso', val:'18.000 MZN', pct:19, color:'var(--red)'},
+    ]
+  },
+  'Desempenho da Equipa': {
+    icon:'👥',
+    kpis:[
+      {lbl:'Tarefas Concluídas', val:'24', color:'var(--green)'},
+      {lbl:'Em Progresso', val:'8', color:'var(--blue-lt)'},
+      {lbl:'Pendentes', val:'12', color:'var(--amber)'},
+    ],
+    tableHeaders:['Membro','Função','Tarefas Activas','Concluídas (Abr)','Performance'],
+    rows:[
+      ['Ana Silva','Gestora','8','10','<span class="badge b-active">Excelente</span>'],
+      ['João Machava','Técnico','10','9','<span class="badge b-active">Muito Bom</span>'],
+      ['Maria Tembe','Técnico','5','5','<span class="badge b-pending">Bom</span>'],
+    ],
+    bars: [
+      {label:'Ana Silva', val:'10 concluídas', pct:100, color:'var(--teal)'},
+      {label:'João Machava', val:'9 concluídas', pct:90, color:'var(--blue-lt)'},
+      {label:'Maria Tembe', val:'5 concluídas', pct:50, color:'var(--amber)'},
+    ]
+  },
+  'Conformidade Fiscal': {
+    icon:'✅',
+    kpis:[
+      {lbl:'Conformidade Média', val:'89%', color:'var(--teal)'},
+      {lbl:'Sem Multas Activas', val:'4 de 5', color:'var(--white)'},
+      {lbl:'Atenção Necessária', val:'1 cliente', color:'var(--red)'},
+    ],
+    tableHeaders:['Cliente','Conformidade','IVA','IRPC','Estado'],
+    rows:[
+      ['MozaCargo Lda','97%','✅','✅','<span class="badge b-active">Em dia</span>'],
+      ['Energia Verde Sarl','96%','✅','✅','<span class="badge b-active">Em dia</span>'],
+      ['Construções Beira Mar','94%','✅','⏳','<span class="badge b-active">Em dia</span>'],
+      ['TechSol Mozambique','88%','✅','⏳','<span class="badge b-pending">Atenção</span>'],
+      ['Importações Africanas','72%','❌','⏳','<span class="badge b-late">Crítico</span>'],
+    ],
+    bars: [
+      {label:'MozaCargo Lda', val:'97%', pct:97, color:'var(--teal)'},
+      {label:'Energia Verde', val:'96%', pct:96, color:'var(--teal)'},
+      {label:'Beira Mar', val:'94%', pct:94, color:'var(--teal)'},
+      {label:'TechSol', val:'88%', pct:88, color:'var(--amber)'},
+      {label:'Import. Africanas', val:'72%', pct:72, color:'var(--red)'},
+    ]
+  },
+  'Previsão de Faturação': {
+    icon:'🔮',
+    kpis:[
+      {lbl:'Maio 2025', val:'~98.000 MZN', color:'var(--teal)'},
+      {lbl:'Junho 2025', val:'~102.000 MZN', color:'var(--white)'},
+      {lbl:'Q3 2025 (prev.)', val:'~315.000 MZN', color:'var(--amber)'},
+    ],
+    tableHeaders:['Período','Receita Prevista','Base de Cálculo','Confiança'],
+    rows:[
+      ['Maio 2025','98.000 MZN','Contratos actuais + histórico','<span class="badge b-active">Alta</span>'],
+      ['Junho 2025','102.000 MZN','Contratos + novo cliente esperado','<span class="badge b-active">Alta</span>'],
+      ['Q3 2025','~315.000 MZN','Projecção tendência crescimento','<span class="badge b-pending">Média</span>'],
+      ['Q4 2025','~340.000 MZN','Inclui serviços anuais (Modelos)','<span class="badge b-pending">Média</span>'],
+      ['Ano 2025','~720.000 MZN','Projecção anual completa','<span class="badge b-inactive">Estimativa</span>'],
+    ],
+    bars: [
+      {label:'Abr 2025 (real)', val:'95.500 MZN', pct:93, color:'var(--teal)'},
+      {label:'Mai 2025 (prev.)', val:'~98.000 MZN', pct:96, color:'rgba(18,194,168,.5)'},
+      {label:'Jun 2025 (prev.)', val:'~102.000 MZN', pct:100, color:'rgba(18,194,168,.35)'},
+    ]
+  },
+};
+
+function openReport(name) {
+  const data = REPORT_DATA[name];
+  if (!data) { toast('📊 Relatório em desenvolvimento'); return; }
+
+  const kpisHTML = data.kpis.map(k=>
+    `<div class="report-kpi"><div class="report-kpi-lbl">${k.lbl}</div><div class="report-kpi-val" style="color:${k.color}">${k.val}</div></div>`
+  ).join('');
+
+  const tableHTML = `
+    <table style="width:100%;border-collapse:collapse;font-size:12.5px">
+      <thead><tr>${data.tableHeaders.map(h=>`<th style="background:rgba(255,255,255,.04);font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-low);padding:9px 12px;text-align:left;border-bottom:1px solid var(--border)">${h}</th>`).join('')}</tr></thead>
+      <tbody>${data.rows.map(row=>
+        `<tr>${row.map(cell=>`<td style="padding:10px 12px;border-bottom:1px solid var(--border2);color:var(--text)">${cell}</td>`).join('')}</tr>`
+      ).join('')}</tbody>
+    </table>`;
+
+  const barsHTML = data.bars.map(b=>
+    `<div class="report-bar-row">
+      <span class="report-bar-label">${b.label}</span>
+      <div class="report-bar-track"><div class="report-bar-fill" style="width:${b.pct}%;background:${b.color}"></div></div>
+      <span class="report-bar-val">${b.val}</span>
+    </div>`
+  ).join('');
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="report-modal-header">
+      <div>
+        <div class="modal-title">${data.icon} ${name}</div>
+        <div class="modal-subtitle" style="margin-bottom:0">NIVELZERO CONSULTORES LDA · Abril 2025</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="printReport('${name}')">🖨️ Imprimir</button>
+        <button class="btn primary" onclick="exportReport('${name}')">↓ Exportar CSV</button>
+      </div>
+    </div>
+    <div class="report-kpi-row">${kpisHTML}</div>
+    <div class="report-section-title">Distribuição Visual</div>
+    ${barsHTML}
+    <div class="report-section-title">Dados Detalhados</div>
+    ${tableHTML}
+    <div class="modal-footer" style="margin-top:16px">
+      <button class="btn" onclick="closeModal()">Fechar</button>
+      <button class="btn primary" onclick="exportReport('${name}')">↓ Exportar CSV</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+  // Animate bars after render
+  setTimeout(()=>{ document.querySelectorAll('.report-bar-fill').forEach(b=>{ const w=b.style.width; b.style.width='0'; setTimeout(()=>b.style.width=w, 100); }); }, 100);
+}
+
+function printReport(name) {
+  toast('🖨️ A preparar impressão de: ' + name + '...');
+  setTimeout(()=>window.print(), 400);
+}
+
+function exportReport(name) {
+  const data = REPORT_DATA[name];
+  if (!data) return;
+  const lines = [data.tableHeaders.join(',')];
+  data.rows.forEach(row => {
+    // Strip HTML tags for CSV
+    lines.push(row.map(c => '"' + c.replace(/<[^>]+>/g,'').replace(/"/g,'""') + '"').join(','));
+  });
+  const csv = lines.join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'nivelzero_' + name.replace(/ /g,'_').toLowerCase() + '.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('✅ Ficheiro CSV exportado!');
+}
+
 // ═══════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════
-renderDash();
+// Show login screen on load (shell is behind it)
+// renderDash() is called after successful login
+// But pre-render data so it's ready
+document.addEventListener('DOMContentLoaded', () => {
+  renderDash();
+  renderServices();
+  renderDocs();
+  renderReports();
+  // Focus the user select on login screen
+  const loginUser = document.getElementById('login-user');
+  if (loginUser) loginUser.focus();
+});
 </script>
 </body>
 </html>
