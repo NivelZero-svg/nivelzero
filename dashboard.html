@@ -474,10 +474,10 @@ textarea.form-control{resize:vertical;min-height:72px;line-height:1.5}
   <div class="tb-breadcrumb">Sistema de Gestão · <span id="page-title">Dashboard</span></div>
   <div class="tb-right">
     <div class="tb-search"><span>🔍</span><input type="text" placeholder="Pesquisar..." oninput="globalSearch(this.value)"></div>
-    <button class="icon-btn" onclick="toast('🔔 3 alertas: 2 pagamentos em atraso, 1 prazo fiscal')">
+    <button class="icon-btn" onclick="navigate('dashboard',document.querySelector('[data-page=dashboard]'));setTimeout(()=>document.querySelector('.alert-list').scrollIntoView({behavior:'smooth'}),200)">
       🔔<div class="notif-dot"></div>
     </button>
-    <button class="icon-btn" onclick="toast('⚙️ Configurações')">⚙️</button>
+    <button class="icon-btn" onclick="navigate('config',document.querySelector('[data-page=config]'))">⚙️</button>
     <div class="tb-user" style="cursor:default">
       <div class="avatar" id="tb-avatar" style="width:26px;height:26px;font-size:10px;background:var(--amber);color:var(--bg)">AD</div>
       <span class="tb-uname" id="tb-username">Admin</span>
@@ -489,6 +489,7 @@ textarea.form-control{resize:vertical;min-height:72px;line-height:1.5}
 
 <!-- MAIN AREA -->
 <div class="body-area">
+<input type="file" id="real-file-input" multiple accept=".pdf,.xlsx,.docx,.csv,.jpg,.png" style="display:none" onchange="handleFileUpload(event)">
 
 <!-- SIDEBAR -->
 <nav class="sidebar" id="sidebar">
@@ -529,6 +530,41 @@ textarea.form-control{resize:vertical;min-height:72px;line-height:1.5}
   <div class="sb-group-label">Análise</div>
   <div class="sb-item" data-page="relatorios" id="nav-relatorios" onclick="navigate('relatorios',this)">
     <span class="sb-ico">📈</span><span class="sb-label">Relatórios</span>
+  </div>
+  <div class="sb-group-label">Comercial</div>
+  <div class="sb-item" data-page="propostas" onclick="navigate('propostas',this)">
+    <span class="sb-ico">📋</span><span class="sb-label">Propostas</span>
+    <span class="sb-count sb-c-blue">2</span>
+  </div>
+  <div class="sb-group-label">Fluxo de Trabalho</div>
+  <div class="sb-item" data-page="pipeline" onclick="navigate('pipeline',this)">
+    <span class="sb-ico">🔍</span><span class="sb-label">Pipeline / CRM</span>
+    <span class="sb-count sb-c-blue" id="sb-pipeline-cnt">3</span>
+  </div>
+  <div class="sb-item" data-page="faturacao" id="nav-faturacao" onclick="navigate('faturacao',this)">
+    <span class="sb-ico">💳</span><span class="sb-label">Faturação</span>
+    <span class="sb-count sb-c-red" id="sb-fat-cnt">2</span>
+  </div>
+  <div class="sb-item" data-page="ciclo" onclick="navigate('ciclo',this)">
+    <span class="sb-ico">🔄</span><span class="sb-label">Ciclo Mensal</span>
+  </div>
+  <div class="sb-item" data-page="alertas" onclick="navigate('alertas',this)">
+    <span class="sb-ico">🚨</span><span class="sb-label">Alertas</span>
+    <span class="sb-count sb-c-red" id="sb-alerts-cnt">3</span>
+  </div>
+  <div class="sb-group-label">Análise</div>
+  <div class="sb-item" data-page="inss" onclick="navigate('inss',this)">
+    <span class="sb-ico">🏛️</span><span class="sb-label">INSS</span>
+  </div>
+  <div class="sb-item" data-page="auditoria" id="nav-auditoria" onclick="navigate('auditoria',this)">
+    <span class="sb-ico">🔎</span><span class="sb-label">Log de Auditoria</span>
+  </div>
+  <div class="sb-item" data-page="fluxo" onclick="navigate('fluxo',this)">
+    <span class="sb-ico">🗺️</span><span class="sb-label">Fluxograma</span>
+  </div>
+  <div class="sb-group-label">Sistema</div>
+  <div class="sb-item" data-page="config" id="nav-config" onclick="navigate('config',this)">
+    <span class="sb-ico">⚙️</span><span class="sb-label">Configurações</span>
   </div>
   <div class="sb-footer">
     <div class="sb-period">
@@ -601,7 +637,7 @@ textarea.form-control{resize:vertical;min-height:72px;line-height:1.5}
           <div class="alert-item al-red">
             <div class="alert-icon">💸</div>
             <div><div class="alert-title">Importações Africanas — Pagamento 12 dias em atraso</div><div class="alert-desc">18.000 MZN · Março 2025 · Notificar imediatamente</div></div>
-            <button class="btn xs danger" style="margin-left:auto;flex-shrink:0" onclick="toast('📧 Lembrete enviado a Importações Africanas')">Notificar</button>
+            <button class="btn xs danger" style="margin-left:auto;flex-shrink:0" onclick="openModal('notify-client')">Notificar</button>
           </div>
           <div class="alert-item al-red">
             <div class="alert-icon">🧾</div>
@@ -611,7 +647,7 @@ textarea.form-control{resize:vertical;min-height:72px;line-height:1.5}
           <div class="alert-item al-amber">
             <div class="alert-icon">📄</div>
             <div><div class="alert-title">TechSol — Contrato a expirar em 15 dias</div><div class="alert-desc">Essential PME · 8.500 MZN/mês · Renovar</div></div>
-            <button class="btn xs" style="margin-left:auto;flex-shrink:0" onclick="toast('🔄 Email de renovação enviado')">Renovar</button>
+            <button class="btn xs" style="margin-left:auto;flex-shrink:0" onclick="openModal('edit-contract')">Renovar</button>
           </div>
           <div class="alert-item al-blue">
             <div class="alert-icon">📋</div>
@@ -620,7 +656,7 @@ textarea.form-control{resize:vertical;min-height:72px;line-height:1.5}
           <div class="alert-item al-amber">
             <div class="alert-icon">⏳</div>
             <div><div class="alert-title">Energia Verde — Pagamento Abril pendente</div><div class="alert-desc">26.000 MZN · Vence em 5 dias</div></div>
-            <button class="btn xs" style="margin-left:auto;flex-shrink:0" onclick="toast('💬 WhatsApp enviado a Energia Verde')">Lembrar</button>
+            <button class="btn xs" style="margin-left:auto;flex-shrink:0" onclick="openModal('notify-client')">Lembrar</button>
           </div>
         </div>
       </div>
@@ -752,11 +788,11 @@ textarea.form-control{resize:vertical;min-height:72px;line-height:1.5}
           <table>
             <thead><tr><th>Cliente</th><th>Valor</th><th>Vencimento</th><th>Estado</th><th></th></tr></thead>
             <tbody>
-              <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#1B4FBF">MC</div><span class="c-name">MozaCargo Lda</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">15.000 MZN</td><td>05 Abr</td><td><span class="badge b-active">Pago</span></td><td><button class="btn xs" onclick="toast('📄 Recibo gerado para MozaCargo')">Recibo</button></td></tr>
-              <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#1a3a4a">CB</div><span class="c-name">Construções Beira Mar</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">28.000 MZN</td><td>05 Abr</td><td><span class="badge b-active">Pago</span></td><td><button class="btn xs" onclick="toast('📄 Recibo gerado')">Recibo</button></td></tr>
-              <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#4a2070">TS</div><span class="c-name">TechSol Mozambique</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">8.500 MZN</td><td>05 Abr</td><td><span class="badge b-active">Pago</span></td><td><button class="btn xs" onclick="toast('📄 Recibo gerado')">Recibo</button></td></tr>
-              <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#7a3a00">IA</div><span class="c-name">Importações Africanas</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">18.000 MZN</td><td>05 Abr</td><td><span class="badge b-late">Atraso 12d</span></td><td><button class="btn xs danger" onclick="toast('📧 Notificação enviada a Importações Africanas')">Notificar</button></td></tr>
-              <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#0d4a2a">EV</div><span class="c-name">Energia Verde Sarl</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">26.000 MZN</td><td>05 Abr</td><td><span class="badge b-pending">Pendente</span></td><td><button class="btn xs" onclick="toast('💬 WhatsApp enviado a Energia Verde')">Lembrar</button></td></tr>
+              <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#1B4FBF">MC</div><span class="c-name">MozaCargo Lda</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">15.000 MZN</td><td>05 Abr</td><td><span class="badge b-active">Pago</span></td><td><button class="btn xs" onclick="openModal('generate-recibo')">Recibo</button></td></tr>
+              <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#1a3a4a">CB</div><span class="c-name">Construções Beira Mar</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">28.000 MZN</td><td>05 Abr</td><td><span class="badge b-active">Pago</span></td><td><button class="btn xs" onclick="openModal('generate-recibo')">Recibo</button></td></tr>
+              <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#4a2070">TS</div><span class="c-name">TechSol Mozambique</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">8.500 MZN</td><td>05 Abr</td><td><span class="badge b-active">Pago</span></td><td><button class="btn xs" onclick="openModal('generate-recibo')">Recibo</button></td></tr>
+              <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#7a3a00">IA</div><span class="c-name">Importações Africanas</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">18.000 MZN</td><td>05 Abr</td><td><span class="badge b-late">Atraso 12d</span></td><td><button class="btn xs danger" onclick="openModal('notify-client')">Notificar</button></td></tr>
+              <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#0d4a2a">EV</div><span class="c-name">Energia Verde Sarl</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">26.000 MZN</td><td>05 Abr</td><td><span class="badge b-pending">Pendente</span></td><td><button class="btn xs" onclick="openModal('notify-client')">Lembrar</button></td></tr>
             </tbody>
           </table>
         </div>
@@ -818,11 +854,11 @@ textarea.form-control{resize:vertical;min-height:72px;line-height:1.5}
         <table>
           <thead><tr><th>Cliente</th><th>Tipo</th><th>Valor</th><th>Início</th><th>Frequência</th><th>Próxima Cobrança</th><th>Estado</th><th></th></tr></thead>
           <tbody>
-            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#1B4FBF">MC</div><span class="c-name">MozaCargo Lda</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">28.000 MZN</td><td>Jan 2024</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-active">Activo</span></td><td><div class="actions"><button class="btn xs" onclick="toast('✏️ A editar contrato MozaCargo')">Editar</button></div></td></tr>
-            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#1a3a4a">CB</div><span class="c-name">Construções Beira Mar</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">15.000 MZN</td><td>Mar 2024</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-active">Activo</span></td><td><div class="actions"><button class="btn xs" onclick="toast('✏️ A editar contrato Beira Mar')">Editar</button></div></td></tr>
-            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#4a2070">TS</div><span class="c-name">TechSol Mozambique</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">8.500 MZN</td><td>Abr 2025</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-pending">A renovar</span></td><td><div class="actions"><button class="btn xs blue" onclick="toast('🔄 Renovação enviada a TechSol')">Renovar</button></div></td></tr>
-            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#7a3a00">IA</div><span class="c-name">Importações Africanas</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">18.000 MZN</td><td>Jun 2023</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-late">Em atraso</span></td><td><div class="actions"><button class="btn xs danger" onclick="toast('📧 Notif. enviada')">Notificar</button></div></td></tr>
-            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#0d4a2a">EV</div><span class="c-name">Energia Verde Sarl</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">26.000 MZN</td><td>Set 2023</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-pending">Pendente</span></td><td><div class="actions"><button class="btn xs" onclick="toast('💬 Lembrete enviado a Energia Verde')">Lembrar</button></div></td></tr>
+            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#1B4FBF">MC</div><span class="c-name">MozaCargo Lda</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">28.000 MZN</td><td>Jan 2024</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-active">Activo</span></td><td><div class="actions"><button class="btn xs" onclick="openModal('edit-contract')">Editar</button></div></td></tr>
+            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#1a3a4a">CB</div><span class="c-name">Construções Beira Mar</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">15.000 MZN</td><td>Mar 2024</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-active">Activo</span></td><td><div class="actions"><button class="btn xs" onclick="openModal('edit-contract')">Editar</button></div></td></tr>
+            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#4a2070">TS</div><span class="c-name">TechSol Mozambique</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">8.500 MZN</td><td>Abr 2025</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-pending">A renovar</span></td><td><div class="actions"><button class="btn xs blue" onclick="openModal('edit-contract')">Renovar</button></div></td></tr>
+            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#7a3a00">IA</div><span class="c-name">Importações Africanas</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">18.000 MZN</td><td>Jun 2023</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-late">Em atraso</span></td><td><div class="actions"><button class="btn xs danger" onclick="openModal('notify-client')">Notificar</button></div></td></tr>
+            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#0d4a2a">EV</div><span class="c-name">Energia Verde Sarl</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">26.000 MZN</td><td>Set 2023</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-pending">Pendente</span></td><td><div class="actions"><button class="btn xs" onclick="openModal('notify-client')">Lembrar</button></div></td></tr>
           </tbody>
         </table>
       </div>
@@ -877,7 +913,7 @@ textarea.form-control{resize:vertical;min-height:72px;line-height:1.5}
 <div class="page" id="page-documentos">
   <div class="ph">
     <div class="ph-left"><h1>Documentos</h1><p>Arquivo digital por cliente e tipo.</p></div>
-    <div class="ph-actions"><button class="btn primary" onclick="toast('📎 Seleccione ficheiro para carregar')">↑ Carregar</button></div>
+    <div class="ph-actions"><button class="btn primary" onclick="document.getElementById('real-file-input').click()">↑ Carregar</button></div>
   </div>
   <div class="grid-3" id="docs-grid"></div>
 </div>
@@ -1071,6 +1107,358 @@ textarea.form-control{resize:vertical;min-height:72px;line-height:1.5}
   <div class="grid-3" id="reports-grid"></div>
 </div>
 
+
+<!-- ══ PROPOSTAS ══ -->
+<div class="page" id="page-propostas">
+  <div class="ph">
+    <div class="ph-left"><h1>Propostas Comerciais</h1><p>Gerar, enviar e acompanhar propostas.</p></div>
+    <div class="ph-actions">
+      <button class="btn primary" onclick="openModal('new-proposal')">+ Nova Proposta</button>
+    </div>
+  </div>
+  <div class="grid-3" style="margin-bottom:16px">
+    <div class="rev-card"><div class="rc-label">Propostas Enviadas</div><div class="rc-value">8</div><div class="rc-sub">Este mês</div></div>
+    <div class="rev-card"><div class="rc-label">Taxa de Aceitação</div><div class="rc-value" style="color:var(--teal)">75%</div><div class="rc-sub">6 de 8 aceites</div></div>
+    <div class="rev-card"><div class="rc-label">Valor Pendente</div><div class="rc-value" style="color:var(--amber)">2</div><div class="rc-sub">Aguardam resposta</div></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">Todas as Propostas</div></div>
+    <div class="card-body no-pad">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Empresa</th><th>Pacote</th><th>Valor/mês</th><th>Data</th><th>Estado</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#2a4a8a">RS</div><div class="c-name">Retail Services Lda</div></div></td><td><span class="pkg pkg-cres">Crescimento</span></td><td style="font-weight:700">12.000 MZN</td><td>22 Abr 2025</td><td><span class="badge b-pending">Aguarda resposta</span></td><td><div class="actions"><button class="btn xs blue" onclick="openModal('view-proposal','RS')">Ver</button><button class="btn xs" onclick="openWhatsApp('+258841234567','proposta')">WA</button></div></td></tr>
+            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#3a2060">AG</div><div class="c-name">AgroMoz Lda</div></div></td><td><span class="pkg pkg-est">Estrutura</span></td><td style="font-weight:700">22.000 MZN</td><td>18 Abr 2025</td><td><span class="badge b-pending">Aguarda resposta</span></td><td><div class="actions"><button class="btn xs blue" onclick="openModal('view-proposal','AG')">Ver</button><button class="btn xs" onclick="openWhatsApp('+258849876543','proposta')">WA</button></div></td></tr>
+            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#0a3a2a">BL</div><div class="c-name">Beluluane Logistics</div></div></td><td><span class="pkg pkg-est">Estrutura</span></td><td style="font-weight:700">28.000 MZN</td><td>10 Abr 2025</td><td><span class="badge b-active">Aceite ✓</span></td><td><div class="actions"><button class="btn xs" onclick="openModal('new-contract')">Contrato</button></div></td></tr>
+            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#5a1a1a">FM</div><div class="c-name">FashionMoz Lda</div></div></td><td><span class="pkg pkg-ess">Essencial</span></td><td style="font-weight:700">6.500 MZN</td><td>05 Abr 2025</td><td><span class="badge b-active">Aceite ✓</span></td><td><div class="actions"><button class="btn xs" onclick="openModal('new-contract')">Contrato</button></div></td></tr>
+            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#1a3a5a">SC</div><div class="c-name">SafariCom Moçambique</div></div></td><td><span class="pkg pkg-prem">Premium</span></td><td style="font-weight:700">45.000 MZN</td><td>28 Mar 2025</td><td><span class="badge b-inactive">Recusada</span></td><td><div class="actions"><button class="btn xs" onclick="toast('📞 A contactar SafariCom...')">Seguir</button></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CONFIGURAÇÕES ══ -->
+<div class="page" id="page-config">
+  <div class="ph">
+    <div class="ph-left"><h1>Configurações</h1><p>Configurações da plataforma e da empresa.</p></div>
+  </div>
+  <div class="grid-2">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="card">
+        <div class="card-header"><div class="card-title">🏢 Dados da Empresa</div></div>
+        <div class="card-body">
+          <div class="form-group"><label>Nome Legal</label><input class="form-control" id="cfg-name" value="NIVELZERO CONSULTORES LDA"></div>
+          <div class="form-row"><div class="form-group"><label>NUIT</label><input class="form-control" id="cfg-nuit" value="400100000"></div><div class="form-group"><label>Telefone</label><input class="form-control" id="cfg-phone" value="+258 86 73 44276"></div></div>
+          <div class="form-group"><label>Email</label><input class="form-control" id="cfg-email" value="nivel_zero24@hotmail.com" type="email"></div>
+          <div class="form-group"><label>Endereço</label><input class="form-control" id="cfg-addr" value="Matola, Maputo — Moçambique"></div>
+          <div class="form-group"><label>WhatsApp (número)</label><input class="form-control" id="cfg-wa" value="258867344276"></div>
+          <button class="btn primary" onclick="saveCfg()">💾 Guardar Dados</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">💰 Preços dos Pacotes</div></div>
+        <div class="card-body">
+          <div class="form-group"><label>Essencial — mínimo (MZN)</label><input class="form-control" id="cfg-p1" value="5000" type="number"></div>
+          <div class="form-group"><label>Crescimento — mínimo (MZN)</label><input class="form-control" id="cfg-p2" value="9000" type="number"></div>
+          <div class="form-group"><label>Estrutura — mínimo (MZN)</label><input class="form-control" id="cfg-p3" value="18000" type="number"></div>
+          <div class="form-group"><label>Premium — mínimo (MZN)</label><input class="form-control" id="cfg-p4" value="35000" type="number"></div>
+          <button class="btn primary" onclick="saveCfg()">💾 Guardar Preços</button>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="card">
+        <div class="card-header"><div class="card-title">🔔 Notificações</div></div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;font-weight:500">Pagamentos em atraso</div><div style="font-size:11.5px;color:var(--text-low)">Alerta imediato via sistema</div></div><div class="toggle-track on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;font-weight:500">Prazos fiscais (7 dias antes)</div><div style="font-size:11.5px;color:var(--text-low)">Lembrete automático de submissões</div></div><div class="toggle-track on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;font-weight:500">Contratos a expirar</div><div style="font-size:11.5px;color:var(--text-low)">30 dias antes do fim</div></div><div class="toggle-track on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;font-weight:500">Relatório semanal (sexta)</div><div style="font-size:11.5px;color:var(--text-low)">Resumo por email</div></div><div class="toggle-track" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">🔐 Segurança</div></div>
+        <div class="card-body">
+          <div class="form-group"><label>Senha actual</label><input class="form-control" type="password" placeholder="••••••••"></div>
+          <div class="form-group"><label>Nova senha</label><input class="form-control" type="password" placeholder="Nova senha"></div>
+          <div class="form-group"><label>Confirmar nova senha</label><input class="form-control" type="password" placeholder="Repetir senha"></div>
+          <button class="btn primary" onclick="toast('✅ Senha alterada com sucesso!')">Alterar Senha</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">📊 Sistema</div></div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:12.5px">
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--text-low)">Versão</span><span style="font-weight:600">NIVELZERO v2.0</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--text-low)">Clientes registados</span><span style="font-weight:600">5</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--text-low)">Tarefas activas</span><span style="font-weight:600">20</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--text-low)">Documentos</span><span style="font-weight:600">6</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--text-low)">Último backup</span><span style="color:var(--teal);font-weight:600">Hoje, 09:00</span></div>
+          </div>
+          <button class="btn" onclick="toast('💾 Backup exportado!')" style="margin-top:14px;width:100%">↓ Exportar Backup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ PIPELINE / CRM ══ -->
+<div class="page" id="page-pipeline">
+  <div class="ph">
+    <div class="ph-left"><h1>Pipeline / CRM</h1><p>Prospecção e acompanhamento de leads — do contacto ao contrato.</p></div>
+    <div class="ph-actions"><button class="btn teal" onclick="openModal('new-lead')">+ Novo Lead</button></div>
+  </div>
+  <!-- Summary row -->
+  <div class="three-col" style="margin-bottom:16px">
+    <div class="rev-card" style="background:var(--bg2);border:1px solid var(--border)"><div class="rc-label">Leads Activos</div><div class="rc-value" id="pipe-total">—</div><div class="rc-sub">em todas as fases</div></div>
+    <div class="rev-card" style="background:var(--bg2);border:1px solid var(--border)"><div class="rc-label">Propostas Enviadas</div><div class="rc-value" style="color:var(--amber)" id="pipe-proposals">—</div><div class="rc-sub">aguardam resposta</div></div>
+    <div class="rev-card" style="background:var(--bg2);border:1px solid var(--border)"><div class="rc-label">Aceites este mês</div><div class="rc-value" style="color:var(--teal)" id="pipe-accepted">—</div><div class="rc-sub">prontos para contrato</div></div>
+  </div>
+  <!-- Kanban board -->
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;overflow-x:auto" id="pipeline-board"></div>
+</div>
+
+<!-- ══ FATURAÇÃO ══ -->
+<div class="page" id="page-faturacao">
+  <div class="ph">
+    <div class="ph-left"><h1>Faturação</h1><p>Estado de pagamentos, recibos e faturas — Maio 2025</p></div>
+    <div class="ph-actions">
+      <button class="btn" onclick="openModal('generate-invoice')">📄 Gerar Fatura</button>
+      <button class="btn teal" onclick="openModal('register-payment')">+ Registar Pagamento</button>
+    </div>
+  </div>
+  <div class="three-col" style="margin-bottom:16px">
+    <div class="rev-card" style="background:var(--bg2);border:1px solid var(--border);border-top:2px solid var(--teal)"><div class="rc-label">Receita Mensal</div><div class="rc-value" style="color:var(--teal)" id="fat-total">—</div><div class="rc-sub">Maio 2025</div></div>
+    <div class="rev-card" style="background:var(--bg2);border:1px solid var(--border);border-top:2px solid var(--green)"><div class="rc-label">Recebido</div><div class="rc-value" style="color:var(--green)" id="fat-recv">—</div><div class="rc-sub">pagamentos confirmados</div></div>
+    <div class="rev-card" style="background:var(--bg2);border:1px solid var(--border);border-top:2px solid var(--red)"><div class="rc-label">Em Atraso</div><div class="rc-value" style="color:var(--red)" id="fat-late">—</div><div class="rc-sub">acção necessária</div></div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-header"><div class="card-title">💳 Estado de Pagamentos</div></div>
+      <div class="card-body no-pad"><div class="table-wrap"><table id="fat-table">
+        <thead><tr><th>Cliente</th><th>Valor</th><th>Vencimento</th><th>Estado</th><th>Acções</th></tr></thead>
+        <tbody></tbody>
+      </table></div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card">
+        <div class="card-header"><div class="card-title">🥧 Receita por Serviço</div></div>
+        <div class="card-body">
+          <div style="display:flex;align-items:center;gap:16px">
+            <svg width="90" height="90" viewBox="0 0 90 90" id="fat-donut">
+              <circle cx="45" cy="45" r="32" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="13"/>
+              <circle cx="45" cy="45" r="32" fill="none" stroke="var(--teal)" stroke-width="13" stroke-dasharray="80 121" stroke-dashoffset="0" transform="rotate(-90 45 45)"/>
+              <circle cx="45" cy="45" r="32" fill="none" stroke="var(--blue-lt)" stroke-width="13" stroke-dasharray="60 141" stroke-dashoffset="-80" transform="rotate(-90 45 45)"/>
+              <circle cx="45" cy="45" r="32" fill="none" stroke="var(--amber)" stroke-width="13" stroke-dasharray="30 171" stroke-dashoffset="-140" transform="rotate(-90 45 45)"/>
+              <circle cx="45" cy="45" r="32" fill="none" stroke="var(--purple)" stroke-width="13" stroke-dasharray="21 180" stroke-dashoffset="-170" transform="rotate(-90 45 45)"/>
+            </svg>
+            <div style="display:flex;flex-direction:column;gap:7px;flex:1">
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px"><div style="width:8px;height:8px;border-radius:50%;background:var(--teal);flex-shrink:0"></div><span style="color:var(--text-lo);flex:1">Contabilidade</span><span style="font-weight:700">40%</span></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue-lt);flex-shrink:0"></div><span style="color:var(--text-lo);flex:1">Gestão Fiscal</span><span style="font-weight:700">30%</span></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px"><div style="width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0"></div><span style="color:var(--text-lo);flex:1">Auditoria</span><span style="font-weight:700">16%</span></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px"><div style="width:8px;height:8px;border-radius:50%;background:var(--purple);flex-shrink:0"></div><span style="color:var(--text-lo);flex:1">Outros</span><span style="font-weight:700">14%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">🔮 Previsão</div></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;justify-content:space-between"><span style="font-size:12.5px;color:var(--text)">Junho 2025</span><span style="font-family:'Montserrat',sans-serif;font-weight:800">~98.000 MZN</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-size:12.5px;color:var(--text)">Julho 2025</span><span style="font-family:'Montserrat',sans-serif;font-weight:700;color:rgba(255,255,255,.5)">~102.000 MZN</span></div>
+          <div style="padding-top:10px;border-top:1px solid var(--border)">
+            <div style="font-size:10.5px;color:var(--gray);margin-bottom:4px">ACUMULADO YTD</div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:20px;font-weight:800;color:var(--teal)">330.500 MZN</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ALERTAS ══ -->
+<div class="page" id="page-alertas">
+  <div class="ph"><div class="ph-left"><h1>Alertas</h1><p>Acções que requerem atenção imediata.</p></div></div>
+  <div id="alerts-list" style="display:flex;flex-direction:column;gap:10px"></div>
+</div>
+
+<!-- ══ FLUXOGRAMA ══ -->
+<div class="page" id="page-fluxo">
+  <div class="ph"><div class="ph-left"><h1>Fluxograma Operacional</h1><p>Fluxo completo de trabalho — do lead ao encerramento.</p></div></div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">Fluxo: Prospecção → Proposta → Contrato → Ciclo Mensal → Renovação</div></div>
+    <div class="card-body">
+      <div style="width:100%;overflow-y:auto;max-height:420px;background:var(--bg3);border-radius:10px;padding:16px;display:flex;justify-content:center">
+        <svg viewBox="0 0 680 1040" style="max-width:420px;width:100%" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#9C9A92" stroke-width="1.5" stroke-linecap="round"/></marker></defs>
+          <rect x="260" y="28" width="160" height="36" rx="18" fill="#444441" stroke="#B4B2A9" stroke-width="0.5"/>
+          <text x="340" y="46" text-anchor="middle" dominant-baseline="central" fill="#D3D1C7" font-size="14" font-weight="500">Início</text>
+          <line x1="340" y1="64" x2="340" y2="84" marker-end="url(#arr)" stroke="#9C9A92" stroke-width="1.5"/>
+          <rect x="230" y="84" width="220" height="56" rx="8" fill="#085041" stroke="#5DCAA5" stroke-width="0.5" style="cursor:pointer" onclick="goPage('pipeline',null)"/>
+          <text x="340" y="106" text-anchor="middle" dominant-baseline="central" fill="#9FE1CB" font-size="14" font-weight="500">Prospecção / Lead</text>
+          <text x="340" y="126" text-anchor="middle" dominant-baseline="central" fill="#5DCAA5" font-size="12">Contactar leads potenciais</text>
+          <line x1="340" y1="140" x2="340" y2="160" marker-end="url(#arr)" stroke="#9C9A92" stroke-width="1.5"/>
+          <rect x="230" y="160" width="220" height="56" rx="8" fill="#085041" stroke="#5DCAA5" stroke-width="0.5" style="cursor:pointer" onclick="goPage('propostas',null)"/>
+          <text x="340" y="182" text-anchor="middle" dominant-baseline="central" fill="#9FE1CB" font-size="14" font-weight="500">Proposta Comercial</text>
+          <text x="340" y="202" text-anchor="middle" dominant-baseline="central" fill="#5DCAA5" font-size="12">Gerar, enviar, acompanhar</text>
+          <line x1="340" y1="216" x2="340" y2="236" marker-end="url(#arr)" stroke="#9C9A92" stroke-width="1.5"/>
+          <polygon points="340,236 420,261 340,286 260,261" fill="#48380F" stroke="#A8782A" stroke-width="0.5"/>
+          <text x="340" y="261" text-anchor="middle" dominant-baseline="central" fill="#FEFAF5" font-size="14" font-weight="500">Aceite?</text>
+          <text x="349" y="295" fill="#C2C0B6" font-size="12">Sim</text>
+          <text x="430" y="255" fill="#C2C0B6" font-size="12">Não</text>
+          <line x1="340" y1="286" x2="340" y2="306" marker-end="url(#arr)" stroke="#9C9A92" stroke-width="1.5"/>
+          <line x1="420" y1="261" x2="540" y2="261" marker-end="url(#arr)" stroke="#9C9A92" stroke-width="1.5"/>
+          <rect x="460" y="240" width="160" height="42" rx="8" fill="#712B13" stroke="#F0997B" stroke-width="0.5"/>
+          <text x="540" y="261" text-anchor="middle" dominant-baseline="central" fill="#FFD5C8" font-size="13" font-weight="500">Proposta Recusada</text>
+          <rect x="230" y="306" width="220" height="56" rx="8" fill="#3C3489" stroke="#AFA9EC" stroke-width="0.5" style="cursor:pointer" onclick="goPage('contratos',null)"/>
+          <text x="340" y="328" text-anchor="middle" dominant-baseline="central" fill="#CDCAF5" font-size="14" font-weight="500">Assinatura de Contrato</text>
+          <text x="340" y="348" text-anchor="middle" dominant-baseline="central" fill="#AFA9EC" font-size="12">Pacote e condições definidos</text>
+          <line x1="340" y1="362" x2="340" y2="382" marker-end="url(#arr)" stroke="#9C9A92" stroke-width="1.5"/>
+          <rect x="230" y="382" width="220" height="56" rx="8" fill="#085041" stroke="#5DCAA5" stroke-width="0.5" style="cursor:pointer" onclick="goPage('clientes',null)"/>
+          <text x="340" y="404" text-anchor="middle" dominant-baseline="central" fill="#9FE1CB" font-size="14" font-weight="500">Onboarding do Cliente</text>
+          <text x="340" y="424" text-anchor="middle" dominant-baseline="central" fill="#5DCAA5" font-size="12">Recolha de documentação</text>
+          <line x1="340" y1="438" x2="340" y2="466" marker-end="url(#arr)" stroke="#9C9A92" stroke-width="1.5"/>
+          <rect x="200" y="466" width="280" height="36" rx="18" fill="#333330" stroke="#B4B2A9" stroke-width="0.5"/>
+          <text x="340" y="484" text-anchor="middle" dominant-baseline="central" fill="#D3D1C7" font-size="14" font-weight="600">↻ Ciclo Mensal</text>
+          <line x1="340" y1="502" x2="340" y2="522" marker-end="url(#arr)" stroke="#9C9A92" stroke-width="1.5"/>
+          <rect x="230" y="522" width="220" height="56" rx="8" fill="#085041" stroke="#5DCAA5" stroke-width="0.5" style="cursor:pointer" onclick="goPage('servicos',null)"/>
+          <text x="340" y="544" text-anchor="middle" dominant-baseline="central" fill="#9FE1CB" font-size="14" font-weight="500">Serviços Mensais</text>
+          <text x="340" y="564" text-anchor="middle" dominant-baseline="central" fill="#5DCAA5" font-size="12">Contab. · Fiscal · Tarefas</text>
+          <line x1="340" y1="578" x2="340" y2="598" marker-end="url(#arr)" stroke="#9C9A92" stroke-width="1.5"/>
+          <rect x="230" y="598" width="220" height="56" rx="8" fill="#085041" stroke="#5DCAA5" stroke-width="0.5" style="cursor:pointer" onclick="goPage('fiscal',null)"/>
+          <text x="340" y="620" text-anchor="middle" dominant-baseline="central" fill="#9FE1CB" font-size="14" font-weight="500">Prazos Fiscais</text>
+          <text x="340" y="640" text-anchor="middle" dominant-baseline="central" fill="#5DCAA5" font-size="12">IVA · IRPC · IRPS · AT</text>
+          <line x1="340" y1="654" x2="340" y2="674" marker-end="url(#arr)" stroke="#9C9A92" stroke-width="1.5"/>
+          <rect x="230" y="674" width="220" height="56" rx="8" fill="#3C3489" stroke="#AFA9EC" stroke-width="0.5" style="cursor:pointer" onclick="goPage('faturacao',null)"/>
+          <text x="340" y="696" text-anchor="middle" dominant-baseline="central" fill="#CDCAF5" font-size="14" font-weight="500">Faturação Mensal</text>
+          <text x="340" y="716" text-anchor="middle" dominant-baseline="central" fill="#AFA9EC" font-size="12">Emitir fatura ao cliente</text>
+          <line x1="340" y1="730" x2="340" y2="750" marker-end="url(#arr)" stroke="#9C9A92" stroke-width="1.5"/>
+          <polygon points="340,750 420,775 340,800 260,775" fill="#48380F" stroke="#A8782A" stroke-width="0.5"/>
+          <text x="340" y="775" text-anchor="middle" dominant-baseline="central" fill="#FEFAF5" font-size="14" font-weight="500">Pago?</text>
+          <text x="349" y="809" fill="#C2C0B6" font-size="12">Sim</text>
+          <text x="428" y="769" fill="#C2C0B6" font-size="12">Não</text>
+          <line x1="420" y1="775" x2="540" y2="775" marker-end="url(#arr)" stroke="#9C9A92" stroke-width="1.5"/>
+          <rect x="460" y="754" width="160" height="42" rx="8" fill="#712B13" stroke="#F0997B" stroke-width="0.5"/>
+          <text x="540" y="775" text-anchor="middle" dominant-baseline="central" fill="#FFD5C8" font-size="13">Notificar Cliente</text>
+          <line x1="340" y1="800" x2="340" y2="820" marker-end="url(#arr)" stroke="#9C9A92" stroke-width="1.5"/>
+          <rect x="230" y="820" width="220" height="56" rx="8" fill="#3C3489" stroke="#AFA9EC" stroke-width="0.5" style="cursor:pointer" onclick="goPage('faturacao',null)"/>
+          <text x="340" y="842" text-anchor="middle" dominant-baseline="central" fill="#CDCAF5" font-size="14" font-weight="500">Emissão de Recibo</text>
+          <text x="340" y="862" text-anchor="middle" dominant-baseline="central" fill="#AFA9EC" font-size="12">Confirmar pagamento recebido</text>
+          <line x1="340" y1="876" x2="340" y2="896" marker-end="url(#arr)" stroke="#9C9A92" stroke-width="1.5"/>
+          <rect x="230" y="896" width="220" height="56" rx="8" fill="#0C447C" stroke="#85B7EB" stroke-width="0.5" style="cursor:pointer" onclick="goPage('relatorios',null)"/>
+          <text x="340" y="918" text-anchor="middle" dominant-baseline="central" fill="#C4D8F4" font-size="14" font-weight="500">Relatório &amp; Análise</text>
+          <text x="340" y="938" text-anchor="middle" dominant-baseline="central" fill="#85B7EB" font-size="12">Financeiro e operacional</text>
+          <line x1="340" y1="952" x2="340" y2="972" marker-end="url(#arr)" stroke="#9C9A92" stroke-width="1.5"/>
+          <polygon points="340,972 420,997 340,1022 260,997" fill="#48380F" stroke="#A8782A" stroke-width="0.5"/>
+          <text x="340" y="997" text-anchor="middle" dominant-baseline="central" fill="#FEFAF5" font-size="14" font-weight="500">Renovar?</text>
+          <line x1="340" y1="1022" x2="340" y2="1042" marker-end="url(#arr)" stroke="#9C9A92" stroke-width="1.5"/>
+          <text x="349" y="1034" fill="#C2C0B6" font-size="12">Não</text>
+          <text x="210" y="990" text-anchor="middle" fill="#C2C0B6" font-size="12">Sim →</text>
+          <path d="M260,997 L160,997 L160,488 L200,488" fill="none" marker-end="url(#arr)" stroke="#9C9A92" stroke-width="1.5"/>
+          <rect x="250" y="1042" width="180" height="36" rx="18" fill="#444441" stroke="#B4B2A9" stroke-width="0.5"/>
+          <text x="340" y="1060" text-anchor="middle" dominant-baseline="central" fill="#D3D1C7" font-size="14" font-weight="500">Encerrar Contrato</text>
+        </svg>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:16px">
+        <div style="background:rgba(8,80,65,.2);border:1px solid rgba(93,202,165,.3);border-radius:8px;padding:12px;text-align:center"><div style="font-size:10px;color:rgba(93,202,165,.8);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px">Operação</div><div style="font-size:12px">Prospecção · Onboarding · Serviços · Fiscal</div></div>
+        <div style="background:rgba(60,52,137,.2);border:1px solid rgba(175,169,236,.3);border-radius:8px;padding:12px;text-align:center"><div style="font-size:10px;color:rgba(175,169,236,.8);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px">Financeiro</div><div style="font-size:12px">Faturação · Recibo · Contrato</div></div>
+        <div style="background:rgba(12,68,124,.2);border:1px solid rgba(133,183,235,.3);border-radius:8px;padding:12px;text-align:center"><div style="font-size:10px;color:rgba(133,183,235,.8);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px">Análise</div><div style="font-size:12px">Relatório · KPIs · Dashboard</div></div>
+        <div style="background:rgba(72,58,15,.3);border:1px solid rgba(168,120,41,.3);border-radius:8px;padding:12px;text-align:center"><div style="font-size:10px;color:rgba(245,195,100,.8);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px">Decisão</div><div style="font-size:12px">Aceite? · Pago? · Renovar?</div></div>
+        <div style="background:rgba(113,43,19,.2);border:1px solid rgba(240,153,123,.3);border-radius:8px;padding:12px;text-align:center"><div style="font-size:10px;color:rgba(240,153,123,.8);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px">Excepção</div><div style="font-size:12px">Recusada · Não pago · Encerrar</div></div>
+      </div>
+      <!-- Quick links from flowchart -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px">
+        <button class="btn" onclick="goPage('pipeline',el('[data-page=pipeline]'))">🔍 1. Pipeline / CRM</button>
+        <button class="btn" onclick="goPage('propostas',el('[data-page=propostas]'))">📋 2. Propostas</button>
+        <button class="btn" onclick="goPage('contratos',el('[data-page=contratos]'))">📝 3. Contratos</button>
+        <button class="btn" onclick="goPage('servicos',el('[data-page=servicos]'))">🧩 4. Serviços Mensais</button>
+        <button class="btn" onclick="goPage('fiscal',el('[data-page=fiscal]'))">🧾 5. Calendário Fiscal</button>
+        <button class="btn" onclick="goPage('faturacao',el('[data-page=faturacao]'))">💰 6. Faturação</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ CICLO MENSAL ══ -->
+<div class="page" id="page-ciclo">
+  <div class="ph">
+    <div class="ph-left"><h1>Ciclo Mensal</h1><p>Workflow recorrente por cliente — fluxo do serviço ao recibo.</p></div>
+    <div class="ph-actions">
+      <select onchange="renderCiclo(this.value)" style="background:var(--bg3);border:1px solid var(--border);color:var(--white);padding:7px 12px;border-radius:8px;font-family:'Inter',sans-serif;font-size:12px;outline:none">
+        <option value="">Todos os clientes</option>
+      </select>
+    </div>
+  </div>
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:14px 16px;margin-bottom:16px;display:grid;grid-template-columns:repeat(6,1fr);gap:12px;text-align:center">
+    <div><div style="font-size:9.5px;color:var(--text-low);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">1</div><div style="font-size:12px;font-weight:600;color:var(--teal)">📥 Recolha Docs</div></div>
+    <div><div style="font-size:9.5px;color:var(--text-low);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">2</div><div style="font-size:12px;font-weight:600;color:var(--teal)">📒 Lançamentos</div></div>
+    <div><div style="font-size:9.5px;color:var(--text-low);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">3</div><div style="font-size:12px;font-weight:600;color:var(--amber)">🧾 Fiscal/AT</div></div>
+    <div><div style="font-size:9.5px;color:var(--text-low);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">4</div><div style="font-size:12px;font-weight:600;color:var(--blue-lt)">📄 Fatura Emitida</div></div>
+    <div><div style="font-size:9.5px;color:var(--text-low);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">5</div><div style="font-size:12px;font-weight:600;color:var(--purple)">🧾 Recibo Emitido</div></div>
+    <div><div style="font-size:9.5px;color:var(--text-low);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">6</div><div style="font-size:12px;font-weight:600;color:var(--text-low)">📊 Análise</div></div>
+  </div>
+  <div id="ciclo-list"></div>
+</div>
+
+<!-- ══ INSS ══ -->
+<div class="page" id="page-inss">
+  <div class="ph"><div class="ph-left"><h1>INSS</h1><p>Cálculo e controlo de contribuições à Segurança Social.</p></div></div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-header"><div class="card-title">🧮 Calculadora INSS</div></div>
+      <div class="card-body">
+        <div class="form-group"><label>Salário Base (MZN)</label><input class="form-control" id="inss-sal" type="number" placeholder="Ex: 25000" oninput="calcINSS()"></div>
+        <div class="form-group"><label>Nº de Trabalhadores</label><input class="form-control" id="inss-workers" type="number" placeholder="Ex: 5" oninput="calcINSS()" value="1"></div>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:16px;margin-top:4px" id="inss-result">
+          <div style="font-size:12px;color:var(--text-low);text-align:center;padding:10px">Introduza o salário para calcular.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-header"><div class="card-title">📚 Legislação INSS — Moçambique</div></div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px"><div style="font-size:10.5px;color:var(--teal);font-weight:700;margin-bottom:6px">QUOTA EMPREGADOR</div><div style="font-size:26px;font-weight:800;color:var(--teal);font-family:'Montserrat',sans-serif">4%</div><div style="font-size:12px;color:var(--text-low);margin-top:3px">Sobre o salário bruto</div></div>
+            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px"><div style="font-size:10.5px;color:var(--blue-lt);font-weight:700;margin-bottom:6px">QUOTA TRABALHADOR</div><div style="font-size:26px;font-weight:800;color:var(--blue-lt);font-family:'Montserrat',sans-serif">3%</div><div style="font-size:12px;color:var(--text-low);margin-top:3px">Desconto do salário bruto</div></div>
+            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px"><div style="font-size:10.5px;color:var(--amber);font-weight:700;margin-bottom:6px">PRAZO</div><div style="font-size:14px;font-weight:700;color:var(--white)">Até dia 15</div><div style="font-size:12px;color:var(--text-low);margin-top:2px">Mês seguinte ao trabalho</div></div>
+            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px"><div style="font-size:10.5px;color:var(--red);font-weight:700;margin-bottom:6px">MULTA ATRASO</div><div style="font-size:14px;font-weight:700;color:var(--white)">0,5% / dia</div><div style="font-size:12px;color:var(--text-low);margin-top:2px">+ juros de mora legais</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">🏢 INSS por Cliente</div></div>
+        <div class="card-body no-pad"><div class="table-wrap"><table id="inss-client-table">
+          <thead><tr><th>Cliente</th><th>Trabalhadores</th><th>Salário Médio</th><th>Emp. (4%)</th><th>Trab. (3%)</th><th>Total/mês</th><th>Estado</th></tr></thead>
+          <tbody></tbody>
+        </table></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LOG DE AUDITORIA ══ -->
+<div class="page" id="page-auditoria">
+  <div class="ph">
+    <div class="ph-left"><h1>Log de Auditoria</h1><p>Registo completo de todas as acções no sistema.</p></div>
+    <div class="ph-actions">
+      <button class="btn" onclick="exportAuditLog()">↓ Exportar CSV</button>
+      <button class="btn red" onclick="clearAuditLog()">🗑️ Limpar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">Histórico de Acções</div></div>
+    <div class="card-body" id="audit-log-list" style="max-height:500px;overflow-y:auto"></div>
+  </div>
+</div>
+
 </div><!-- end content -->
 </div><!-- end body-area -->
 </div><!-- end shell -->
@@ -1119,6 +1507,9 @@ function doLogin() {
   // Authenticated — set role and hide login
   btn.textContent = 'A entrar...'; btn.disabled = true;
   setTimeout(() => {
+    // Load persisted data
+    loadState();
+    window._currentUserName = user.name;
     // Apply role to UI
     currentRole = user.role;
     document.getElementById('tb-username').textContent = user.name;
@@ -1176,12 +1567,134 @@ function logout() {
 // ═══════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════
+
+// ══════════════════════════════════════
+// LOCALSTORAGE PERSISTENCE
+// ══════════════════════════════════════
+function saveState() {
+  try {
+    localStorage.setItem('nz_v4', JSON.stringify({
+      clients: CLIENTS, tasks: TASKS, team: TEAM, docs: DOCS,
+      proposals: PROPOSALS || [], auditLog: AUDIT_LOG || [],
+      cicloState: CICLO_STATE || {},
+      config: APP_CONFIG || {}
+    }));
+  } catch(e) { console.warn('Save failed:', e); }
+}
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem('nz_v4');
+    if (!saved) return;
+    const d = JSON.parse(saved);
+    if (d.clients && d.clients.length)    CLIENTS.splice(0, CLIENTS.length, ...d.clients);
+    if (d.tasks && d.tasks.length)        TASKS.splice(0, TASKS.length, ...d.tasks);
+    if (d.team && d.team.length)          TEAM.splice(0, TEAM.length, ...d.team);
+    if (d.docs && d.docs.length)          DOCS.splice(0, DOCS.length, ...d.docs);
+    if (d.proposals)                      PROPOSALS = d.proposals;
+    if (d.auditLog)                       AUDIT_LOG = d.auditLog;
+    if (d.cicloState)                     CICLO_STATE = d.cicloState;
+    if (d.config)                         Object.assign(APP_CONFIG, d.config);
+  } catch(e) { console.warn('Load failed:', e); }
+}
+
+function addAuditLog(action, type) {
+  if (!window.AUDIT_LOG) AUDIT_LOG = [];
+  const ts = new Date().toLocaleString('pt-MZ', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  AUDIT_LOG.unshift({ ts, action, user: window._currentUserName || 'Sistema', type: type||'system' });
+  if (AUDIT_LOG.length > 300) AUDIT_LOG.pop();
+}
+
+// Global state extensions
+let PROPOSALS = [];
+let AUDIT_LOG = [
+  {ts:'28/04/2025 09:42', action:'IVA Março submetido para MozaCargo Lda', user:'Ana Silva', type:'fiscal'},
+  {ts:'17/04/2025 08:15', action:'Lembrete de pagamento enviado — Importações Africanas', user:'Sistema', type:'alert'},
+  {ts:'14/04/2025 16:30', action:'IVA Fevereiro submetido para Energia Verde', user:'João Machava', type:'fiscal'},
+  {ts:'10/04/2025 10:05', action:'Novo cliente adicionado: TechSol Mozambique', user:'Admin', type:'client'},
+  {ts:'05/04/2025 09:00', action:'Pagamento recebido: MozaCargo Lda — 28.000 MZN', user:'Sistema', type:'payment'},
+  {ts:'01/04/2025 14:20', action:'Contrato assinado: TechSol Mozambique', user:'Admin', type:'contract'},
+];
+let CICLO_STATE = {};
+let APP_CONFIG = {
+  companyName: 'NIVELZERO CONSULTORES LDA',
+  nuit: '400100000',
+  phone: '+258 86 73 44276',
+  email: 'nivel_zero24@hotmail.com',
+  address: 'Matola, Maputo — Moçambique',
+  whatsapp: '258867344276',
+};
+
 const CLIENTS = [
-  {id:'MC',name:'MozaCargo Lda',sector:'Logística',loc:'Beluluane',pkg:'structure',contract:'Mensal',value:28000,status:'active',compliance:97,owner:'Ana Silva',color:'#1B4FBF',services:['Contabilidade','Gestão Fiscal','Controlo Interno']},
-  {id:'CB',name:'Construções Beira Mar Lda',sector:'Construção',loc:'Maputo',pkg:'growth',contract:'Mensal',value:15000,status:'active',compliance:94,owner:'João Machava',color:'#1a3a4a',services:['Contabilidade','Gestão Fiscal','Análise Financeira']},
-  {id:'TS',name:'TechSol Mozambique',sector:'Tecnologia',loc:'Maputo',pkg:'essential',contract:'Mensal',value:8500,status:'pending',compliance:88,owner:'Ana Silva',color:'#4a2070',services:['Contabilidade','Gestão Fiscal']},
-  {id:'IA',name:'Importações Africanas Lda',sector:'Comércio',loc:'Matola',pkg:'growth',contract:'Mensal',value:18000,status:'late',compliance:72,owner:'Maria Tembe',color:'#7a3a00',services:['Gestão Fiscal','Regularização','Auditoria Interna']},
-  {id:'EV',name:'Energia Verde Sarl',sector:'Energia',loc:'Maputo',pkg:'structure',contract:'Mensal',value:26000,status:'pending',compliance:96,owner:'João Machava',color:'#0d4a2a',services:['Contabilidade','Gestão Fiscal','Planeamento Financeiro','Controlo Interno']},
+  {
+    id:'MC', name:'MozaCargo Lda', sector:'Logística', loc:'Beluluane', pkg:'structure',
+    contract:'Mensal', value:28000, status:'active', compliance:97, owner:'Ana Silva',
+    color:'#1B4FBF', services:['Contabilidade','Gestão Fiscal','Controlo Interno'],
+    nuit:'400123456', phone:'+258 21 401 234', email:'financeiro@mozacargo.co.mz',
+    address:'Zona Industrial Beluluane, Parcela 45, Matola', contactName:'Eng. António Matos',
+    startDate:'Jan 2024', notes:'Cliente premium. Entrega documentos até dia 3 de cada mês.',
+    history:[
+      {date:'28 Abr 2025',action:'IVA Março submetido na AT',user:'Ana Silva',type:'fiscal'},
+      {date:'20 Abr 2025',action:'Balancete Março enviado ao cliente',user:'Ana Silva',type:'doc'},
+      {date:'15 Abr 2025',action:'Reunião de revisão Q1 realizada',user:'Admin',type:'meeting'},
+      {date:'05 Abr 2025',action:'Pagamento Abril recebido: 28.000 MZN',user:'Sistema',type:'payment'},
+      {date:'28 Mar 2025',action:'IRPC retido na fonte submetido',user:'Ana Silva',type:'fiscal'},
+    ]
+  },
+  {
+    id:'CB', name:'Construções Beira Mar Lda', sector:'Construção', loc:'Maputo', pkg:'growth',
+    contract:'Mensal', value:15000, status:'active', compliance:94, owner:'João Machava',
+    color:'#1a3a4a', services:['Contabilidade','Gestão Fiscal','Análise Financeira'],
+    nuit:'400234567', phone:'+258 21 312 456', email:'geral@beiramar.co.mz',
+    address:'Av. Karl Marx, 345, Maputo', contactName:'Dra. Fátima Nhaca',
+    startDate:'Mar 2024', notes:'Envia documentos digitalizados. Prefere contacto por email.',
+    history:[
+      {date:'25 Abr 2025',action:'Modelo 20H 2024 entregue',user:'Maria Tembe',type:'doc'},
+      {date:'05 Abr 2025',action:'Pagamento Abril recebido: 15.000 MZN',user:'Sistema',type:'payment'},
+      {date:'31 Mar 2025',action:'Declaração IVA Q1 submetida',user:'João Machava',type:'fiscal'},
+    ]
+  },
+  {
+    id:'TS', name:'TechSol Mozambique', sector:'Tecnologia', loc:'Maputo', pkg:'essential',
+    contract:'Mensal', value:8500, status:'pending', compliance:88, owner:'Ana Silva',
+    color:'#4a2070', services:['Contabilidade','Gestão Fiscal'],
+    nuit:'400345678', phone:'+258 84 567 890', email:'admin@techsol.co.mz',
+    address:'Av. Vladimir Lenine, 123, Maputo', contactName:'Sr. Carlos Sitoe',
+    startDate:'Abr 2025', notes:'Novo cliente. Contrato a expirar em 15 dias — renovar.',
+    history:[
+      {date:'10 Abr 2025',action:'Onboarding concluído. Documentos recebidos.',user:'Ana Silva',type:'onboard'},
+      {date:'05 Abr 2025',action:'Pagamento Abril recebido: 8.500 MZN',user:'Sistema',type:'payment'},
+      {date:'01 Abr 2025',action:'Contrato assinado. Cliente activo.',user:'Admin',type:'contract'},
+    ]
+  },
+  {
+    id:'IA', name:'Importações Africanas Lda', sector:'Comércio', loc:'Matola', pkg:'growth',
+    contract:'Mensal', value:18000, status:'late', compliance:72, owner:'Maria Tembe',
+    color:'#7a3a00', services:['Gestão Fiscal','Regularização','Auditoria Interna'],
+    nuit:'400456789', phone:'+258 86 234 567', email:'importacoes.africanas@gmail.com',
+    address:'Rua da Indústria, 78, Matola', contactName:'Sr. José Cumbane',
+    startDate:'Jun 2023', notes:'ATENÇÃO: Pagamento em atraso 12 dias. Dívida fiscal histórica em regularização.',
+    history:[
+      {date:'17 Abr 2025',action:'Lembrete de pagamento enviado (2.ª notificação)',user:'Sistema',type:'alert'},
+      {date:'05 Abr 2025',action:'Pagamento Abril NÃO recebido — em atraso',user:'Sistema',type:'alert'},
+      {date:'28 Mar 2025',action:'Relatório auditoria Q1 entregue',user:'Maria Tembe',type:'doc'},
+      {date:'15 Mar 2025',action:'Acordo regularização fiscal AT — 6 prestações',user:'Admin',type:'fiscal'},
+    ]
+  },
+  {
+    id:'EV', name:'Energia Verde Sarl', sector:'Energia', loc:'Maputo', pkg:'structure',
+    contract:'Mensal', value:26000, status:'pending', compliance:96, owner:'João Machava',
+    color:'#0d4a2a', services:['Contabilidade','Gestão Fiscal','Planeamento Financeiro','Controlo Interno'],
+    nuit:'400567890', phone:'+258 21 498 765', email:'financeiro@energiaverde.co.mz',
+    address:'Av. Marginal, 890, Maputo', contactName:'Dra. Amélia Chissano',
+    startDate:'Set 2023', notes:'Cliente estrutura. Due diligence prevista para Q3 2025.',
+    history:[
+      {date:'14 Abr 2025',action:'IVA Fevereiro submetido na AT',user:'João Machava',type:'fiscal'},
+      {date:'10 Abr 2025',action:'Plano financeiro Q2 entregue',user:'João Machava',type:'doc'},
+      {date:'05 Abr 2025',action:'Pagamento Abril pendente — lembrete enviado',user:'Sistema',type:'alert'},
+      {date:'31 Mar 2025',action:'Relatório controlo interno Q1',user:'João Machava',type:'doc'},
+    ]
+  },
 ];
 const TASKS = [
   {title:'Submissão IVA Março 2025',client:'MozaCargo Lda',deadline:'30 Abr',owner:'Ana Silva',priority:'urgente',status:'progress'},
@@ -1272,7 +1785,7 @@ function switchRole(role) {
 // ═══════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════
-const PAGE_TITLES = {dashboard:'Dashboard',clientes:'Clientes',financeiro:'Financeiro',contratos:'Contratos',servicos:'Serviços',tarefas:'Tarefas',documentos:'Documentos',equipa:'Equipa & Acessos',fiscal:'Calendário Fiscal',relatorios:'Relatórios'};
+const PAGE_TITLES = {dashboard:'Dashboard',clientes:'Clientes',financeiro:'Financeiro',contratos:'Contratos',servicos:'Serviços',tarefas:'Tarefas',documentos:'Documentos',equipa:'Equipa & Acessos',fiscal:'Calendário Fiscal',relatorios:'Relatórios',propostas:'Propostas Comerciais',config:'Configurações',pipeline:'Pipeline / CRM',faturacao:'Faturação',alertas:'Alertas',fluxo:'Fluxograma Operacional',auditoria:'Log de Auditoria',inss:'INSS',ciclo:'Ciclo Mensal'};
 function navigate(id, el) {
   // Access control
   if ((id==='financeiro'||id==='contratos') && (currentRole==='tecnico'||currentRole==='viewer')) {
@@ -1288,13 +1801,23 @@ function navigate(id, el) {
   if (el) el.classList.add('active');
   document.getElementById('page-title').textContent = PAGE_TITLES[id]||id;
   // Render dynamic content
-  if (id==='dashboard') renderDash();
-  if (id==='clientes') renderClients();
-  if (id==='tarefas') renderTasks();
-  if (id==='equipa') renderTeam();
-  if (id==='servicos') renderServices();
-  if (id==='documentos') renderDocs();
-  if (id==='relatorios') renderReports();
+  if (id==='dashboard')   renderDash();
+  if (id==='clientes')    renderClients();
+  if (id==='tarefas')     renderTasks();
+  if (id==='equipa')      renderTeam();
+  if (id==='servicos')    renderServices();
+  if (id==='documentos')  renderDocs();
+  if (id==='relatorios')  renderReports();
+  if (id==='pipeline')    renderPipeline();
+  if (id==='faturacao')   renderFaturacao();
+  if (id==='alertas')     renderAlerts();
+  if (id==='auditoria')   renderAuditoria();
+  if (id==='inss')        renderINSS();
+  if (id==='ciclo')       renderCiclo();
+  // faturacao and auditoria: admin/gestor only
+  if ((id==='faturacao'||id==='auditoria') && (currentRole==='tecnico'||currentRole==='viewer')) {
+    // already blocked above for financeiro, add faturacao
+  }
 }
 function globalSearch(q) {
   if (!q) return;
@@ -1337,7 +1860,7 @@ function renderClients(filter='', statusFilter='') {
       <td><span class="badge ${STATUS_CLS[c.status]}">${STATUS_MAP[c.status]}</span></td>
       <td><div style="font-size:11.5px;margin-bottom:3px">${c.compliance}%</div><div class="prog" style="width:70px"><div class="prog-fill" style="width:${c.compliance}%;background:${c.compliance>90?'var(--teal)':c.compliance>75?'var(--amber)':'var(--red)'}"></div></div></td>
       <td style="font-size:12px;color:var(--text-low)">${c.owner}</td>
-      <td><div class="actions"><button class="btn xs blue" onclick="openClientDetail('${c.id}')">Ver</button><button class="btn xs" onclick="toast('✏️ A editar ${c.name}')">Editar</button></div></td>
+      <td><div class="actions"><button class="btn xs blue" onclick="openClientDetail('${c.id}')">Ver</button><button class="btn xs" onclick="openEditClient('${c.id}')">Editar</button></div></td>
     </tr>`).join('');
 }
 function filterClients(q) { renderClients(q); }
@@ -1371,7 +1894,7 @@ function renderTeam() {
       <td style="font-size:12px;color:var(--text-low)">${m.clients}</td>
       <td style="font-family:'Montserrat',sans-serif;font-weight:700">${m.tasks>0?m.tasks:'—'}</td>
       <td style="font-size:12px;color:var(--text-low)">${m.lastAccess}</td>
-      <td><div class="actions">${m.role!=='admin'?`<button class="btn xs" onclick="toast('✏️ Editar permissões de ${m.name}')">Editar</button>`:'<span style="font-size:11px;color:var(--text-low)">Proprietário</span>'}</div></td>
+      <td><div class="actions">${m.role!=='admin'?`<button class="btn xs" onclick="openModal('new-user')">Editar</button>`:'<span style="font-size:11px;color:var(--text-low)">Proprietário</span>'}</div></td>
     </tr>`).join('');
 }
 
@@ -1396,7 +1919,7 @@ function renderDocs() {
   const grid = document.getElementById('docs-grid');
   if (!grid) return;
   grid.innerHTML = DOCS.map(d=>`
-    <div class="card" style="cursor:pointer" onclick="toast('📄 A abrir: ${d.name}...')">
+    <div class="card" style="cursor:pointer" onclick="openDoc('${d.name}')">
       <div class="card-body">
         <div style="display:flex;align-items:center;gap:12px">
           <div style="font-size:28px;flex-shrink:0">${d.icon}</div>
@@ -1408,7 +1931,7 @@ function renderDocs() {
         </div>
       </div>
     </div>`).join('')
-  + `<div class="card" style="cursor:pointer;border-style:dashed" onclick="toast('📎 Seleccione um ficheiro...')">
+  + `<div class="card" style="cursor:pointer;border-style:dashed" onclick="document.getElementById('real-file-input').click()">
       <div class="card-body" style="display:flex;align-items:center;justify-content:center;height:88px;color:var(--teal);font-size:13px;font-weight:600;gap:7px">
         + Carregar Documento
       </div>
@@ -1495,6 +2018,101 @@ const MODAL_TEMPLATES = {
       <div class="form-row"><div class="form-group"><label>Tipo de Cobrança</label><select class="form-control"><option>Mensal (pacote)</option><option>Por serviço</option><option>Pontual</option></select></div><div class="form-group"><label>Valor Base (MZN)</label><input class="form-control" type="number" placeholder="Ex: 5000"></div></div>`,
     action:'Adicionar Serviço', key:'service'
   },
+  'edit-client':{
+    title:'Editar Cliente', sub:'Actualizar dados do cliente.',
+    body:`
+      <div class="form-row"><div class="form-group"><label>Nome da Empresa</label><input class="form-control" id="ec-name" placeholder="Nome"></div><div class="form-group"><label>NUIT</label><input class="form-control" id="ec-nuit" placeholder="400XXXXXXX"></div></div>
+      <div class="form-row"><div class="form-group"><label>Sector</label><select class="form-control" id="ec-sector"><option>Comércio</option><option>Indústria</option><option>Logística</option><option>Construção</option><option>Energia</option><option>Tecnologia</option><option>Serviços</option></select></div><div class="form-group"><label>Localização</label><input class="form-control" id="ec-loc" placeholder="Matola, Maputo"></div></div>
+      <div class="form-group"><label>Endereço Completo</label><input class="form-control" id="ec-addr" placeholder="Av. ..., N.º, Cidade"></div>
+      <div class="form-row"><div class="form-group"><label>Telefone</label><input class="form-control" id="ec-phone" placeholder="+258 8X XXX XXXX" type="tel"></div><div class="form-group"><label>Email</label><input class="form-control" id="ec-email" placeholder="email@empresa.co.mz" type="email"></div></div>
+      <div class="form-group"><label>Nome do Contacto Principal</label><input class="form-control" id="ec-contact" placeholder="Dr./Dra. Nome Apelido"></div>
+      <div class="form-row"><div class="form-group"><label>Pacote</label><select class="form-control" id="ec-pkg"><option>Essencial</option><option>Crescimento</option><option>Estrutura</option><option>Premium</option></select></div><div class="form-group"><label>Responsável Interno</label><select class="form-control" id="ec-owner"><option>Ana Silva</option><option>João Machava</option><option>Maria Tembe</option></select></div></div>
+      <div class="form-group"><label>Notas Internas</label><textarea class="form-control" id="ec-notes" placeholder="Notas relevantes sobre este cliente..."></textarea></div>`,
+    action:'Guardar Alterações', key:'edit-client'
+  },
+  'edit-contract':{
+    title:'Editar Contrato', sub:'Alterar condições do contrato.',
+    body:`
+      <div class="form-group"><label>Cliente</label><select class="form-control"><option>MozaCargo Lda</option><option>Construções Beira Mar Lda</option><option>TechSol Mozambique</option><option>Importações Africanas Lda</option><option>Energia Verde Sarl</option></select></div>
+      <div class="form-row"><div class="form-group"><label>Tipo</label><select class="form-control"><option>Mensal</option><option>Trimestral</option><option>Pontual</option></select></div><div class="form-group"><label>Novo Valor (MZN)</label><input class="form-control" type="number" placeholder="Ex: 16000"></div></div>
+      <div class="form-row"><div class="form-group"><label>Nova Data de Início</label><input class="form-control" type="date"></div><div class="form-group"><label>Frequência de Cobrança</label><select class="form-control"><option>Mensal</option><option>Trimestral</option><option>Pontual</option></select></div></div>
+      <div class="form-group"><label>Motivo da Alteração</label><textarea class="form-control" placeholder="Descreva o motivo da alteração..."></textarea></div>`,
+    action:'Guardar Contrato', key:'edit-contract'
+  },
+  'notify-client':{
+    title:'Notificar Cliente', sub:'Enviar mensagem via WhatsApp ou email.',
+    body:`
+      <div class="form-group"><label>Cliente</label>
+        <select class="form-control" id="nc-client" onchange="updateNotifyMsg()">
+          <option value="MC" data-phone="258841234567">MozaCargo Lda — Eng. António Matos</option>
+          <option value="CB" data-phone="258842345678">Construções Beira Mar — Dra. Fátima Nhaca</option>
+          <option value="TS" data-phone="258843456789">TechSol — Sr. Carlos Sitoe</option>
+          <option value="IA" data-phone="258844567890">Importações Africanas — Sr. José Cumbane</option>
+          <option value="EV" data-phone="258845678901">Energia Verde — Dra. Amélia Chissano</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Tipo de Notificação</label>
+        <select class="form-control" id="nc-type" onchange="updateNotifyMsg()">
+          <option value="payment">💸 Lembrete de Pagamento</option>
+          <option value="fiscal">🧾 Prazo Fiscal</option>
+          <option value="doc">📄 Documentos Necessários</option>
+          <option value="meeting">📅 Agendamento de Reunião</option>
+          <option value="custom">✏️ Mensagem Personalizada</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Mensagem (editável)</label>
+        <textarea class="form-control" id="nc-msg" style="min-height:100px">Olá, bom dia. A NIVELZERO CONSULTORES informa que o pagamento referente ao mês de Abril ainda não foi recebido. Por favor confirme a transferência. Obrigado pela sua atenção.</textarea>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button class="btn blue" style="flex:1" onclick="sendWhatsAppFromModal()">💬 Enviar via WhatsApp</button>
+        <button class="btn" style="flex:1" onclick="toast('📧 Email enviado com sucesso!');closeModal()">📧 Enviar por Email</button>
+      </div>`,
+    action:null, key:'notify'
+  },
+  'generate-recibo':{
+    title:'Gerar Recibo', sub:'Criar recibo de pagamento.',
+    body:`
+      <div class="form-row"><div class="form-group"><label>Cliente</label><select class="form-control" id="rec-client"><option>MozaCargo Lda</option><option>Construções Beira Mar Lda</option><option>TechSol Mozambique</option><option>Energia Verde Sarl</option></select></div><div class="form-group"><label>Referência</label><input class="form-control" id="rec-ref" value="REC-2025-042" readonly></div></div>
+      <div class="form-row"><div class="form-group"><label>Valor (MZN)</label><input class="form-control" id="rec-val" type="number" placeholder="Ex: 15000"></div><div class="form-group"><label>Data</label><input class="form-control" id="rec-date" type="date" value="2025-04-28"></div></div>
+      <div class="form-group"><label>Serviços Incluídos</label><input class="form-control" id="rec-srv" value="Contabilidade e Gestão Fiscal — Abril 2025"></div>
+      <div class="form-group"><label>Método de Pagamento</label><select class="form-control" id="rec-method"><option>Transferência Bancária</option><option>M-Pesa</option><option>E-mola</option><option>Numerário</option></select></div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:14px;margin-top:6px;font-size:12px;color:var(--text-low)">
+        O recibo será gerado em formato imprimível. Clique em "Gerar e Imprimir" para abrir a pré-visualização.
+      </div>`,
+    action:'Gerar e Imprimir', key:'recibo'
+  },
+  'fiscal-workflow':{
+    title:'Submissão Fiscal — Checklist', sub:'Acompanhar o processo de submissão passo a passo.',
+    body:`
+      <div class="form-row" style="margin-bottom:16px">
+        <div class="form-group"><label>Cliente</label><select class="form-control" id="fw-client"><option>MozaCargo Lda</option><option>Construções Beira Mar</option><option>TechSol Mozambique</option><option>Importações Africanas</option><option>Energia Verde Sarl</option></select></div>
+        <div class="form-group"><label>Obrigação</label><select class="form-control" id="fw-type"><option>IVA Mensal</option><option>IRPC Mensal</option><option>IRPS Mensal</option><option>Modelo 22 (IRPC Anual)</option><option>Modelo 10 (IRPS Anual)</option><option>Modelo 20 e Anexos</option><option>ISPC Trimestral</option></select></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px" id="fw-steps">
+        <div class="fw-step" data-step="1"><div style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;cursor:pointer" onclick="toggleStep(this)"><div class="fw-check" style="width:20px;height:20px;border-radius:50%;background:var(--bg4);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0"></div><div style="flex:1"><div style="font-size:13px;font-weight:600">1. Recolher documentos do cliente</div><div style="font-size:11.5px;color:var(--text-low)">Facturas, recibos, extractos bancários do mês</div></div></div></div>
+        <div class="fw-step" data-step="2"><div style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;cursor:pointer" onclick="toggleStep(this)"><div class="fw-check" style="width:20px;height:20px;border-radius:50%;background:var(--bg4);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0"></div><div style="flex:1"><div style="font-size:13px;font-weight:600">2. Lançar na contabilidade</div><div style="font-size:11.5px;color:var(--text-low)">Registar todos os movimentos no sistema contabilístico</div></div></div></div>
+        <div class="fw-step" data-step="3"><div style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;cursor:pointer" onclick="toggleStep(this)"><div class="fw-check" style="width:20px;height:20px;border-radius:50%;background:var(--bg4);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0"></div><div style="flex:1"><div style="font-size:13px;font-weight:600">3. Calcular imposto a pagar</div><div style="font-size:11.5px;color:var(--text-low)">Apuramento do IVA / IRPC conforme declaração</div></div></div></div>
+        <div class="fw-step" data-step="4"><div style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;cursor:pointer" onclick="toggleStep(this)"><div class="fw-check" style="width:20px;height:20px;border-radius:50%;background:var(--bg4);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0"></div><div style="flex:1"><div style="font-size:13px;font-weight:600">4. Submeter no e-Tributário (AT)</div><div style="font-size:11.5px;color:var(--text-low)">Login em <a href="https://etributario.mta.gov.mz" target="_blank" style="color:var(--teal)">etributario.mta.gov.mz</a> e submissão online</div></div></div></div>
+        <div class="fw-step" data-step="5"><div style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;cursor:pointer" onclick="toggleStep(this)"><div class="fw-check" style="width:20px;height:20px;border-radius:50%;background:var(--bg4);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0"></div><div style="flex:1"><div style="font-size:13px;font-weight:600">5. Guardar comprovativo</div><div style="font-size:11.5px;color:var(--text-low)">Guardar comprovativo de submissão no dossiê do cliente</div></div></div></div>
+        <div class="fw-step" data-step="6"><div style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;cursor:pointer" onclick="toggleStep(this)"><div class="fw-check" style="width:20px;height:20px;border-radius:50%;background:var(--bg4);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0"></div><div style="flex:1"><div style="font-size:13px;font-weight:600">6. Informar o cliente</div><div style="font-size:11.5px;color:var(--text-low)">Enviar confirmação e valor pago por WhatsApp</div></div></div></div>
+      </div>
+      <div style="margin-top:12px;padding:10px 13px;background:var(--bg3);border-radius:8px;font-size:12px;color:var(--text-low)" id="fw-progress-txt">0 de 6 passos concluídos</div>`,
+    action:'Marcar Submissão Concluída', key:'fiscal-submit'
+  },
+  'new-proposal':{
+    title:'Nova Proposta Comercial', sub:'Gerar proposta para potencial cliente.',
+    body:`
+      <div class="form-row"><div class="form-group"><label>Nome da Empresa</label><input class="form-control" id="np-company" placeholder="Ex: Transportes Silva Lda"></div><div class="form-group"><label>Contacto</label><input class="form-control" id="np-contact" placeholder="Nome do responsável"></div></div>
+      <div class="form-row"><div class="form-group"><label>Telefone / WhatsApp</label><input class="form-control" id="np-phone" placeholder="+258 8X XXX XXXX"></div><div class="form-group"><label>Sector</label><select class="form-control" id="np-sector"><option>Comércio</option><option>Indústria</option><option>Construção</option><option>Logística</option><option>Energia</option><option>Tecnologia</option><option>Serviços</option></select></div></div>
+      <div class="form-row"><div class="form-group"><label>Pacote Recomendado</label><select class="form-control" id="np-pkg" onchange="updateProposalValue()"><option value="5000">Essencial (5.000–8.000 MZN)</option><option value="9000">Crescimento (9.000–15.000 MZN)</option><option value="18000" selected>Estrutura (18.000–35.000 MZN)</option><option value="35000">Premium (35.000+ MZN)</option></select></div><div class="form-group"><label>Valor Proposto (MZN/mês)</label><input class="form-control" id="np-value" value="18000" type="number"></div></div>
+      <div class="form-group"><label>Serviços a Incluir</label><select class="form-control" multiple style="height:90px" id="np-services"><option selected>Contabilidade</option><option selected>Gestão Fiscal</option><option>Controlo Interno</option><option>Auditoria Interna</option><option>Análise Financeira</option><option>Planeamento Financeiro</option></select></div>
+      <div class="form-group"><label>Notas / Personalização</label><textarea class="form-control" id="np-notes" placeholder="Condições especiais, desconto, observações..."></textarea></div>
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button class="btn blue" style="flex:1" onclick="generateProposal()">📄 Gerar e Visualizar</button>
+        <button class="btn" style="flex:1" onclick="toast('💬 Proposta enviada via WhatsApp!');closeModal()">💬 Enviar WA</button>
+      </div>`,
+    action:null, key:'proposal'
+  },
 };
 
 function openModal(type, data) {
@@ -1514,49 +2132,120 @@ function openModal(type, data) {
   document.getElementById('modal-overlay').classList.add('open');
 }
 function showClientDetail(c) {
+  const histHTML = (c.history||[]).map(h=>{
+    const icons = {fiscal:'🧾',doc:'📄',payment:'💰',meeting:'📅',alert:'⚠️',contract:'📝',onboard:'🚀'};
+    const colors = {fiscal:'var(--blue-dim)',doc:'var(--teal-dim)',payment:'var(--green-dim)',meeting:'var(--purple-dim)',alert:'var(--red-dim)',contract:'var(--amber-dim)',onboard:'var(--teal-dim)'};
+    return `<div class="activity-item">
+      <div class="act-icon" style="background:${colors[h.type]||'var(--bg4)'}">${icons[h.type]||'📌'}</div>
+      <div><div class="act-text">${h.action}</div><div class="act-time">${h.date} · ${h.user}</div></div>
+    </div>`;
+  }).join('') || '<div style="color:var(--text-low);font-size:12px;padding:10px 0">Sem histórico registado.</div>';
+
   document.getElementById('modal-body').innerHTML = `
-    <div style="display:flex;align-items:center;gap:13px;margin-bottom:4px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
       <div class="c-avatar" style="width:44px;height:44px;font-size:15px;flex-shrink:0;background:${c.color}">${c.id}</div>
-      <div><div class="modal-title">${c.name}</div><div class="modal-subtitle" style="margin-bottom:0">${c.sector} · ${c.loc}</div></div>
+      <div style="flex:1">
+        <div class="modal-title" style="margin-bottom:2px">${c.name}</div>
+        <div style="font-size:12px;color:var(--text-low)">${c.sector} · 📍 ${c.loc} · NUIT: ${c.nuit||'—'}</div>
+      </div>
+      <span class="badge ${STATUS_CLS[c.status]}">${STATUS_MAP[c.status]}</span>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin:18px 0">
-      <div class="detail-stat"><div class="ds-label">Pacote</div><div style="margin-top:4px"><span class="pkg ${PKG_CLS[c.pkg]}">${PKG_MAP[c.pkg]}</span></div></div>
-      <div class="detail-stat"><div class="ds-label">Honorário</div><div class="ds-value" style="color:var(--teal);font-size:16px">${c.value.toLocaleString('pt-MZ')}<span style="font-size:12px;font-weight:400;color:var(--text-low)"> MZN</span></div></div>
-      <div class="detail-stat"><div class="ds-label">Pagamento</div><div style="margin-top:5px"><span class="badge ${STATUS_CLS[c.status]}">${STATUS_MAP[c.status]}</span></div></div>
-      <div class="detail-stat"><div class="ds-label">Conformidade</div><div class="ds-value" style="color:${c.compliance>90?'var(--teal)':c.compliance>75?'var(--amber)':'var(--red)'}">${c.compliance}%</div></div>
+
+    <!-- TAB NAV -->
+    <div style="display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:0">
+      <button class="cdt-tab active" onclick="switchCDTab(this,'cdt-info')" style="background:none;border:none;color:var(--teal);padding:7px 14px;font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;border-bottom:2px solid var(--teal);margin-bottom:-1px">Informações</button>
+      <button class="cdt-tab" onclick="switchCDTab(this,'cdt-services')" style="background:none;border:none;color:var(--text-low);padding:7px 14px;font-family:'Inter',sans-serif;font-size:12.5px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px">Serviços</button>
+      <button class="cdt-tab" onclick="switchCDTab(this,'cdt-history')" style="background:none;border:none;color:var(--text-low);padding:7px 14px;font-family:'Inter',sans-serif;font-size:12.5px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px">Histórico</button>
+      <button class="cdt-tab" onclick="switchCDTab(this,'cdt-fiscal')" style="background:none;border:none;color:var(--text-low);padding:7px 14px;font-family:'Inter',sans-serif;font-size:12.5px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px">Fiscal</button>
     </div>
-    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:14px;margin-bottom:16px">
-      <div style="font-size:10.5px;color:var(--text-low);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">Serviços Contratados</div>
-      <div style="display:flex;flex-wrap:wrap;gap:7px">${c.services.map(s=>`<span style="background:var(--bg4);border:1px solid var(--border);padding:3px 10px;border-radius:5px;font-size:12px;color:var(--text)">${s}</span>`).join('')}</div>
+
+    <!-- TAB: INFO -->
+    <div id="cdt-info" class="cdt-pane">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:14px">
+        <div class="detail-stat"><div class="ds-label">Pacote</div><div style="margin-top:4px"><span class="pkg ${PKG_CLS[c.pkg]}">${PKG_MAP[c.pkg]}</span></div></div>
+        <div class="detail-stat"><div class="ds-label">Honorário</div><div class="ds-value" style="color:var(--teal);font-size:16px">${c.value.toLocaleString('pt-MZ')}<span style="font-size:11px;font-weight:400;color:var(--text-low)"> MZN</span></div></div>
+        <div class="detail-stat"><div class="ds-label">Conformidade</div><div class="ds-value" style="color:${c.compliance>90?'var(--teal)':c.compliance>75?'var(--amber)':'var(--red)'}">${c.compliance}%</div></div>
+        <div class="detail-stat"><div class="ds-label">Desde</div><div class="ds-value" style="font-size:13px">${c.startDate||'—'}</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12.5px;margin-bottom:12px">
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px"><div style="font-size:10px;color:var(--text-low);margin-bottom:4px">CONTACTO</div><div style="font-weight:600;color:var(--white)">${c.contactName||'—'}</div><div style="font-size:11.5px;color:var(--text-low);margin-top:2px">${c.phone||'—'}</div><div style="font-size:11.5px;color:var(--text-low)">${c.email||'—'}</div></div>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px"><div style="font-size:10px;color:var(--text-low);margin-bottom:4px">ENDEREÇO</div><div style="font-size:12px;color:var(--text);line-height:1.5">${c.address||'—'}</div></div>
+      </div>
+      ${c.notes?`<div style="background:var(--amber-dim);border:1px solid rgba(245,166,35,.2);border-radius:8px;padding:11px 13px;font-size:12.5px;color:var(--text);margin-bottom:12px"><span style="color:var(--amber);font-weight:700">Nota: </span>${c.notes}</div>`:''}
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn blue" onclick="openWhatsApp('${c.phone||''}','geral')">💬 WhatsApp</button>
+        <button class="btn" onclick="openModal('notify-client')">📧 Notificar</button>
+        <button class="btn" onclick="openModal('fiscal-workflow')">🧾 Submissão Fiscal</button>
+        <button class="btn primary" onclick="closeModal();openEditClient('${c.id}')">✏️ Editar</button>
+      </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12.5px;color:var(--text);margin-bottom:16px">
-      <div>Responsável: <strong style="color:var(--white)">${c.owner}</strong></div>
-      <div>Contrato: <strong style="color:var(--white)">${c.contract}</strong></div>
-      <div>Localização: <strong style="color:var(--white)">${c.loc}</strong></div>
-      <div>Próxima cobrança: <strong style="color:var(--white)">05 Mai 2025</strong></div>
+
+    <!-- TAB: SERVICES -->
+    <div id="cdt-services" class="cdt-pane" style="display:none">
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+        ${c.services.map(sv=>`<span style="background:var(--bg3);border:1px solid var(--border);padding:6px 13px;border-radius:7px;font-size:13px;color:var(--white)">${sv}</span>`).join('')}
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:14px">
+        <div style="font-size:10.5px;color:var(--text-low);margin-bottom:8px;text-transform:uppercase;letter-spacing:.07em">Contrato</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;font-size:12.5px">
+          <div><div style="color:var(--text-low)">Tipo</div><div style="font-weight:600;color:var(--white);margin-top:2px">${c.contract}</div></div>
+          <div><div style="color:var(--text-low)">Responsável</div><div style="font-weight:600;color:var(--white);margin-top:2px">${c.owner}</div></div>
+          <div><div style="color:var(--text-low)">Próxima cobrança</div><div style="font-weight:600;color:var(--white);margin-top:2px">05 Mai 2025</div></div>
+        </div>
+      </div>
+      <button class="btn primary" style="margin-top:12px" onclick="openModal('edit-contract')">✏️ Editar Contrato</button>
     </div>
+
+    <!-- TAB: HISTORY -->
+    <div id="cdt-history" class="cdt-pane" style="display:none">
+      <div class="activity">${histHTML}</div>
+    </div>
+
+    <!-- TAB: FISCAL -->
+    <div id="cdt-fiscal" class="cdt-pane" style="display:none">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 13px;background:var(--bg3);border-radius:8px"><div><div style="font-size:13px;font-weight:600">IVA Março 2025</div><div style="font-size:11.5px;color:var(--text-low)">Prazo: 30 Abril</div></div><span class="badge b-progress">Em curso</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 13px;background:var(--bg3);border-radius:8px"><div><div style="font-size:13px;font-weight:600">IRPC retido — Março</div><div style="font-size:11.5px;color:var(--text-low)">Prazo: 20 Abril</div></div><span class="badge b-active">Concluído</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 13px;background:var(--bg3);border-radius:8px"><div><div style="font-size:13px;font-weight:600">Modelo 22 (IRPC Anual)</div><div style="font-size:11.5px;color:var(--text-low)">Prazo: Último dia útil Maio</div></div><span class="badge b-pending">Pendente</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 13px;background:var(--bg3);border-radius:8px"><div><div style="font-size:13px;font-weight:600">Modelo 20 e Anexos</div><div style="font-size:11.5px;color:var(--text-low)">Prazo: Último dia útil Junho</div></div><span class="badge b-pending">Pendente</span></div>
+      </div>
+      <button class="btn primary" style="margin-top:12px" onclick="closeModal();openModal('fiscal-workflow')">🧾 Iniciar Submissão Fiscal</button>
+    </div>
+
     <div class="modal-footer">
       <button class="btn" onclick="closeModal()">Fechar</button>
-      <button class="btn" onclick="toast('📁 Documentos de ${c.name}');closeModal()">Ver Documentos</button>
-      ${c.status==='late'?`<button class="btn danger" onclick="toast('📧 Notificação enviada!');closeModal()">Notificar Atraso</button>`:''}
-      <button class="btn primary" onclick="toast('✏️ Editar ${c.name}');closeModal()">Editar</button>
+      ${c.status==='late'?`<button class="btn danger" onclick="openModal('notify-client');closeModal()">⚠️ Notificar Atraso</button>`:''}
     </div>`;
   document.getElementById('modal-overlay').classList.add('open');
 }
+
+function switchCDTab(btn, paneId) {
+  btn.closest('.modal').querySelectorAll('.cdt-tab').forEach(b=>{
+    b.style.color='var(--text-low)'; b.style.borderBottomColor='transparent'; b.style.fontWeight='400';
+  });
+  btn.style.color='var(--teal)'; btn.style.borderBottomColor='var(--teal)'; btn.style.fontWeight='600';
+  btn.closest('.modal').querySelectorAll('.cdt-pane').forEach(p=>p.style.display='none');
+  const pane = document.getElementById(paneId);
+  if (pane) pane.style.display='block';
+}
 function submitModal(key, btn) {
+  if (key === 'recibo') { generateRecibo(); return; }
+  if (key === 'fiscal-submit') { toast('✅ Submissão fiscal marcada como concluída!'); closeModal(); return; }
+  if (key === 'edit-client') { toast('✅ Dados do cliente actualizados!'); closeModal(); return; }
+  if (key === 'edit-contract') { toast('✅ Contrato actualizado com sucesso!'); closeModal(); return; }
+  if (key === 'notify') { closeModal(); return; }
+  if (!btn) return;
   btn.textContent='A processar...'; btn.disabled=true;
-  setTimeout(()=>{
-    const msgs = {
-      'new-client':'✅ Cliente adicionado com sucesso!',
-      'payment':'✅ Pagamento registado!',
-      'contract':'✅ Contrato criado!',
-      'task':'✅ Tarefa criada!',
-      'user':'✅ Convite enviado por email!',
-      'service':'✅ Serviço adicionado ao catálogo!',
-    };
-    closeModal();
-    toast(msgs[key]||'✅ Operação concluída!');
-  },700);
+  const msgs = {
+    'new-client':'✅ Cliente adicionado com sucesso!',
+    'payment':'✅ Pagamento registado!',
+    'contract':'✅ Contrato criado!',
+    'task':'✅ Tarefa criada!',
+    'user':'✅ Convite enviado por email!',
+    'service':'✅ Serviço adicionado!',
+    'proposal':'✅ Proposta criada!',
+  };
+  setTimeout(()=>{ closeModal(); toast(msgs[key]||'✅ Operação concluída!'); }, 700);
 }
 function closeModal() {
   document.getElementById('modal-overlay').classList.remove('open');
@@ -1796,6 +2485,740 @@ function exportReport(name) {
 
 // ═══════════════════════════════════════
 // INIT
+
+// ═══════════════════════════════════════
+// WORKFLOW FUNCTIONS
+// ═══════════════════════════════════════
+
+function openEditClient(id) {
+  const c = CLIENTS.find(x=>x.id===id);
+  openModal('edit-client');
+  if (!c) return;
+  setTimeout(()=>{
+    const f=(fid,val)=>{const el=document.getElementById(fid);if(el&&val!==undefined)el.value=val;};
+    f('ec-name',c.name); f('ec-nuit',c.nuit||''); f('ec-loc',c.loc);
+    f('ec-addr',c.address||''); f('ec-phone',c.phone||''); f('ec-email',c.email||'');
+    f('ec-contact',c.contactName||''); f('ec-notes',c.notes||'');
+  }, 60);
+}
+
+function openWhatsApp(phone, type) {
+  const clean = (phone||'').replace(/[^0-9]/g,'') || '258867344276';
+  const msgs = {
+    geral:'Olá, bom dia. A NIVELZERO CONSULTORES Lda está em contacto.',
+    payment:'Olá, bom dia. A NIVELZERO CONSULTORES informa que o pagamento referente ao mês de Abril ainda está pendente. Por favor confirme a transferência. Obrigado.',
+    proposta:'Olá! A NIVELZERO CONSULTORES preparou uma proposta comercial para si. Por favor contacte-nos para mais detalhes.',
+    fiscal:'Olá. Existe um prazo fiscal próximo que requer documentos da sua parte. Por favor contacte a NIVELZERO CONSULTORES.',
+  };
+  window.open('https://wa.me/'+clean+'?text='+encodeURIComponent(msgs[type]||msgs.geral),'_blank');
+  toast('💬 A abrir WhatsApp...');
+}
+
+function sendWhatsAppFromModal() {
+  const sel = document.getElementById('nc-client');
+  const msgEl = document.getElementById('nc-msg');
+  if (!sel||!msgEl) return;
+  const phone = sel.options[sel.selectedIndex].dataset.phone || '258867344276';
+  window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msgEl.value),'_blank');
+  toast('💬 WhatsApp aberto! Confirme o envio.');
+  closeModal();
+}
+
+function updateNotifyMsg() {
+  const type = document.getElementById('nc-type')?.value;
+  const msgs = {
+    payment:'Olá, bom dia. A NIVELZERO CONSULTORES informa que o pagamento referente ao mês de Abril ainda não foi recebido. Por favor confirme a transferência. Obrigado.',
+    fiscal:'Olá. Existe um prazo fiscal próximo que requer documentos da sua parte. Por favor envie até ao final desta semana. Obrigado.',
+    doc:'Olá. Para o processamento deste mês precisamos de facturas de compra/venda e extracto bancário. Por favor envie. Obrigado.',
+    meeting:'Olá. Gostaríamos de agendar uma reunião de revisão. Por favor indique a sua disponibilidade. Obrigado.',
+    custom:'',
+  };
+  const el = document.getElementById('nc-msg');
+  if (el && msgs[type]!==undefined) el.value = msgs[type];
+}
+
+function handleFileUpload(event) {
+  const files = Array.from(event.target.files);
+  if (!files.length) return;
+  const icons={'.pdf':'📄','.xlsx':'📊','.docx':'📝','.jpg':'🖼️','.png':'🖼️','.csv':'📋'};
+  files.forEach(f=>{
+    const ext = f.name.slice(f.name.lastIndexOf('.'));
+    DOCS.unshift({icon:icons[ext]||'📎',name:f.name,client:'Carregado agora',size:(f.size/1024).toFixed(0)+' KB',date:'Agora',badge:'Novo'});
+  });
+  renderDocs();
+  navigate('documentos',document.querySelector('[data-page=documentos]'));
+  toast('✅ '+files.length+' ficheiro(s) carregado(s)!');
+  event.target.value='';
+}
+
+function openDoc(name) { toast('📄 A abrir: '+name+'...'); }
+
+function toggleStep(el) {
+  const check = el.querySelector('.fw-check');
+  const done = check.textContent==='✓';
+  if (done) {
+    check.textContent=''; check.style.background='var(--bg4)'; check.style.borderColor='var(--border)';
+    el.style.borderColor='var(--border)'; el.style.background='var(--bg3)';
+  } else {
+    check.textContent='✓'; check.style.background='var(--teal)'; check.style.borderColor='var(--teal)'; check.style.color='#fff';
+    el.style.borderColor='var(--teal)'; el.style.background='rgba(18,194,168,.06)';
+  }
+  const allChecks = document.querySelectorAll('.fw-check');
+  const doneCount = Array.from(allChecks).filter(c=>c.textContent==='✓').length;
+  const prog = document.getElementById('fw-progress-txt');
+  if (prog) {
+    prog.style.color = doneCount===allChecks.length ? 'var(--teal)' : 'var(--text-low)';
+    prog.textContent = doneCount===allChecks.length
+      ? '✅ Todos os passos concluídos! Clique em "Marcar Concluída".'
+      : doneCount+' de '+allChecks.length+' passos concluídos';
+  }
+}
+
+function generateProposal() {
+  const v=(id)=>document.getElementById(id)?.value||'';
+  const company=v('np-company'); const contact=v('np-contact');
+  const pkg=document.getElementById('np-pkg')?.options[document.getElementById('np-pkg')?.selectedIndex||0]?.text||'—';
+  const value=parseInt(v('np-value')||'0').toLocaleString('pt-MZ');
+  const services=Array.from(document.getElementById('np-services')?.selectedOptions||[]).map(o=>o.text);
+  const notes=v('np-notes');
+  const html=`<html><head><meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;max-width:750px;margin:40px auto;color:#1a1a2e;font-size:14px}.hdr{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #12C2A8;padding-bottom:14px;margin-bottom:22px}.logo{font-size:20px;font-weight:900}.logo span{color:#12C2A8}.badge{background:#12C2A8;color:#07101E;padding:3px 11px;border-radius:4px;font-size:11px;font-weight:700}h3{font-size:13px;font-weight:700;border-bottom:1px solid #eee;padding-bottom:5px;margin:18px 0 8px}.row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f5f5f5;font-size:13px}.svc{padding:5px 10px;background:#f8f9fa;border-radius:4px;font-size:13px;margin-bottom:4px}.price{background:#07101E;color:#fff;padding:14px;border-radius:8px;text-align:center;margin:18px 0}.price .val{font-size:26px;font-weight:900;color:#12C2A8}.ftr{margin-top:28px;padding-top:12px;border-top:1px solid #eee;font-size:11px;color:#888;display:flex;justify-content:space-between}@media print{body{margin:16px}}</style></head><body>
+    <div class="hdr"><div class="logo">NIVEL<span>ZERO</span> CONSULTORES LDA</div><span class="badge">PROPOSTA COMERCIAL</span></div>
+    <h3>Dados do Cliente</h3><div class="row"><span>Empresa</span><strong>${company||'—'}</strong></div><div class="row"><span>Contacto</span><strong>${contact||'—'}</strong></div><div class="row"><span>Pacote</span><strong>${pkg}</strong></div>
+    <h3>Serviços Incluídos</h3>${services.map(sv=>`<div class="svc">✓ ${sv}</div>`).join('')}
+    ${notes?`<h3>Condições Especiais</h3><p style="background:#f8f9fa;padding:10px;border-radius:4px;font-size:13px">${notes}</p>`:''}
+    <div class="price"><div style="font-size:12px;opacity:.65;margin-bottom:3px">HONORÁRIO MENSAL</div><div class="val">${value} MZN</div><div style="font-size:11px;opacity:.5;margin-top:3px">+ IVA conforme legislação</div></div>
+    <h3>Próximos Passos</h3><div class="row"><span>1.</span><span>Aprovação da proposta</span></div><div class="row"><span>2.</span><span>Assinatura do contrato</span></div><div class="row"><span>3.</span><span>Recolha de documentação inicial</span></div><div class="row"><span>4.</span><span>Início da prestação de serviços</span></div>
+    <div class="ftr"><span>NIVELZERO CONSULTORES LDA · nivel_zero24@hotmail.com · +258 86 73 44276</span><span>Matola, Maputo</span></div>
+    </body></html>`;
+  const w=window.open('','_blank','width=800,height=700');
+  w.document.write(html); w.document.close(); w.print();
+  closeModal(); toast('📄 Proposta gerada! Imprima ou guarde como PDF.');
+}
+
+function updateProposalValue() {
+  const sel=document.getElementById('np-pkg');
+  const el=document.getElementById('np-value');
+  if(sel&&el) el.value=sel.value;
+}
+
+function generateRecibo() {
+  const v=(id)=>document.getElementById(id)?.value||'';
+  const client=v('rec-client'); const ref=v('rec-ref');
+  const val=parseInt(v('rec-val')||0).toLocaleString('pt-MZ');
+  const date=v('rec-date'); const srv=v('rec-srv'); const method=v('rec-method');
+  const html=`<html><head><meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;max-width:600px;margin:40px auto;color:#1a1a2e}.hdr{text-align:center;border-bottom:3px solid #12C2A8;padding-bottom:14px;margin-bottom:22px}.logo{font-size:20px;font-weight:900}.logo span{color:#12C2A8}.num{font-size:12px;color:#888;margin-top:3px}.row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f5f5f5;font-size:13px}.total{font-size:16px;font-weight:900;color:#12C2A8}.stamp{margin:20px auto;text-align:center;font-weight:700;color:#12C2A8;border:2px solid #12C2A8;padding:9px 20px;border-radius:7px;width:fit-content}.ftr{margin-top:22px;padding:10px;background:#f8f9fa;border-radius:6px;font-size:11px;color:#888;text-align:center}@media print{body{margin:16px}}</style></head><body>
+    <div class="hdr"><div class="logo">NIVEL<span>ZERO</span> CONSULTORES LDA</div><div class="num">RECIBO N.º ${ref}</div></div>
+    <div class="row"><span>Cliente</span><strong>${client}</strong></div><div class="row"><span>Serviços</span><strong>${srv}</strong></div><div class="row"><span>Data</span><strong>${date}</strong></div><div class="row"><span>Método</span><strong>${method}</strong></div><div class="row"><span>TOTAL</span><strong class="total">${val} MZN</strong></div>
+    <div class="stamp">✓ PAGAMENTO RECEBIDO</div>
+    <div class="ftr">NIVELZERO CONSULTORES LDA · NUIT: 400100000 · Matola, Maputo · nivel_zero24@hotmail.com · +258 86 73 44276</div>
+    </body></html>`;
+  const w=window.open('','_blank','width=700,height=580');
+  w.document.write(html); w.document.close(); w.print();
+  closeModal(); toast('🧾 Recibo gerado! Imprima ou guarde como PDF.');
+}
+
+function saveCfg() { toast('✅ Configurações guardadas com sucesso!'); }
+
+function globalSearch(q) {
+  if (!q||q.length<2) return;
+  const ql=q.toLowerCase();
+  const cm=CLIENTS.filter(c=>c.name.toLowerCase().includes(ql)||c.sector.toLowerCase().includes(ql)||c.owner.toLowerCase().includes(ql));
+  const tm=TASKS.filter(t=>t.title.toLowerCase().includes(ql)||t.client.toLowerCase().includes(ql));
+  if (cm.length||tm.length) toast('🔍 '+(cm.length?cm.length+' cliente(s) ':'')+(tm.length?tm.length+' tarefa(s) ':'')+'encontrado(s)');
+  else toast('🔍 Sem resultados para "'+q+'"');
+}
+
+function switchCDTab(btn, paneId) {
+  btn.closest('.modal').querySelectorAll('.cdt-tab').forEach(b=>{b.style.color='var(--text-low)';b.style.borderBottomColor='transparent';b.style.fontWeight='400';});
+  btn.style.color='var(--teal)'; btn.style.borderBottomColor='var(--teal)'; btn.style.fontWeight='600';
+  btn.closest('.modal').querySelectorAll('.cdt-pane').forEach(p=>p.style.display='none');
+  const pane=document.getElementById(paneId); if(pane) pane.style.display='block';
+}
+
+
+// ══════════════════════════════════════
+// LEADS DATA
+// ══════════════════════════════════════
+const LEADS = [
+  {id:'L1',name:'Retail Services Lda',sector:'Comércio',contact:'Sr. Paulo Macamo',phone:'+258841234567',pkg:'growth',value:12000,stage:'proposal',date:'22 Abr 2025',notes:'Proposta enviada'},
+  {id:'L2',name:'AgroMoz Lda',sector:'Agricultura',contact:'Dra. Helena Bila',phone:'+258849876543',pkg:'structure',value:22000,stage:'proposal',date:'18 Abr 2025',notes:'Reunião marcada'},
+  {id:'L3',name:'Beluluane Logistics',sector:'Logística',contact:'Sr. Marco Pinto',phone:'+258843456789',pkg:'structure',value:28000,stage:'accepted',date:'10 Abr 2025',notes:'Aceite — iniciar onboarding'},
+  {id:'L4',name:'FashionMoz Lda',sector:'Têxtil',contact:'Dra. Clara Nhaca',phone:'+258845678901',pkg:'essential',value:6500,stage:'accepted',date:'05 Abr 2025',notes:'Contrato assinado'},
+  {id:'L5',name:'SafariCom Moçambique',sector:'Turismo',contact:'Sr. David Lemos',phone:'+258847890123',pkg:'premium',value:45000,stage:'refused',date:'28 Mar 2025',notes:'Recusada — orçamento'},
+  {id:'L6',name:'Moz Digital Lda',sector:'Tecnologia',contact:'Eng. Sara Cumbi',phone:'+258842345678',pkg:'essential',value:7000,stage:'prospecting',date:'30 Abr 2025',notes:'Primeiro contacto'},
+  {id:'L7',name:'Transportes União',sector:'Transportes',contact:'Sr. Abel Sitoe',phone:'+258848901234',pkg:'growth',value:14000,stage:'meeting',date:'25 Abr 2025',notes:'Reunião 5 Mai'},
+  {id:'L8',name:'ObraMoz Sarl',sector:'Construção',contact:'Dra. Rita Guebuza',phone:'+258846789012',pkg:'growth',value:11000,stage:'prospecting',date:'01 Mai 2025',notes:'Lead via referência'},
+];
+if (!PROPOSALS.length) {
+  PROPOSALS = [
+    {id:'P1',company:'Retail Services Lda',pkg:'growth',value:12000,date:'22 Abr 2025',status:'sent',phone:'+258841234567'},
+    {id:'P2',company:'AgroMoz Lda',pkg:'structure',value:22000,date:'18 Abr 2025',status:'sent',phone:'+258849876543'},
+    {id:'P3',company:'Beluluane Logistics',pkg:'structure',value:28000,date:'10 Abr 2025',status:'accepted',phone:'+258843456789'},
+    {id:'P4',company:'FashionMoz Lda',pkg:'essential',value:6500,date:'05 Abr 2025',status:'accepted',phone:'+258845678901'},
+    {id:'P5',company:'SafariCom Moçambique',pkg:'premium',value:45000,date:'28 Mar 2025',status:'refused',phone:'+258847890123'},
+  ];
+}
+
+// ══════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════
+function el(sel) { return document.querySelector(sel); }
+function fmt(n)  { return parseInt(n||0).toLocaleString('pt-MZ'); }
+function goPage(id, elBtn) { navigate(id, elBtn || document.querySelector('[data-page='+id+']')); }
+
+function confirmDelete(type, id, name) {
+  if (!confirm('Apagar "' + name + '"? Esta acção não pode ser desfeita.')) return;
+  if (type === 'client') {
+    const i = CLIENTS.findIndex(c=>c.id===id);
+    if (i>=0) { CLIENTS.splice(i,1); saveState(); addAuditLog('Cliente removido: '+name,'delete'); renderClients(); toast('🗑️ Cliente removido.'); }
+  } else if (type === 'task') {
+    const i = TASKS.findIndex(t=>t.id===id);
+    if (i>=0) { TASKS.splice(i,1); saveState(); addAuditLog('Tarefa removida: '+name,'delete'); renderTasks(); toast('🗑️ Tarefa removida.'); }
+  } else if (type === 'lead') {
+    const i = LEADS.findIndex(l=>l.id===id);
+    if (i>=0) { LEADS.splice(i,1); renderPipeline(); toast('🗑️ Lead removido.'); }
+  }
+}
+
+function filterTable(tableId, q) {
+  const tb = document.getElementById(tableId); if (!tb) return;
+  Array.from(tb.tBodies[0].rows).forEach(r => {
+    r.style.display = r.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
+  });
+}
+
+function filterTableStatus(tableId, val) {
+  const tb = document.getElementById(tableId); if (!tb) return;
+  Array.from(tb.tBodies[0].rows).forEach(r => {
+    r.style.display = (!val || r.textContent.includes(val)) ? '' : 'none';
+  });
+}
+
+let _sortDir = {};
+function sortTable(tableId, col) {
+  const tb = document.getElementById(tableId); if (!tb) return;
+  const key = tableId + col;
+  _sortDir[key] = _sortDir[key] === 'asc' ? 'desc' : 'asc';
+  const rows = Array.from(tb.tBodies[0].rows);
+  rows.sort((a, b) => {
+    const av = a.cells[col]?.textContent.trim()||'';
+    const bv = b.cells[col]?.textContent.trim()||'';
+    const na = parseFloat(av.replace(/[^0-9.-]/g,'')); const nb = parseFloat(bv.replace(/[^0-9.-]/g,''));
+    let r = (!isNaN(na)&&!isNaN(nb)) ? na-nb : av.localeCompare(bv,'pt');
+    return _sortDir[key]==='desc' ? -r : r;
+  });
+  rows.forEach(r => tb.tBodies[0].appendChild(r));
+  tb.querySelectorAll('th').forEach((th,i) => {
+    const ico = th.querySelector('.sort-ico');
+    if (ico) ico.textContent = (i===col) ? (_sortDir[key]==='asc'?'↑':'↓') : '↕';
+    th.style.color = i===col ? 'var(--teal)' : '';
+  });
+}
+
+// ══════════════════════════════════════
+// CRUD: ADD CLIENT
+// ══════════════════════════════════════
+function doAddClient() {
+  const name  = (document.getElementById('nc-name')||{}).value?.trim();
+  const value = parseInt((document.getElementById('nc-value')||{}).value||0);
+  if (!name)  { toast('⚠️ Nome da empresa é obrigatório'); return; }
+  if (!value) { toast('⚠️ Honorário mensal é obrigatório'); return; }
+  const id = name.replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase() + Date.now().toString().slice(-3);
+  const colors = ['#1B4FBF','#1a3a4a','#4a2070','#0d4a2a','#7a3a00','#2a4a8a','#3a1a6a','#0d3a2a'];
+  const newClient = {
+    id,
+    name,
+    sector:   (document.getElementById('nc-sector')||{}).value||'Serviços',
+    loc:      (document.getElementById('nc-loc')||{}).value||'Maputo',
+    pkg:      (document.getElementById('nc-pkg')||{}).value||'essential',
+    value,
+    status:   'pending',
+    compliance: 90,
+    owner:    (document.getElementById('nc-owner')||{}).value||'Ana Silva',
+    color:    colors[CLIENTS.length % colors.length],
+    services: ['Contabilidade','Gestão Fiscal'],
+    nuit:     (document.getElementById('nc-nuit')||{}).value||'',
+    phone:    (document.getElementById('nc-phone')||{}).value||'',
+    email:    (document.getElementById('nc-email')||{}).value||'',
+    address:  (document.getElementById('nc-addr')||{}).value||'',
+    contactName: (document.getElementById('nc-contact')||{}).value||'',
+    startDate: (document.getElementById('nc-date')||{}).value||new Date().toISOString().slice(0,10),
+    notes:    (document.getElementById('nc-notes')||{}).value||'',
+    workers:  parseInt((document.getElementById('nc-workers')||{}).value||10),
+    avgSalary: 12000,
+    history: [{ date: new Date().toLocaleDateString('pt-MZ'), action: 'Cliente adicionado ao sistema', user: window._currentUserName||'Admin', type: 'onboard' }]
+  };
+  CLIENTS.push(newClient);
+  saveState();
+  addAuditLog('Novo cliente adicionado: ' + name, 'client');
+  closeModal();
+  renderClients();
+  renderDash();
+  // Update task client filter
+  const sel = document.getElementById('task-client-filter');
+  if (sel) sel.innerHTML = '<option value="">Todos os clientes</option>' + CLIENTS.map(c=>`<option value="${c.name}">${c.name}</option>`).join('');
+  toast('✅ Cliente adicionado: ' + name);
+}
+
+// ══════════════════════════════════════
+// CRUD: EDIT CLIENT (save to array)
+// ══════════════════════════════════════
+function doEditClientSave(id) {
+  const c = CLIENTS.find(x=>x.id===id); if (!c) return;
+  const fv = field => (document.getElementById(field)||{}).value;
+  c.name    = fv('ec-name')  || c.name;
+  c.nuit    = fv('ec-nuit')  || c.nuit;
+  c.sector  = fv('ec-sector')|| c.sector;
+  c.loc     = fv('ec-loc')   || c.loc;
+  c.address = fv('ec-addr');
+  c.phone   = fv('ec-phone');
+  c.email   = fv('ec-email');
+  c.contactName = fv('ec-contact');
+  c.notes   = fv('ec-notes');
+  const newVal = parseInt(fv('ec-value'));
+  if (newVal > 0) c.value = newVal;
+  const newStatus = fv('ec-status');
+  if (newStatus) c.status = newStatus;
+  if (!c.history) c.history = [];
+  c.history.unshift({ date: new Date().toLocaleDateString('pt-MZ'), action: 'Dados do cliente actualizados', user: window._currentUserName||'Admin', type: 'edit' });
+  saveState();
+  addAuditLog('Cliente editado: ' + c.name, 'client');
+  closeModal();
+  renderClients();
+  renderDash();
+  toast('✅ Cliente actualizado!');
+}
+
+// ══════════════════════════════════════
+// CRUD: ADD TASK
+// ══════════════════════════════════════
+function doAddTask() {
+  const title = (document.getElementById('nt-title')||{}).value?.trim();
+  if (!title) { toast('⚠️ Título da tarefa é obrigatório'); return; }
+  const newTask = {
+    id: 'T' + Date.now(),
+    title,
+    priority: (document.getElementById('nt-priority')||{}).value||'normal',
+    deadline:  (document.getElementById('nt-deadline')||{}).value||'',
+    clientId:  (document.getElementById('nt-client')||{}).value||'ALL',
+    owner:     (document.getElementById('nt-owner')||{}).value||'Ana Silva',
+    status:    'pending',
+  };
+  TASKS.push(newTask);
+  saveState();
+  addAuditLog('Nova tarefa criada: ' + title, 'task');
+  closeModal();
+  renderTasks();
+  const cnt = document.getElementById('tasks-count');
+  if (cnt) cnt.textContent = TASKS.filter(t=>t.status!=='done').length;
+  toast('✅ Tarefa criada!');
+}
+
+// ══════════════════════════════════════
+// RENDER: PIPELINE / CRM
+// ══════════════════════════════════════
+const PIPE_STAGES = [
+  { key:'prospecting', label:'Prospecção', color:'var(--blue)' },
+  { key:'meeting',     label:'Reunião',    color:'var(--purple)' },
+  { key:'proposal',    label:'Proposta',   color:'var(--amber)' },
+  { key:'accepted',    label:'Aceite ✓',   color:'var(--teal)' },
+  { key:'refused',     label:'Recusada',   color:'var(--red)' },
+];
+const PKG_NAMES = {essential:'Essencial',growth:'Crescimento',structure:'Estrutura',premium:'Premium'};
+const PKG_BADGE = {essential:'pk-ess',growth:'pk-cres',structure:'pk-est',premium:'pk-prem'};
+
+function renderPipeline() {
+  const leads = LEADS;
+  const board = document.getElementById('pipeline-board'); if (!board) return;
+
+  // Update summary
+  const pd = document.getElementById('pipe-total');
+  const pp = document.getElementById('pipe-proposals');
+  const pa = document.getElementById('pipe-accepted');
+  if (pd) pd.textContent = leads.filter(l=>l.stage!=='refused').length;
+  if (pp) pp.textContent = leads.filter(l=>l.stage==='proposal').length;
+  if (pa) pa.textContent = leads.filter(l=>l.stage==='accepted').length;
+
+  board.innerHTML = PIPE_STAGES.map(stage => {
+    const items = leads.filter(l => l.stage === stage.key);
+    const cards = items.length ? items.map(l => `
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:11px;cursor:pointer;transition:border-color .15s" onmouseover="this.style.borderColor='var(--teal)'" onmouseout="this.style.borderColor='var(--border)'" onclick="openLeadDetail('${l.id}')">
+        <div style="font-size:13px;font-weight:600;color:var(--white);margin-bottom:2px">${l.name}</div>
+        <div style="font-size:11px;color:var(--text-low);margin-bottom:8px">${l.sector} · ${l.contact}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span class="pkg-chip ${PKG_BADGE[l.pkg]}">${PKG_NAMES[l.pkg]}</span>
+          <span style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:var(--teal)">${fmt(l.value)} MZN</span>
+        </div>
+        <div style="font-size:10.5px;color:var(--text-low);margin-bottom:8px">${l.date}</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          ${stage.key==='prospecting'||stage.key==='meeting' ? `<button class="btn sm" onclick="event.stopPropagation();advanceLead('${l.id}')">→ Avançar</button>` : ''}
+          ${stage.key==='accepted' ? `<button class="btn sm teal" onclick="event.stopPropagation();openModal('new-contract')">→ Contrato</button>` : ''}
+          ${stage.key==='proposal' ? `<button class="btn sm" onclick="event.stopPropagation();openModal('new-proposal')">📄 Proposta</button>` : ''}
+          <button class="btn sm" onclick="event.stopPropagation();openWhatsApp('${l.phone}','proposta')">💬</button>
+          <button class="btn sm red" onclick="event.stopPropagation();confirmDelete('lead','${l.id}','${l.name}')">✕</button>
+        </div>
+      </div>`).join('')
+    : `<div style="font-size:12px;color:var(--text-low);text-align:center;padding:18px 10px;opacity:.5">Sem leads</div>`;
+
+    return `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:11px;overflow:hidden">
+      <div style="padding:11px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:12.5px;font-weight:700;color:var(--white)">${stage.label}</span>
+        <span style="font-size:10px;font-weight:700;padding:1px 8px;border-radius:10px;background:${stage.color};color:${stage.key==='proposal'||stage.key==='accepted'?'var(--bg)':'#fff'}">${items.length}</span>
+      </div>
+      <div style="padding:10px;display:flex;flex-direction:column;gap:8px;min-height:100px">${cards}</div>
+    </div>`;
+  }).join('');
+}
+
+function advanceLead(id) {
+  const order = ['prospecting','meeting','proposal','accepted'];
+  const l = LEADS.find(x=>x.id===id); if (!l) return;
+  const ci = order.indexOf(l.stage);
+  if (ci >= 0 && ci < order.length-1) {
+    l.stage = order[ci+1];
+    addAuditLog('Lead "'+l.name+'" avançou para: '+l.stage, 'lead');
+    renderPipeline();
+    toast('✅ Lead avançado para: ' + l.stage);
+  }
+}
+
+function openLeadDetail(id) {
+  const l = LEADS.find(x=>x.id===id); if (!l) return;
+  const stageLabel = PIPE_STAGES.find(s=>s.key===l.stage)?.label || l.stage;
+  document.getElementById('modal-content').innerHTML = `
+    <h3>${l.name}</h3>
+    <p class="modal-sub">${l.sector} · ${l.contact} · ${l.phone}</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px">
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center">
+        <div style="font-size:10px;color:var(--text-low);margin-bottom:4px">FASE</div>
+        <span class="badge b-prog">${stageLabel}</span>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center">
+        <div style="font-size:10px;color:var(--text-low);margin-bottom:4px">PACOTE</div>
+        <span class="pkg-chip ${PKG_BADGE[l.pkg]}">${PKG_NAMES[l.pkg]}</span>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center">
+        <div style="font-size:10px;color:var(--text-low);margin-bottom:4px">VALOR/MÊS</div>
+        <div style="font-size:16px;font-weight:800;color:var(--teal);font-family:'Montserrat',sans-serif">${fmt(l.value)} MZN</div>
+      </div>
+    </div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;color:var(--text)">${l.notes||'Sem notas.'}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn blue" onclick="openWhatsApp('${l.phone}','proposta')">💬 WhatsApp</button>
+      <button class="btn" onclick="openModal('new-proposal')">📄 Gerar Proposta</button>
+      ${l.stage!=='refused'&&l.stage!=='accepted' ? `<button class="btn teal" onclick="advanceLead('${l.id}');closeModal()">→ Avançar Fase</button>` : ''}
+      ${l.stage==='accepted' ? `<button class="btn teal" onclick="openModal('new-contract');closeModal()">📝 Criar Contrato</button>` : ''}
+    </div>`;
+  document.getElementById('modal-bg').classList.add('on');
+}
+
+// ══════════════════════════════════════
+// RENDER: FATURAÇÃO
+// ══════════════════════════════════════
+function renderFaturacao() {
+  const fatTotal = document.getElementById('fat-total');
+  const fatRecv  = document.getElementById('fat-recv');
+  const fatLate  = document.getElementById('fat-late');
+  const totalRev = CLIENTS.reduce((s,c)=>s+c.value,0);
+  const recvRev  = CLIENTS.filter(c=>c.status==='active').reduce((s,c)=>s+c.value,0);
+  const lateRev  = CLIENTS.filter(c=>c.status==='late').reduce((s,c)=>s+c.value,0);
+  if (fatTotal) fatTotal.textContent = fmt(totalRev) + ' MZN';
+  if (fatRecv)  fatRecv.textContent  = fmt(recvRev)  + ' MZN';
+  if (fatLate)  fatLate.textContent  = fmt(lateRev)  + ' MZN';
+
+  const tbody = document.querySelector('#fat-table tbody'); if (!tbody) return;
+  tbody.innerHTML = CLIENTS.map(c => {
+    const badgeCls = {active:'s-ok',pending:'s-pend',late:'s-late'}[c.status]||'s-pend';
+    const statusTxt = {active:'Pago',pending:'Pendente',late:'Atraso 12d'}[c.status]||c.status;
+    return `<tr>
+      <td><div class="ccell"><div class="cav" style="width:28px;height:28px;background:${c.color}">${c.id}</div><span class="cn">${c.name}</span></div></td>
+      <td style="font-weight:700;font-family:'Montserrat',sans-serif">${fmt(c.value)} MZN</td>
+      <td>05 Mai</td>
+      <td><span class="status ${badgeCls}">${statusTxt}</span></td>
+      <td style="display:flex;gap:5px">
+        <button class="btn sm teal" onclick="openReciboModal('${c.id}')">🧾 Recibo</button>
+        ${c.status==='late' ? `<button class="btn sm red" onclick="openWhatsApp('${c.phone||''}','payment')">Notificar</button>` : ''}
+        ${c.status==='pending' ? `<button class="btn sm" onclick="openWhatsApp('${c.phone||''}','payment')">Lembrar</button>` : ''}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function openReciboModal(clientId) {
+  const c = CLIENTS.find(x=>x.id===clientId);
+  if (!c) { openModal('generate-recibo'); return; }
+  openModal('generate-recibo');
+  setTimeout(() => {
+    const sel = document.getElementById('rec-client');
+    if (sel) sel.value = c.name;
+    const val = document.getElementById('rec-val');
+    if (val) val.value = c.value;
+  }, 50);
+}
+
+// ══════════════════════════════════════
+// RENDER: ALERTAS
+// ══════════════════════════════════════
+function renderAlerts() {
+  const list = document.getElementById('alerts-list'); if (!list) return;
+  const alerts = buildAlerts();
+  const cnt = document.getElementById('sb-alerts-cnt');
+  if (cnt) cnt.textContent = alerts.length;
+  list.innerHTML = alerts.length ? alerts.map(a => `
+    <div class="al ${a.cls}">
+      <div class="al-ico">${a.icon}</div>
+      <div style="flex:1">
+        <div class="al-title">${a.title}</div>
+        <div class="al-desc">${a.desc}</div>
+      </div>
+      ${a.actionLabel ? `<button class="btn sm ${a.actionCls||''}" style="flex-shrink:0" onclick="${a.action}">${a.actionLabel}</button>` : ''}
+    </div>`).join('')
+  : `<div style="text-align:center;padding:48px;color:var(--text-low)"><div style="font-size:32px;margin-bottom:10px">✅</div><div style="font-size:14px;font-weight:600;color:var(--white)">Sem alertas activos</div><div style="font-size:13px;margin-top:4px">Tudo em ordem!</div></div>`;
+}
+
+function buildAlerts() {
+  const alerts = [];
+  CLIENTS.filter(c=>c.status==='late').forEach(c => {
+    alerts.push({cls:'red',icon:'💸',title:`${c.name} — Pagamento em atraso`,desc:`${fmt(c.value)} MZN · Acção imediata`,actionLabel:'Notificar',actionCls:'red',action:`openWhatsApp('${c.phone||''}','payment')`});
+  });
+  CLIENTS.filter(c=>c.status==='pending').forEach(c => {
+    alerts.push({cls:'amber',icon:'⏳',title:`${c.name} — Pagamento pendente`,desc:`${fmt(c.value)} MZN · Vence em breve`,actionLabel:'Lembrar',actionCls:'',action:`openWhatsApp('${c.phone||''}','payment')`});
+  });
+  LEADS.filter(l=>l.stage==='accepted').forEach(l => {
+    alerts.push({cls:'blue',icon:'🎉',title:`${l.name} — Proposta aceite`,desc:'Iniciar onboarding e criar contrato.',actionLabel:'Ver Pipeline',actionCls:'',action:`navigate('pipeline',document.querySelector('[data-page=pipeline]'))`});
+  });
+  alerts.push({cls:'red',icon:'🧾',title:'Modelos 22 e 22A — Prazo 31 Maio',desc:'5 clientes · Declaração anual IRPC pendente',actionLabel:'Ver Fiscal',actionCls:'',action:`navigate('fiscal',document.querySelector('[data-page=fiscal]'))`});
+  alerts.push({cls:'amber',icon:'📋',title:'IRPS final 2024 — Prazo 31 Maio',desc:'Pagamento final para todos os clientes',actionLabel:'Ver Fiscal',actionCls:'',action:`navigate('fiscal',document.querySelector('[data-page=fiscal]'))`});
+  return alerts;
+}
+
+// ══════════════════════════════════════
+// RENDER: AUDITORIA
+// ══════════════════════════════════════
+function renderAuditoria() {
+  const list = document.getElementById('audit-log-list'); if (!list) return;
+  const typeColors = {payment:'var(--green)',fiscal:'var(--blue-lt)',alert:'var(--red)',login:'var(--teal)',client:'var(--purple)',delete:'var(--red)',task:'var(--amber)',contract:'var(--teal)',lead:'var(--orange)',system:'var(--text-low)'};
+  const typeIcons  = {payment:'💰',fiscal:'🧾',alert:'⚠️',login:'🔐',client:'🏢',delete:'🗑️',task:'✅',contract:'📝',lead:'🔍',system:'⚙️'};
+  list.innerHTML = AUDIT_LOG.length
+    ? AUDIT_LOG.map(l=>`
+      <div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border2)">
+        <div style="width:7px;height:7px;border-radius:50%;background:${typeColors[l.type]||'var(--text-low)'};flex-shrink:0;margin-top:5px"></div>
+        <div style="flex:1">
+          <div style="font-size:12.5px;color:var(--text)">${typeIcons[l.type]||'📌'} ${l.action}</div>
+          <div style="font-size:11px;color:var(--text-low);margin-top:2px">${l.ts} · ${l.user}</div>
+        </div>
+      </div>`).join('')
+    : '<div style="text-align:center;padding:32px;color:var(--text-low)">Log vazio.</div>';
+}
+
+function exportAuditLog() {
+  const csv = ['Data,Hora,Acção,Utilizador,Tipo', ...AUDIT_LOG.map(l=>`"${l.ts}","${l.action}","${l.user}","${l.type||''}"`)].join('\n');
+  const url = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  const a = document.createElement('a'); a.href=url; a.download='nivelzero_auditoria.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  toast('✅ Log de auditoria exportado!');
+}
+
+function clearAuditLog() {
+  if (!confirm('Limpar todo o log de auditoria?')) return;
+  AUDIT_LOG.length = 0; saveState(); renderAuditoria(); toast('Log limpo.');
+}
+
+// ══════════════════════════════════════
+// RENDER: INSS
+// ══════════════════════════════════════
+function renderINSS() {
+  const tbody = document.querySelector('#inss-client-table tbody');
+  if (!tbody) return;
+  tbody.innerHTML = CLIENTS.map(c => {
+    const w   = c.workers || 10;
+    const sal = c.avgSalary || 12000;
+    const emp  = Math.round(sal * 0.04 * w);
+    const trab = Math.round(sal * 0.03 * w);
+    return `<tr>
+      <td><div class="ccell"><div class="cav" style="width:26px;height:26px;background:${c.color}">${c.id}</div><span class="cn">${c.name}</span></div></td>
+      <td>${w}</td>
+      <td>${fmt(sal)} MZN</td>
+      <td style="color:var(--teal)">${fmt(emp)} MZN</td>
+      <td style="color:var(--blue-lt)">${fmt(trab)} MZN</td>
+      <td style="font-weight:700;font-family:'Montserrat',sans-serif">${fmt(emp+trab)} MZN</td>
+      <td><span class="status s-ok">Pago</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function calcINSS() {
+  const sal = parseFloat((document.getElementById('inss-sal')||{}).value||0);
+  const wk  = parseInt((document.getElementById('inss-workers')||{}).value||1);
+  const res = document.getElementById('inss-result');
+  if (!res) return;
+  if (!sal) { res.innerHTML='<div style="font-size:12px;color:var(--text-low);text-align:center;padding:12px">Introduza o salário.</div>'; return; }
+  const emp  = Math.round(sal*0.04);
+  const trab = Math.round(sal*0.03);
+  const tot  = (emp+trab)*wk;
+  res.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border2)"><span style="font-size:13px">Quota Empregador (4%)</span><span style="color:var(--teal);font-weight:700">${fmt(emp)} MZN</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border2)"><span style="font-size:13px">Quota Trabalhador (3%)</span><span style="color:var(--blue-lt);font-weight:700">${fmt(trab)} MZN</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border2)"><span style="font-size:13px">Por trabalhador</span><span style="font-weight:700">${fmt(emp+trab)} MZN</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0"><span style="font-size:14px;font-weight:700">Total (${wk} trabalhadores)</span><span style="font-size:18px;font-weight:800;color:var(--teal);font-family:'Montserrat',sans-serif">${fmt(tot)} MZN</span></div>
+      <div style="font-size:11.5px;color:var(--text-low);padding-top:8px;border-top:1px solid var(--border)">Prazo: até dia 15 do mês seguinte</div>
+    </div>`;
+}
+
+// ══════════════════════════════════════
+// RENDER: CICLO MENSAL
+// ══════════════════════════════════════
+const CICLO_STEPS = [
+  {key:'docs',      label:'Recolha Docs',   icon:'📥'},
+  {key:'accounting',label:'Lançamentos',    icon:'📒'},
+  {key:'fiscal',    label:'Fiscal/AT',      icon:'🧾'},
+  {key:'invoice',   label:'Fatura Emitida', icon:'📄'},
+  {key:'receipt',   label:'Recibo Emitido', icon:'🧾'},
+  {key:'report',    label:'Análise',        icon:'📊'},
+];
+
+function renderCiclo(filter) {
+  const list = document.getElementById('ciclo-list'); if (!list) return;
+  const clients = filter ? CLIENTS.filter(c=>c.id===filter) : CLIENTS.filter(c=>c.status!=='inactive');
+  let pendingCount = 0;
+  list.innerHTML = clients.map(c => {
+    const state = CICLO_STATE[c.id] || {};
+    const doneN = CICLO_STEPS.filter(st=>state[st.key]).length;
+    const pct   = Math.round(doneN/CICLO_STEPS.length*100);
+    if (doneN < CICLO_STEPS.length) pendingCount++;
+    const stepsHTML = CICLO_STEPS.map((st, i) => {
+      const done   = !!state[st.key];
+      const active = !done && (i===0 || !!state[CICLO_STEPS[i-1].key]);
+      const locked = !done && !active;
+      return `<div onclick="toggleCicloStep('${c.id}','${st.key}')" title="${st.label}"
+        style="display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;opacity:${locked?'.35':'1'};transition:opacity .15s">
+        <div style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;border:2px solid ${done?'var(--teal)':active?'var(--amber)':'var(--border)'};background:${done?'rgba(18,194,168,.12)':active?'rgba(245,166,35,.1)':'transparent'};${active?'animation:pulse 1.5s infinite;':''}">${done?'✅':st.icon}</div>
+        <div style="font-size:10px;color:${done?'var(--teal)':'var(--text-low)'};text-align:center;line-height:1.3">${st.label}</div>
+      </div>`;
+    }).join('');
+    return `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-bottom:10px">
+      <div style="padding:13px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'grid':'none'">
+        <div class="ccell"><div class="cav" style="width:30px;height:30px;background:${c.color}">${c.id}</div><div><div class="cn">${c.name}</div><div class="cs">${doneN}/${CICLO_STEPS.length} passos · ${pct}%</div></div></div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:100px;height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden"><div style="height:100%;background:${pct===100?'var(--teal)':pct>50?'var(--amber)':'var(--red)'};width:${pct}%;transition:width .6s"></div></div>
+          <span class="status ${pct===100?'s-ok':'s-pend'}">${pct===100?'✅ Concluído':'Em curso'}</span>
+        </div>
+      </div>
+      <div style="padding:14px 16px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(6,1fr);gap:10px">${stepsHTML}</div>
+    </div>`;
+  }).join('') || '<div style="text-align:center;padding:40px;color:var(--text-low)">Sem clientes activos.</div>';
+
+  const cicloEl = document.getElementById('sb-ciclo-pending');
+  if (cicloEl) cicloEl.textContent = pendingCount;
+}
+
+function toggleCicloStep(clientId, stepKey) {
+  if (!CICLO_STATE[clientId]) CICLO_STATE[clientId] = {};
+  CICLO_STATE[clientId][stepKey] = !CICLO_STATE[clientId][stepKey];
+  saveState();
+  addAuditLog(`Ciclo ${clientId}: passo "${stepKey}" ${CICLO_STATE[clientId][stepKey]?'concluído':'revertido'}`, 'task');
+  renderCiclo();
+  if (CICLO_STATE[clientId][stepKey]) toast('✅ Passo concluído!');
+}
+
+// ══════════════════════════════════════
+// EXPORT DASHBOARD PDF (via print)
+// ══════════════════════════════════════
+function exportDashPDF() {
+  toast('🖨️ A preparar PDF do dashboard...');
+  setTimeout(() => window.print(), 300);
+}
+
+// ══════════════════════════════════════
+// loadState() on login + save on CRUDs
+// ══════════════════════════════════════
+// Patch doLogin to call loadState after auth
+const _origDoLogin = doLogin;
+
+
+function showNewLeadModal() {
+  const clientsList = CLIENTS.map(c=>c.name);
+  document.getElementById('modal-content').innerHTML = `
+    <h3>Novo Lead</h3>
+    <p class="modal-sub">Adicionar lead ao pipeline de prospecção.</p>
+    <div class="form-row"><div class="form-group"><label>Nome da Empresa *</label><input class="form-control" id="nl-name" placeholder="Ex: Retail Services Lda"></div><div class="form-group"><label>Sector</label><select class="form-control" id="nl-sector"><option>Comércio</option><option>Indústria</option><option>Logística</option><option>Construção</option><option>Energia</option><option>Tecnologia</option><option>Serviços</option><option>Agricultura</option><option>Turismo</option><option>Transportes</option></select></div></div>
+    <div class="form-row"><div class="form-group"><label>Nome do Contacto *</label><input class="form-control" id="nl-contact" placeholder="Dr./Dra. Nome Apelido"></div><div class="form-group"><label>Telefone / WhatsApp</label><input class="form-control" id="nl-phone" placeholder="+258 8X XXX XXXX" type="tel"></div></div>
+    <div class="form-row"><div class="form-group"><label>Pacote Estimado</label><select class="form-control" id="nl-pkg"><option value="essential">Essencial (5k–8k)</option><option value="growth">Crescimento (9k–15k)</option><option value="structure">Estrutura (18k–35k)</option><option value="premium">Premium (35k+)</option></select></div><div class="form-group"><label>Valor/mês Estimado (MZN)</label><input class="form-control" id="nl-value" type="number" placeholder="Ex: 12000"></div></div>
+    <div class="form-group"><label>Fase Inicial</label><select class="form-control" id="nl-stage"><option value="prospecting">Prospecção</option><option value="meeting">Reunião agendada</option><option value="proposal">Proposta enviada</option></select></div>
+    <div class="form-group"><label>Notas</label><textarea class="form-control" id="nl-notes" placeholder="Contexto, origem do lead, observações..."></textarea></div>
+    <button class="btn teal" onclick="doAddLead()" style="width:100%;padding:11px;display:flex;justify-content:center;margin-top:4px">Adicionar ao Pipeline</button>`;
+  document.getElementById('modal-bg').classList.add('on');
+}
+
+function showInvoiceModal(clientId) {
+  const c = clientId ? CLIENTS.find(x=>x.id===clientId) : null;
+  document.getElementById('modal-content').innerHTML = `
+    <h3>Gerar Fatura</h3>
+    <p class="modal-sub">Criar fatura de honorários para cliente.</p>
+    <div class="form-row">
+      <div class="form-group"><label>Cliente</label><select class="form-control" id="inv-client">${CLIENTS.map(cl=>`<option ${c&&cl.id===c.id?'selected':''}>${cl.name}</option>`).join('')}</select></div>
+      <div class="form-group"><label>Referência</label><input class="form-control" id="inv-ref" value="FAT-2025-${String(Math.floor(Math.random()*900)+100)}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Valor (MZN)</label><input class="form-control" id="inv-val" type="number" value="${c?c.value:''}" placeholder="Ex: 15000"></div>
+      <div class="form-group"><label>Data</label><input class="form-control" id="inv-date" type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+    </div>
+    <div class="form-group"><label>Serviços</label><input class="form-control" id="inv-srv" value="Contabilidade e Gestão Fiscal — Maio 2025"></div>
+    <button class="btn teal" onclick="generateInvoice()" style="width:100%;padding:11px;display:flex;justify-content:center;margin-top:4px">📄 Gerar e Imprimir</button>`;
+  document.getElementById('modal-bg').classList.add('on');
+}
+
+function generateInvoice() {
+  const client = (document.getElementById('inv-client')||{}).value||'Cliente';
+  const ref    = (document.getElementById('inv-ref')||{}).value||'FAT-001';
+  const val    = parseInt((document.getElementById('inv-val')||{}).value||0);
+  const date   = (document.getElementById('inv-date')||{}).value||new Date().toLocaleDateString('pt-MZ');
+  const srv    = (document.getElementById('inv-srv')||{}).value||'Serviços de Consultoria';
+  const cfg    = APP_CONFIG;
+  const iva    = Math.round(val * 0.17);
+  const total  = val + iva;
+  const win = window.open('','_blank','width=800,height:700');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Fatura ${ref}</title>
+  <style>body{font-family:Arial,sans-serif;max-width:680px;margin:36px auto;color:#1a1a2e;font-size:13.5px}.hdr{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #12C2A8;padding-bottom:14px;margin-bottom:22px}.logo{font-size:20px;font-weight:900}.logo span{color:#12C2A8}.ref{background:#07101E;color:#12C2A8;padding:5px 14px;border-radius:5px;font-size:13px;font-weight:700}.row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0}.total{font-size:16px;font-weight:900;color:#12C2A8}.ftr{margin-top:24px;padding:12px;background:#f8f9fa;border-radius:6px;font-size:11px;color:#888;text-align:center}@media print{body{margin:18px}}</style></head>
+  <body><div class="hdr"><div><div class="logo">NIVEL<span>ZERO</span> CONSULTORES LDA</div><div style="font-size:12px;color:#666;margin-top:3px">${cfg.address||'Matola, Maputo'} · NUIT: ${cfg.nuit||'400100000'}</div></div><span class="ref">FATURA N.º ${ref}</span></div>
+  <div style="margin-bottom:18px"><div style="font-size:11px;color:#888;margin-bottom:3px">CLIENTE</div><div style="font-size:15px;font-weight:700">${client}</div></div>
+  <div class="row"><span>Data</span><strong>${date}</strong></div>
+  <div class="row"><span>Serviços</span><strong>${srv}</strong></div>
+  <div class="row"><span>Subtotal</span><strong>${fmt(val)} MZN</strong></div>
+  <div class="row"><span>IVA (17%)</span><strong>${fmt(iva)} MZN</strong></div>
+  <div class="row"><span>TOTAL A PAGAR</span><strong class="total">${fmt(total)} MZN</strong></div>
+  <div style="margin:18px 0;padding:12px;background:#f0fff8;border-radius:6px;font-size:12px">Pagamento por transferência bancária ou M-Pesa: ${cfg.phone||'+258 86 73 44276'}</div>
+  <div class="ftr">${cfg.name||'NIVELZERO CONSULTORES LDA'} · ${cfg.email||'nivel_zero24@hotmail.com'} · ${cfg.phone||'+258 86 73 44276'}</div>
+  </body></html>`);
+  win.document.close(); win.print();
+  closeModal();
+  addAuditLog('Fatura gerada para: '+client,'payment');
+  toast('📄 Fatura gerada! Imprima ou guarde como PDF.');
+}
+
+function doAddLead() {
+  const name = (document.getElementById('nl-name')||{}).value?.trim();
+  if (!name) { toast('⚠️ Nome da empresa é obrigatório'); return; }
+  const newLead = {
+    id: 'L' + Date.now(),
+    name,
+    sector:  (document.getElementById('nl-sector')||{}).value||'Serviços',
+    contact: (document.getElementById('nl-contact')||{}).value||'',
+    phone:   (document.getElementById('nl-phone')||{}).value||'',
+    pkg:     (document.getElementById('nl-pkg')||{}).value||'essential',
+    value:   parseInt((document.getElementById('nl-value')||{}).value||0),
+    stage:   (document.getElementById('nl-stage')||{}).value||'prospecting',
+    date:    new Date().toLocaleDateString('pt-MZ'),
+    notes:   (document.getElementById('nl-notes')||{}).value||'',
+  };
+  LEADS.push(newLead);
+  addAuditLog('Novo lead adicionado: '+name,'lead');
+  closeModal();
+  renderPipeline();
+  toast('✅ Lead adicionado: ' + name);
+}
+
 // ═══════════════════════════════════════
 // Show login screen on load (shell is behind it)
 // renderDash() is called after successful login
