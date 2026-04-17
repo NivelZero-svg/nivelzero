@@ -1627,7 +1627,7 @@ textarea.form-control{resize:vertical;min-height:72px;line-height:1.5}
   <div class="card">
     <div class="card-header"><div class="card-title">Movimentos</div></div>
     <div class="card-body no-pad"><div class="table-wrap">
-      <table><thead><tr><th style="width:40px">Nº</th><th style="width:90px">Data</th><th>Histórico</th><th style="width:130px">Débito</th><th style="width:130px">Crédito</th><th style="width:110px">Valor MZN</th><th style="width:80px">Cliente</th><th style="width:50px"></th></tr></thead>
+      <table><thead><tr><th style="width:90px">Data</th><th style="width:80px">Diário</th><th>Descrição</th><th style="width:120px">Débito</th><th style="width:120px">Crédito</th><th style="width:110px">Valor MZN</th><th style="width:90px">Documento</th><th style="width:100px">Empresa</th><th style="width:40px"></th></tr></thead>
       <tbody id="diario-body"></tbody></table>
     </div></div>
   </div>
@@ -4028,40 +4028,181 @@ function delLanc(id){
   toast('🗑️ Lançamento eliminado');
 }
 
-function openLancModal(){
-  const opts=PGC.filter(r=>r.t==='Analítica').map(r=>`<option value="${r.c}">${r.c} — ${r.d}</option>`).join('');
-  const cliOpts=CLIENTS.map(c=>`<option>${c.name}</option>`).join('');
-  document.getElementById('modal-body').innerHTML=`
-    <div class="modal-title">📝 Novo Lançamento</div>
-    <div class="modal-subtitle">Partidas dobradas — Débito e Crédito devem ter o mesmo valor</div>
-    <div class="form-row">
-      <div class="form-group"><label>Data</label><input class="form-control" type="date" id="lnc-data" value="${new Date().toISOString().split('T')[0]}"></div>
-      <div class="form-group"><label>Documento</label><input class="form-control" id="lnc-doc" placeholder="FT2025/013"></div>
-    </div>
-    <div class="form-group"><label>Histórico / Descrição</label><input class="form-control" id="lnc-desc" placeholder="Ex: Honorários Maio — MozaCargo Lda"></div>
-    <div class="form-row">
-      <div class="form-group"><label>Conta Débito</label><select class="form-control" id="lnc-db"><option value="">— Seleccionar conta —</option>${opts}</select></div>
-      <div class="form-group"><label>Conta Crédito</label><select class="form-control" id="lnc-cr"><option value="">— Seleccionar conta —</option>${opts}</select></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Valor (MZN)</label><input class="form-control" type="number" id="lnc-val" placeholder="0.00" min="0"></div>
-      <div class="form-group"><label>Cliente (opcional)</label><select class="form-control" id="lnc-cli"><option value="">—</option>${cliOpts}</select></div>
-    </div>
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <button class="btn" style="flex:1" onclick="closeModal()">Cancelar</button>
-      <button class="btn primary" style="flex:2" onclick="gravarLanc()">✅ Gravar Lançamento</button>
+// ── Compound Journal Entry Modal ──
+let _lncDebitLines = [];
+let _lncCreditLines = [];
+
+function _getPGCOpts() {
+  return PGC.filter(r=>r.t==='Analítica').map(r=>`<option value="${r.c}">${r.c} — ${r.d}</option>`).join('');
+}
+
+function _renderLancLines() {
+  const opts = _getPGCOpts();
+  const lineRow = (arr, side, idx) => `
+    <div style="display:flex;gap:7px;align-items:center;margin-bottom:6px" id="lnc-${side}-row-${idx}">
+      <select class="form-control" id="lnc-${side}-acc-${idx}" style="flex:2;font-size:11.5px">
+        <option value="">— Conta —</option>${opts}
+      </select>
+      <input class="form-control" type="number" id="lnc-${side}-val-${idx}" placeholder="0.00" min="0"
+        style="flex:1;font-size:12px" oninput="_updateLancTotals()">
+      <button onclick="_removeLancLine('${side}',${idx})" style="background:var(--red-dim);border:1px solid var(--red);color:var(--red);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:13px;line-height:1">✕</button>
     </div>`;
+  const dbHtml = _lncDebitLines.map((_,i)=>lineRow(_lncDebitLines,'deb',i)).join('');
+  const crHtml = _lncCreditLines.map((_,i)=>lineRow(_lncCreditLines,'cred',i)).join('');
+  const el = document.getElementById('lnc-lines-area');
+  if (!el) return;
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:12px;font-weight:700;color:var(--red)">DÉBITO</span>
+          <button onclick="_addLancLine('deb')" style="background:var(--red-dim);border:1px solid var(--red);color:var(--red);border-radius:6px;padding:3px 10px;cursor:pointer;font-size:12px">+ Linha</button>
+        </div>
+        <div id="lnc-deb-lines">${dbHtml}</div>
+        <div style="font-size:11.5px;color:var(--red);font-weight:700;margin-top:4px">Total Db: <span id="lnc-tot-deb" style="font-family:'Montserrat',sans-serif">0</span> MZN</div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:12px;font-weight:700;color:var(--teal)">CRÉDITO</span>
+          <button onclick="_addLancLine('cred')" style="background:var(--teal-dim);border:1px solid var(--teal);color:var(--teal);border-radius:6px;padding:3px 10px;cursor:pointer;font-size:12px">+ Linha</button>
+        </div>
+        <div id="lnc-cred-lines">${crHtml}</div>
+        <div style="font-size:11.5px;color:var(--teal);font-weight:700;margin-top:4px">Total Cr: <span id="lnc-tot-cred" style="font-family:'Montserrat',sans-serif">0</span> MZN</div>
+      </div>
+    </div>`;
+  // Restore selected values
+  _lncDebitLines.forEach((l,i)=>{
+    const s=document.getElementById(`lnc-deb-acc-${i}`); if(s&&l.acc) s.value=l.acc;
+    const v=document.getElementById(`lnc-deb-val-${i}`); if(v&&l.val) v.value=l.val;
+  });
+  _lncCreditLines.forEach((l,i)=>{
+    const s=document.getElementById(`lnc-cred-acc-${i}`); if(s&&l.acc) s.value=l.acc;
+    const v=document.getElementById(`lnc-cred-val-${i}`); if(v&&l.val) v.value=l.val;
+  });
+  _updateLancTotals();
+}
+
+function _addLancLine(side) {
+  _syncLancLines();
+  if (side==='deb') _lncDebitLines.push({acc:'',val:''});
+  else _lncCreditLines.push({acc:'',val:''});
+  _renderLancLines();
+}
+
+function _removeLancLine(side,idx) {
+  _syncLancLines();
+  if (side==='deb') _lncDebitLines.splice(idx,1);
+  else _lncCreditLines.splice(idx,1);
+  _renderLancLines();
+}
+
+function _syncLancLines() {
+  _lncDebitLines = _lncDebitLines.map((_,i)=>({
+    acc: (document.getElementById(`lnc-deb-acc-${i}`)||{}).value||'',
+    val: (document.getElementById(`lnc-deb-val-${i}`)||{}).value||''
+  }));
+  _lncCreditLines = _lncCreditLines.map((_,i)=>({
+    acc: (document.getElementById(`lnc-cred-acc-${i}`)||{}).value||'',
+    val: (document.getElementById(`lnc-cred-val-${i}`)||{}).value||''
+  }));
+}
+
+function _updateLancTotals() {
+  let totD=0, totC=0;
+  _lncDebitLines.forEach((_,i)=>{ totD+=parseFloat((document.getElementById(`lnc-deb-val-${i}`)||{}).value||0)||0; });
+  _lncCreditLines.forEach((_,i)=>{ totC+=parseFloat((document.getElementById(`lnc-cred-val-${i}`)||{}).value||0)||0; });
+  const td=document.getElementById('lnc-tot-deb'); if(td) td.textContent=totD.toLocaleString('pt-MZ');
+  const tc=document.getElementById('lnc-tot-cred'); if(tc) tc.textContent=totC.toLocaleString('pt-MZ');
+  const warn=document.getElementById('lnc-balance-warn');
+  if(warn) { const eq=Math.abs(totD-totC)<0.01; warn.style.display=eq?'none':'block'; }
+}
+
+function openLancModal(){
+  _lncDebitLines = [{acc:'',val:''}];
+  _lncCreditLines = [{acc:'',val:''}];
+  const today = new Date().toISOString().split('T')[0];
+  // Company options
+  const coOpts = '<option value="_nz">NIVELZERO (interno)</option>' +
+    CLIENTS.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  // Current diario company
+  const curCo = _diarioCompany || '_nz';
+  document.getElementById('modal-body').innerHTML=`
+    <div class="modal-title">📝 Novo Lançamento Contabilístico</div>
+    <div class="modal-subtitle">Suporta lançamentos compostos — múltiplas contas a débito e/ou crédito</div>
+    <div class="form-row" style="margin-bottom:10px">
+      <div class="form-group"><label>Data</label><input class="form-control" type="date" id="lnc-data" value="${today}"></div>
+      <div class="form-group"><label>Nº Documento</label><input class="form-control" id="lnc-doc" placeholder="FT2025/001"></div>
+      <div class="form-group"><label>Empresa / Cliente</label>
+        <select class="form-control" id="lnc-empresa">${coOpts}</select>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px">
+      <label>Histórico / Descrição</label>
+      <input class="form-control" id="lnc-desc" placeholder="Ex: Honorários Maio — MozaCargo Lda">
+    </div>
+    <div id="lnc-lines-area"></div>
+    <div id="lnc-balance-warn" style="display:none;margin-top:8px;padding:8px 12px;background:var(--red-dim);border:1px solid var(--red);border-radius:7px;font-size:12px;color:var(--red);font-weight:600">
+      ⚠️ Débitos ≠ Créditos — o lançamento não está equilibrado
+    </div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="btn" style="flex:1" onclick="closeModal()">Cancelar</button>
+      <button class="btn primary" style="flex:3" onclick="gravarLanc()">✅ Gravar Lançamento</button>
+    </div>`;
+  // Set company to current diario selection
+  const empSel = document.getElementById('lnc-empresa');
+  if (empSel && curCo && curCo !== '_all') empSel.value = curCo;
   document.getElementById('modal-overlay').classList.add('open');
+  _renderLancLines();
 }
 
 function gravarLanc(){
+  _syncLancLines();
   const g=id=>(document.getElementById(id)||{}).value||'';
-  const l={id:_lancId++,data:g('lnc-data'),doc:g('lnc-doc'),desc:g('lnc-desc'),db:g('lnc-db'),cr:g('lnc-cr'),val:parseFloat(g('lnc-val'))||0,cli:g('lnc-cli')};
-  if(!l.desc||!l.db||!l.cr||l.val<=0){toast('⚠️ Preencha todos os campos obrigatórios');return;}
-  LANCAMENTOS.unshift(l);
-  addAuditLog('Lançamento contabilístico: '+l.desc,'fiscal');
-  closeModal();renderDiario();renderBalancete();renderDR();
-  toast('✅ Lançamento registado!');
+  const data=g('lnc-data'), doc=g('lnc-doc'), desc=g('lnc-desc'), empresa=g('lnc-empresa');
+  if (!desc) { toast('⚠️ Preencha a descrição'); return; }
+  const debLines = _lncDebitLines.filter(l=>l.acc&&parseFloat(l.val)>0);
+  const credLines = _lncCreditLines.filter(l=>l.acc&&parseFloat(l.val)>0);
+  if (!debLines.length || !credLines.length) { toast('⚠️ Adicione pelo menos uma conta a débito e uma a crédito'); return; }
+  const totD = debLines.reduce((s,l)=>s+parseFloat(l.val),0);
+  const totC = credLines.reduce((s,l)=>s+parseFloat(l.val),0);
+  if (Math.abs(totD-totC)>0.01) { toast('⚠️ Total débito ('+totD.toLocaleString('pt-MZ')+') ≠ Total crédito ('+totC.toLocaleString('pt-MZ')+')'); return; }
+
+  // For compound entries: create one record per debit × credit combination (split proportionally)
+  // Or store as a grouped entry with lines
+  const lancRef = 'LNC-'+Date.now();
+  const newLancs = [];
+  debLines.forEach(db => {
+    credLines.forEach(cr => {
+      const portion = totD > 0 ? (parseFloat(db.val)/totD) * parseFloat(cr.val) : parseFloat(cr.val)/credLines.length;
+      newLancs.push({
+        id: _lancId++,
+        data, doc, descricao: desc, ref: lancRef,
+        debito: db.acc, credito: cr.acc,
+        valor: Math.round(portion*100)/100,
+        diario: 'Manual'
+      });
+    });
+  });
+
+  if (empresa && empresa !== '_nz') {
+    // Save to client-specific storage
+    if (!window.CLIENT_LANCAMENTOS) window.CLIENT_LANCAMENTOS = {};
+    if (!window.CLIENT_LANCAMENTOS[empresa]) window.CLIENT_LANCAMENTOS[empresa] = [];
+    newLancs.forEach(l => window.CLIENT_LANCAMENTOS[empresa].unshift(l));
+  } else {
+    // Save to global NIVELZERO lancamentos (use unified format)
+    newLancs.forEach(l => LANCAMENTOS.unshift({
+      ...l, desc: l.descricao, db: l.debito, cr: l.credito, val: l.valor, cli: ''
+    }));
+  }
+
+  if(typeof addAuditLog === 'function') addAuditLog('Lançamento: '+desc+' — '+debLines.length+'Db × '+credLines.length+'Cr — '+totD.toLocaleString('pt-MZ')+' MZN','fiscal');
+  if(typeof saveState === 'function') saveState();
+  closeModal();
+  if(typeof renderDiario === 'function') renderDiario();
+  if(typeof renderBalancete === 'function') renderBalancete();
+  if(typeof renderDR === 'function') renderDR();
+  toast('✅ '+newLancs.length+' lançamento(s) registado(s)!');
 }
 
 function exportDiarioCSV(){
@@ -5275,21 +5416,37 @@ function doEmitirFatura() {
 // Per-client LANCAMENTOS: { clientId: [...lançamentos] }
 if (!window.CLIENT_LANCAMENTOS) window.CLIENT_LANCAMENTOS = {};
 
+function _normLanc(l, clientId, clientName) {
+  // Normalize all field name variants to unified format
+  return {
+    ...l,
+    descricao: l.descricao || l.desc || '',
+    debito:    l.debito    || l.db   || '',
+    credito:   l.credito   || l.cr   || '',
+    valor:     l.valor     != null ? l.valor : (l.val != null ? l.val : 0),
+    doc:       l.doc || '',
+    data:      l.data || '',
+    diario:    l.diario || 'Manual',
+    _clientId:   clientId   || l._clientId   || 'NZ',
+    _clientName: clientName || l._clientName || 'NIVELZERO',
+  };
+}
+
 function getClientLancamentos(clientId) {
   if (!clientId || clientId === '_all') {
-    // Consolidado: merge all clients
     const all = [];
     CLIENTS.forEach(c => {
       const cl = window.CLIENT_LANCAMENTOS[c.id] || [];
-      cl.forEach(l => all.push({...l, _clientId: c.id, _clientName: c.name}));
+      cl.forEach(l => all.push(_normLanc(l, c.id, c.name)));
     });
-    // Also include global LANCAMENTOS
     if (typeof LANCAMENTOS !== 'undefined') {
-      LANCAMENTOS.forEach(l => { if(!l._clientId) all.push({...l, _clientId:'NZ',_clientName:'NIVELZERO'}); });
+      LANCAMENTOS.forEach(l => { if(!l._clientId) all.push(_normLanc(l,'NZ','NIVELZERO')); });
     }
-    return all.sort((a,b) => a.data > b.data ? -1 : 1);
+    return all.sort((a,b) => (b.data||'') > (a.data||'') ? 1 : -1);
   }
-  return window.CLIENT_LANCAMENTOS[clientId] || [];
+  const raw = window.CLIENT_LANCAMENTOS[clientId] || [];
+  const c = CLIENTS.find(x=>x.id===clientId);
+  return raw.map(l => _normLanc(l, clientId, c ? c.name : clientId));
 }
 
 function addClientLancamento(clientId, lanc) {
@@ -5314,11 +5471,17 @@ function initClientSampleData() {
     if (!window.CLIENT_LANCAMENTOS[c.id] || !window.CLIENT_LANCAMENTOS[c.id].length) {
       const today = new Date().toISOString().slice(0,10);
       const yr = today.slice(0,7);
+      const hon = c.value || 15000;
+      const iva = Math.round(hon * 0.17);
+      const sal = Math.round(hon * 0.30);
+      const renda = Math.round(hon * 0.08);
       window.CLIENT_LANCAMENTOS[c.id] = [
-        {id:'LC'+c.id+'1',data:yr+'-01',diario:'Vendas',descricao:'Prestação de serviços — Jan',debito:'4.1.1',credito:'7.2',valor:c.value,doc:'FT'+yr+'/001',periodo:yr},
-        {id:'LC'+c.id+'2',data:yr+'-01',diario:'IVA',descricao:'IVA Liquidado — Jan',debito:'7.2',credito:'4.4.3.3',valor:Math.round(c.value*0.16),doc:'FT'+yr+'/001',periodo:yr},
-        {id:'LC'+c.id+'3',data:yr+'-02',diario:'Recebimentos',descricao:'Recebimento de cliente — Jan',debito:'1.1.1',credito:'4.1.1',valor:c.value*1.16,doc:'REC-001',periodo:yr},
-        {id:'LC'+c.id+'4',data:yr+'-02',diario:'Custos',descricao:'Gastos com pessoal — Jan',debito:'6.1.1',credito:'2.3.1',valor:Math.round(c.value*0.35),doc:'FP-001',periodo:yr},
+        {id:'LC'+c.id+'1', data:today.slice(0,8)+'01', diario:'Honorários', descricao:'Prestação de serviços contabilísticos — '+c.name, debito:'4.1.1', credito:'7.2', valor:hon, doc:'FT'+yr+'/001', periodo:yr},
+        {id:'LC'+c.id+'2', data:today.slice(0,8)+'01', diario:'IVA', descricao:'IVA liquidado sobre honorários — '+c.name, debito:'4.1.1', credito:'4.4.3.3', valor:iva, doc:'FT'+yr+'/001', periodo:yr},
+        {id:'LC'+c.id+'3', data:today.slice(0,8)+'05', diario:'Recebimentos', descricao:'Recebimento honorários — '+c.name+' — BCI', debito:'1.2.1', credito:'4.1.1', valor:hon+iva, doc:'REC-'+yr+'/001', periodo:yr},
+        {id:'LC'+c.id+'4', data:today.slice(0,8)+'10', diario:'Pessoal', descricao:'Gastos com pessoal alocado — '+c.name, debito:'6.2.2', credito:'4.6.2.2', valor:sal, doc:'FP-'+yr+'/01', periodo:yr},
+        {id:'LC'+c.id+'5', data:today.slice(0,8)+'10', diario:'FST', descricao:'Renda escritório pro-rata — '+c.name, debito:'6.3.2.3.2', credito:'1.2.1', valor:renda, doc:'RND-'+yr+'/01', periodo:yr},
+        {id:'LC'+c.id+'6', data:today.slice(0,8)+'20', diario:'IVA', descricao:'Entrega IVA à AT — '+c.name, debito:'4.4.3.7', credito:'1.2.1', valor:Math.round(iva*0.85), doc:'IVA-'+yr+'/01', periodo:yr},
       ];
     }
   });
@@ -5327,6 +5490,20 @@ function initClientSampleData() {
 let _diarioCompany = '_all';
 let _balanceteCompany = '_all';
 let _drCompany = '_all';
+
+function _delDiarioLanc(clientId, lancId) {
+  if (clientId === 'NZ') {
+    LANCAMENTOS = LANCAMENTOS.filter(l => String(l.id) !== String(lancId));
+  } else {
+    if (window.CLIENT_LANCAMENTOS && window.CLIENT_LANCAMENTOS[clientId]) {
+      window.CLIENT_LANCAMENTOS[clientId] = window.CLIENT_LANCAMENTOS[clientId].filter(l => String(l.id) !== String(lancId));
+    }
+  }
+  if(typeof saveState==='function') saveState();
+  if(typeof renderDiario==='function') renderDiario();
+  if(typeof renderBalancete==='function') renderBalancete();
+  toast('🗑️ Lançamento eliminado');
+}
 
 function switchDiarioCompany() {
   const sel = document.getElementById('diario-company-sel');
@@ -5379,6 +5556,7 @@ function renderDiario() {
       <td style="font-family:'Montserrat',sans-serif;font-weight:700">${fmtMZN ? fmtMZN(l.valor||0) : (l.valor||0)}</td>
       <td style="font-family:monospace;font-size:11.5px;color:var(--text-low)">${l.doc||''}</td>
       ${clientId==='_all'?`<td style="font-size:11px;color:var(--purple)">${l._clientName||''}</td>`:'<td></td>'}
+      <td><button onclick="_delDiarioLanc('${l._clientId||'NZ'}','${l.id}')" style="background:var(--red-dim);border:1px solid var(--red);color:var(--red);border-radius:5px;padding:2px 8px;cursor:pointer;font-size:12px">✕</button></td>
     </tr>`;
   }).join('');
 
@@ -5502,7 +5680,39 @@ function exportDossierFiscal() {
 
   const w=window.open('','_blank','width=900,height:800');
   w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Dossier Fiscal — ${clientName}</title>
-  <style>body{font-family:Arial,sans-serif;max-width:800px;margin:30px auto;font-size:12px;color:#1a1a2e}h1{font-size:20px;font-weight:900;border-bottom:3px solid #12C2A8;padding-bottom:10px;margin-bottom:4px}h2{font-size:15px;font-weight:700;margin:20px 0 8px;color:#07101E;border-left:4px solid #12C2A8;padding-left:10px}.logo{font-weight:900;font-size:18px}.logo span{color:#12C2A8}table{width:100%;border-collapse:collapse;margin-bottom:14px}th{background:#f0f0f0;padding:7px;text-align:left;font-size:11px}td{padding:7px;border-bottom:1px solid #eee}.kpi{display:inline-block;background:#f8f9fa;border:1px solid #eee;border-radius:6px;padding:12px 18px;margin:5px;text-align:center}.kpi-val{font-size:18px;font-weight:700;color:#12C2A8}.kpi-lbl{font-size:11px;color:#888;margin-top:3px}@media print{body{margin:15px}}</style>
+  <style>body{font-family:Arial,sans-serif;max-width:800px;margin:30px auto;font-size:12px;color:#1a1a2e}h1{font-size:20px;font-weight:900;border-bottom:3px solid #12C2A8;padding-bottom:10px;margin-bottom:4px}h2{font-size:15px;font-weight:700;margin:20px 0 8px;color:#07101E;border-left:4px solid #12C2A8;padding-left:10px}.logo{font-weight:900;font-size:18px}.logo span{color:#12C2A8}table{width:100%;border-collapse:collapse;margin-bottom:14px}th{background:#f0f0f0;padding:7px;text-align:left;font-size:11px}td{padding:7px;border-bottom:1px solid #eee}.kpi{display:inline-block;background:#f8f9fa;border:1px solid #eee;border-radius:6px;padding:12px 18px;margin:5px;text-align:center}.kpi-val{font-size:18px;font-weight:700;color:#12C2A8}.kpi-lbl{font-size:11px;color:#888;margin-top:3px}@media print{body{margin:15px}}
+/* ════ PREMIUM ENHANCEMENTS ════ */
+:root {
+  --shadow-card: 0 2px 16px rgba(0,0,0,.35);
+  --shadow-hover: 0 4px 24px rgba(0,0,0,.5);
+  --grad-teal: linear-gradient(135deg,#12c2a8 0%,#0d9b87 100%);
+  --grad-blue: linear-gradient(135deg,#3d8ef8 0%,#2563eb 100%);
+  --grad-red:  linear-gradient(135deg,#f85c5c 0%,#c0392b 100%);
+  --grad-purple:linear-gradient(135deg,#9b59b6 0%,#6c3483 100%);
+  --transition: all .18s cubic-bezier(.4,0,.2,1);
+}
+.card { transition: var(--transition); box-shadow: var(--shadow-card); }
+.card:hover { box-shadow: var(--shadow-hover); transform: translateY(-1px); }
+.btn.primary { background: var(--grad-teal) !important; box-shadow: 0 2px 8px rgba(18,194,168,.3); }
+.btn.primary:hover { box-shadow: 0 4px 16px rgba(18,194,168,.5); transform: translateY(-1px); }
+.btn.danger { background: var(--grad-red) !important; }
+.sb-item { transition: var(--transition); }
+.sb-item:hover { background: rgba(18,194,168,.08) !important; padding-left: 22px !important; }
+.sb-item.active { border-left: 3px solid var(--teal); background: rgba(18,194,168,.12) !important; }
+table thead th { background: rgba(255,255,255,.03); font-size:11px; text-transform:uppercase; letter-spacing:.06em; }
+table tbody tr { transition: background .12s; }
+table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
+.badge { font-weight: 700; letter-spacing: .04em; }
+.form-control { transition: border-color .15s, box-shadow .15s; }
+.form-control:focus { border-color: var(--teal) !important; box-shadow: 0 0 0 3px rgba(18,194,168,.15) !important; }
+.modal-overlay { backdrop-filter: blur(6px); }
+.modal-box { box-shadow: 0 8px 48px rgba(0,0,0,.7); border: 1px solid rgba(255,255,255,.08); }
+/* KPI cards */
+.kpi-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; transition: var(--transition); }
+.kpi-card:hover { border-color: var(--teal); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+/* Diário compound entry builder */
+#lnc-lines-area { background: rgba(255,255,255,.02); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+</style>
   </head><body>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><div class="logo">NIVEL<span>ZERO</span> CONSULTORES</div><div style="font-size:11px;color:#888">Gerado em: ${new Date().toLocaleDateString('pt-MZ')}</div></div>
   <h1>📁 Dossier Fiscal</h1>
