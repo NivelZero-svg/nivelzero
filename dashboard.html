@@ -1,176 +1,293 @@
+<!-- NIVELZERO Dashboard atualizado: implementa capturas de NIF, telefone, email, notas; adiciona serviços; datas dinâmicas; menu responsivo; acessibilidade; persistência localStorage (sem backend). Testar flows: login, cadastro cliente, novo serviço, alternar menu -->
 <!DOCTYPE html>
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NIVELZERO · Sistema de Gestão Interno</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#07101E; --bg2:#0D1B2E; --bg3:#132338; --bg4:#1B2F48; --bg5:#243855;
-  --blue:#3B7BF8; --blue-lt:#6099FF; --orange:#F5A623; --teal:#12C2A8;
-  --white:#F0F4FF; --text:#B8C8E0; --text-low:#6B82A0; --border:rgba(255,255,255,.07);
-  --border2:rgba(255,255,255,.04); --shadow:0 4px 20px rgba(0,0,0,.35);
-}
-body{margin:0;font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
-.sidebar {width:250px;height:100vh;position:fixed;left:0;top:0;background:var(--bg2);padding:20px 0;}
-.sidebar .sb-item{display:flex;align-items:center;padding:10px 20px;cursor:pointer;}
-.sidebar .sb-item.active{background:rgba(18,194,168,.15);}
-#sidebar.collapsed {display:none;}
-.topbar{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);padding:10px 20px;}
-.topbar .tb-logo span{font-size:16px;color:var(--white);font-weight:600;}
-.topbar button{background:none;border:none;color:var(--text);cursor:pointer;margin-left:10px;}
-@media (max-width:768px) {
-  .sidebar { position:absolute; left: -250px; transition:left 0.3s ease; }
-  .sidebar.collapsed { left: 0; }
-}
+:root{--bg:#07101E;--bg2:#0D1B2E;--text:#B8C8E0;--border:rgba(255,255,255,.07);}
+body{margin:0;font-family:sans-serif;background:var(--bg);color:var(--text);}
+.sidebar{width:250px;height:100vh;position:fixed;left:0;top:0;background:var(--bg2);overflow:auto;}
+.sidebar.collapsed{left:-250px;}
+.sidebar .sb-item{padding:10px 20px;cursor:pointer;}
+.topbar{margin-left:250px;background:var(--bg2);padding:10px;display:flex;align-items:center;}
+@media (max-width:768px){.sidebar{position:absolute;left:-250px;transition:left .3s;} .sidebar.collapsed{left:0;} .topbar{margin-left:0;}}
+.modal-box{background:var(--bg2);padding:20px;max-width:400px;margin:100px auto;color:var(--text);}
+table{width:100%;border-collapse:collapse;margin-top:20px;}
+th,td{padding:8px;border:1px solid var(--border);}
+.btn{padding:6px 12px;margin:4px;border:none;color:#fff;background:var(--blue);cursor:pointer;}
+.btn.primary{background:#6099FF;}
+.btn.xs{padding:2px 6px;}
+.icon-btn{background:none;border:none;color:var(--text);cursor:pointer;font-size:16px;}
+input,select,textarea{width:100%;padding:6px;margin:4px 0;background:var(--bg3);border:1px solid var(--border);color:var(--text);}
+label{display:block;margin-top:10px;}
+@media (max-width:768px){table,thead,tbody,th,td,tr{display:block;}th,td{border:none;} tbody tr{margin-bottom:10px;} }
 </style>
 </head>
 <body>
+  <!-- LOGIN (sem backend) -->
   <div id="login-screen">
-    <!-- (Login form remains unchanged) -->
+    <div class="modal-box">
+      <h2>NIVELZERO Login</h2>
+      <label for="login-user">Utilizador</label>
+      <input type="text" id="login-user" autocomplete="username">
+      <label for="login-pwd">Senha</label>
+      <input type="password" id="login-pwd" autocomplete="current-password">
+      <button class="btn primary" onclick="doLogin()">Entrar</button>
+    </div>
   </div>
 
-  <div id="app-shell" style="display:none; flex-direction:column; min-height:100vh;">
+  <!-- APP SHELL -->
+  <div id="app-shell" style="display:none;">
+
+    <!-- SIDEBAR -->
     <nav class="sidebar" id="sidebar">
-      <!-- Menu itens... -->
-      <div class="sidebar-footer">
-        <div class="sbp-label">Período activo</div>
-        <div class="sbp-val"><span id="sidebar-active-period"></span></div>
-        <div class="sbp-sub">5 clientes ativos</div>
+      <div class="sb-item active" onclick="navigate('dashboard')">Dashboard</div>
+      <div class="sb-item" onclick="navigate('clientes')">Clientes</div>
+      <div class="sb-item" onclick="navigate('financeiro')">Financeiro</div>
+      <div class="sb-item" onclick="navigate('contratos')">Contratos</div>
+      <div class="sb-item" onclick="navigate('servicos')">Serviços</div>
+      <div class="sb-item" onclick="navigate('tarefas')">Tarefas</div>
+      <div class="sb-item" onclick="navigate('documentos')">Documentos</div>
+      <div class="sb-item" onclick="navigate('equipa')">Equipa & Acessos</div>
+      <div class="sb-item" onclick="navigate('fiscal')">Calendário Fiscal</div>
+      <div class="sb-item" onclick="navigate('relatorios')">Relatórios</div>
+      <div class="sb-item" onclick="navigate('propostas')">Propostas</div>
+      <div class="sb-item" onclick="navigate('pipeline')">Pipeline / CRM</div>
+      <div class="sb-item" onclick="navigate('faturacao')">Faturação</div>
+      <div class="sb-item" onclick="navigate('alertas')">Alertas</div>
+      <div class="sb-item" onclick="navigate('fluxo')">Fluxograma Operacional</div>
+      <div class="sb-item" onclick="navigate('ciclo')">Ciclo Mensal</div>
+      <div class="sb-item" onclick="navigate('inss')">INSS</div>
+      <div class="sb-item" onclick="navigate('auditoria')">Log de Auditoria</div>
+      <div class="sb-item" onclick="navigate('plano-contas')">Plano de Contas</div>
+      <div class="sb-item" onclick="navigate('diario')">Diário de Lançamentos</div>
+      <div class="sb-item" onclick="navigate('balancete')">Balancete</div>
+      <div class="sb-item" onclick="navigate('dr')">Demonstração de Resultados</div>
+      <div class="sb-item" onclick="navigate('balanco')">Balanço Patrimonial</div>
+      <div class="sb-item" onclick="navigate('fluxocaixa')">Fluxo de Caixa</div>
+      <div class="sb-item" onclick="navigate('rh-colaboradores')">Colaboradores</div>
+      <div class="sb-item" onclick="navigate('rh-folha')">Folha Salarial</div>
+      <div class="sb-item" onclick="navigate('imobilizado')">Imobilizado & Amortizações</div>
+      <div class="sb-item" onclick="navigate('fat-eletronica')">Faturação Eletrónica</div>
+      <div class="sidebar-footer" style="position:absolute;bottom:20px;width:100%;">
+        <div style="padding:10px 20px;font-size:12px;">Período activo:</div>
+        <div style="padding:0 20px;"><span id="sidebar-active-period"></span></div>
       </div>
     </nav>
-    
+
+    <!-- TOP BAR -->
     <div class="topbar">
-      <div class="tb-left">
-        <svg><!-- Logo SVG --></svg>
-        <span class="tb-logo-text">NIVEL<span>ZERO</span></span>
-        <span id="tb-username">Admin</span>
-        <span class="role-chip rc-admin" id="tb-role-chip">Admin</span>
-      </div>
-      <!-- Botão Toggle do Menu (Hambúrguer) -->
+      <span id="tb-username">Admin NIVELZERO</span>
+      <!-- Toggle Sidebar (Hamburger) -->
       <button id="sidebar-toggle" class="icon-btn" onclick="toggleSidebar()" title="Mostrar/Ocultar menu">☰</button>
-      <button id="theme-toggle" onclick="toggleTheme()" title="Alternar tema">🌙</button>
-      <button class="icon-btn" onclick="logout()" style="font-size:13px" title="Sair do sistema">🚪</button>
+      <button id="theme-toggle" onclick="toggleTheme()" title="Alternar Tema">🌓</button>
+      <button onclick="signOut()" class="icon-btn" title="Sair do sistema">🚪</button>
     </div>
 
-    <!-- Dashboard Page -->
+    <!-- PÁGINA Dashboard -->
     <div class="page active" id="page-dashboard">
-      <div class="ph">
-        <div class="ph-left">
-          <h1>Bom dia, <span id="tb-username">Admin</span> 👋</h1>
-          <p id="dash-overview-subtitle">Visão geral do negócio — <span id="dash-month-year"></span></p>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:20px;">
+        <div>
+          <h1>Bom dia, <span id="tb-user-label">Admin NIVELZERO</span> 👋</h1>
+          <p>Visão geral do negócio — <span id="dash-month-year"></span></p>
         </div>
-        <div class="ph-actions">
-          <button class="btn" onclick="openReport('Receita por Período')">↓ Exportar</button>
-          <button class="btn primary" onclick="openModal('new-client')">+ Novo Cliente</button>
+        <div>
+          <button class="btn" onclick="openReport('Receita por Período')" title="Exportar dados">↓ Exportar</button>
+          <button class="btn primary" onclick="openModal('new-client')" title="Adicionar novo cliente">+ Novo Cliente</button>
         </div>
       </div>
-      <!-- KPIs -->
-      <div class="kpi">
-        <div class="kpi-card"><h3>Receita Mensal <span style="font-family:montserrat;">95.500 <span style="font-size:14px;color:var(--text-low)">MZN</span></span></h3>
-          <div class="kpi-sub"><span id="rev-month-year"></span> · 5 clientes</div>
+      <!-- Indicadores KPIs -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;padding:20px;">
+        <div style="background:var(--bg2);padding:10px;border-radius:4px;">
+          <h3>Receita Mensal <span>95.500 <span style="font-size:14px;">MZN</span></span></h3>
+          <p><span id="dash-month-year-2"></span> · 5 clientes</p>
         </div>
-        <!-- outros KPIs -->
+        <!-- Outros indicadores... -->
       </div>
-      <!-- Tabela de Clientes -->
-      <table id="clients-table">
-        <thead><tr><th>Empresa</th><th>Pacote</th><th>Serviços</th><th>Estado</th><th>Conformidade</th><th>Responsável</th><th>Ações</th></tr></thead>
-        <tbody>
-          <!-- preenchido via JS (renderClients) -->
-        </tbody>
-      </table>
+      <!-- Tabela de clientes -->
+      <div style="padding:20px;">
+        <table>
+          <thead style="background:var(--bg3);">
+            <tr><th>Empresa</th><th>PACOTE</th><th>Serviços</th><th>Status</th><th>Conformidade</th><th>Responsável</th><th>Ações</th></tr>
+          </thead>
+          <tbody id="clients-table-body">
+            <!-- preenchido via JS (renderClients) -->
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- Outras páginas omitidas para brevidade (Clientes, Financeiro, Contratos, etc.) -->
+    <!-- DEMONSTRAÇÃO: Modal Cliente -->
+    <div id="modal-new-client" class="modal-box" style="display:none;">
+      <h2>Novo Cliente</h2>
+      <label for="nc-name">Empresa</label>
+      <input id="nc-name" placeholder="Nome da empresa">
+      <label for="nc-nuit">NIF/NUIT</label>
+      <input id="nc-nuit" placeholder="400XXXXXXX">
+      <label for="nc-loc">Localização</label>
+      <input id="nc-loc" placeholder="Cidade, País">
+      <label for="nc-pkg">Pacote</label>
+      <select id="nc-pkg">
+        <option value="standard">Standard</option>
+        <option value="essencial">Essencial</option>
+      </select>
+      <label for="nc-value">Honorário / mês (MZN)</label>
+      <input id="nc-value" type="number" placeholder="Valor numérico">
+      <label for="nc-sector">Sector</label>
+      <select id="nc-sector">
+        <option>Serviços</option><option>Comércio</option><option>Industrial</option>
+      </select>
+      <label for="nc-phone">Telefone</label>
+      <input id="nc-phone" type="tel" placeholder="+258 8XX XXX XXX">
+      <label for="nc-email">Email</label>
+      <input id="nc-email" type="email" placeholder="contato@empresa.co.mz">
+      <label for="nc-notes">Notas</label>
+      <textarea id="nc-notes" rows="3" placeholder="Outras informações..."></textarea>
+      <button class="btn primary" onclick="doAddClient()" title="Cadastrar cliente">Adicionar Cliente</button>
+      <button class="btn" onclick="closeModal()">Cancelar</button>
+    </div>
 
-    <!-- Página Fiscal -->
+    <!-- DEMONSTRAÇÃO: Modal Serviço -->
+    <div id="modal-new-service" class="modal-box" style="display:none;">
+      <h2>Novo Serviço</h2>
+      <label for="ns-name">Nome do Serviço</label>
+      <input id="ns-name" placeholder="Ex: Gestão Fiscal">
+      <label for="ns-price">Preço (MZN)</label>
+      <input id="ns-price" type="number" placeholder="0">
+      <button class="btn primary" onclick="doAddService()" title="Adicionar serviço">Adicionar Serviço</button>
+      <button class="btn" onclick="closeModal()">Cancelar</button>
+    </div>
+
+    <!-- PÁGINAS RESTANTES -->
+    <!-- (Implementar similares às páginas acima: Clientes, Financeiro, Contratos, etc., com ids correspondentes) -->
     <div class="page" id="page-fiscal">
       <h1>Calendário Fiscal</h1>
-      <p id="fiscal-title">Obrigações fiscais em Moçambique — <span id="fiscal-year"></span></p>
-      <!-- Conteúdo do calendário -->
+      <p>Obrigações fiscais em Moçambique — <span id="fiscal-year"></span></p>
+      <!-- Conteúdo do calendário (mock) -->
     </div>
-    
-    <!-- Continue páginas restantes -->
 
   </div>
 
 <script>
-// ═══════════════════════════════════════════════════
-// NIVELZERO DASHBOARD — Script atualizado
+// Funções de navegação (existente)
+function navigate(id){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById('page-'+id).classList.add('active'); }
 
-// Alterna tema claro/escuro
-function toggleTheme() {
+// Função de login (mock)
+function doLogin(){
+  // Sem backend: aceitar qualquer credencial
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app-shell').style.display='block';
+  renderClients();
+  renderServices();
+}
+
+// Função de logout
+function signOut(){
+  location.reload();
+}
+
+// Toggle de tema
+function toggleTheme(){
   document.body.classList.toggle('light');
 }
 
-// Alterna visibilidade da sidebar
-function toggleSidebar() {
+// Toggle de sidebar
+function toggleSidebar(){
   document.getElementById('sidebar').classList.toggle('collapsed');
 }
 
-// (Funções de login e navegação existentes)
+// Persistência via localStorage
+function saveClients(){ localStorage.setItem('nz_clients', JSON.stringify(CLIENTS)); }
+function loadClients(){ const data=localStorage.getItem('nz_clients'); if(data) CLIENTS=JSON.parse(data);}
+function saveServices(){ localStorage.setItem('nz_services', JSON.stringify(SERVICES)); }
+function loadServices(){ const data=localStorage.getItem('nz_services'); if(data) SERVICES=JSON.parse(data);}
 
-// Captura de login (scripts existentes para autenticação)
-// ...
+// Dados iniciais (exemplo mínimo)
+let CLIENTS=[]; loadClients();
+let SERVICES=[{name:'Gestão Fiscal',icon:'🧾',desc:'IVA, IRPC etc.',price:2000}]; loadServices();
 
-// Renderização de Dashboard (existente)
+// Renderização de listas
+function renderClients(){
+  const tbody=document.getElementById('clients-table-body');
+  tbody.innerHTML='';
+  CLIENTS.forEach((c,i)=>{
+    let tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td>${c.name}</td>
+      <td>${c.pkg}</td>
+      <td>${c.services?c.services.join(', '):''}</td>
+      <td>${c.status||''}</td>
+      <td>${c.compliance||0}%</td>
+      <td>${c.owner||''}</td>
+      <td>
+        <button class="btn xs" onclick="alert('Ver clientes #${i}')">Ver</button>
+        <button class="btn xs" onclick="alert('Editar cliente #${i}')">Editar</button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+function renderServices(){
+  const parent=document.getElementById('page-servicos');
+  if(!parent) return;
+  parent.innerHTML='<h1>Serviços</h1><div style="padding:20px;">';
+  SERVICES.forEach(s=>{
+    parent.innerHTML += `<div style="background:var(--bg2);margin:10px;padding:10px;border-radius:4px;">
+      <h3>${s.icon} ${s.name}</h3><p>${s.desc} - ${s.price} MZN</p>
+    </div>`;
+  });
+  parent.innerHTML+='</div>';
+}
 
-// Gerenciamento de Clientes
-function doAddClient() {
-  const name = (document.getElementById('nc-name')||{}).value.trim();
-  const nuit = (document.getElementById('nc-nuit')||{}).value.trim();
-  const phone= (document.getElementById('nc-phone')||{}).value.trim();
-  const email= (document.getElementById('nc-email')||{}).value.trim();
-  const notes= (document.getElementById('nc-notes')||{}).value.trim();
-  const value = parseInt((document.getElementById('nc-value')||{}).value||0);
-  if (!name)  { toast('⚠️ Nome da empresa é obrigatório'); return; }
-  if (!value) { toast('⚠️ Honorário mensal é obrigatório'); return; }
-  const id = name.replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase() + Date.now().toString().slice(-3);
-  const newClient = {
-    id, name,
-    sector:   (document.getElementById('nc-sector')||{}).value||'-',
-    loc:      (document.getElementById('nc-loc')||{}).value||'',
-    pkg:      (document.getElementById('nc-pkg')||{}).value||'standard',
-    value,
-    status:   'pending', compliance: 90,
-    owner:    window._currentUserName||'Admin',
-    nuit:     nuit||'', phone: phone||'', email: email||'', notes: notes||''
-  };
+// Cadastro de cliente
+function doAddClient(){
+  const name=document.getElementById('nc-name').value.trim();
+  const nuit=document.getElementById('nc-nuit').value.trim();
+  const loc=document.getElementById('nc-loc').value.trim();
+  const pkg=document.getElementById('nc-pkg').value;
+  const value=parseInt(document.getElementById('nc-value').value)||0;
+  const sector=document.getElementById('nc-sector').value;
+  const phone=document.getElementById('nc-phone').value.trim();
+  const email=document.getElementById('nc-email').value.trim();
+  const notes=document.getElementById('nc-notes').value.trim();
+  if(!name){ alert('Nome é obrigatório'); return; }
+  if(!value){ alert('Honorário é obrigatório'); return; }
+  const id=name.replace(/\s+/g,'').slice(0,2).toUpperCase()+Date.now();
+  const newClient={id,name,sector,loc,pkg,value,status:'Ativo',owner:'Admin',nuit,phone,email,notes,services:[]};
   CLIENTS.push(newClient); saveClients();
-  addAuditLog('Cliente adicionado: '+name,'doc');
-  renderClients(); renderDash();
-  switchClientTab('active',document.querySelector('.ph-filter.active'));
-  closeModal(); toast('✅ Cliente cadastrado!');
+  renderClients();
+  closeModal(); alert('Cliente adicionado com sucesso!');
 }
 
-// Cadastro de Serviço
-function doAddService() {
-  var inp = document.querySelector('#modal-body input');
-  var nome = inp? inp.value.trim() : '';
-  if (!nome) { toast('⚠️ Nome do serviço é obrigatório'); return; }
-  SERVICES.push({name: nome, icon: '⚙️', desc:'', price:0});
-  addAuditLog('Serviço adicionado: '+nome,'doc');
+// Cadastro de serviço
+function doAddService(){
+  const name=document.getElementById('ns-name').value.trim();
+  const price=parseInt(document.getElementById('ns-price').value)||0;
+  if(!name){ alert('Nome do serviço é obrigatório'); return; }
+  const newService={name,icon:'⚙️',desc:'',price};
+  SERVICES.push(newService); saveServices();
   renderServices();
-  closeModal(); toast('✅ Serviço adicionado!');
+  closeModal(); alert('Serviço adicionado com sucesso!');
 }
 
-// (Demais funções existentes, ex.: renderClients, renderServices, etc. permanecem)
+// Modal open/close (simples)
+function openModal(id){ document.getElementById('modal-'+id.split('-')[1]).style.display='block'; }
+function closeModal(){ document.querySelectorAll('.modal-box').forEach(m=>m.style.display='none'); }
 
-// Atualiza datas dinâmicas após carregamento
-window.addEventListener('load', () => {
-  const now = new Date();
-  const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-  const mes = meses[now.getMonth()], ano = now.getFullYear();
-  document.getElementById('dash-month-year').innerText = `${mes} ${ano}`;
-  document.getElementById('rev-month-year').innerText = `${mes} ${ano}`;
-  document.getElementById('fiscal-year').innerText = ano;
-  document.getElementById('sidebar-active-period').innerText = `${mes} ${ano}`;
-});
+// Inicialização de datas
+window.onload = () => {
+  const now=new Date(), meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const mes=meses[now.getMonth()], ano=now.getFullYear();
+  document.getElementById('dash-month-year').innerText=`${mes} ${ano}`;
+  document.getElementById('dash-month-year-2').innerText=`${mes} ${ano}`;
+  document.getElementById('fiscal-year').innerText=ano;
+  document.getElementById('sidebar-active-period').innerText=`${mes} ${ano}`;
+  renderClients(); renderServices();
+};
 
-// Função de logout (existente)
-// ...
-
+// Contratos (simulação)
+/* Botão Renovar: apenas alerta, marca 'requires backend' */
 </script>
 </body>
 </html>
