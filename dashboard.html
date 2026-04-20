@@ -530,8 +530,8 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
       <span class="tb-uname" id="tb-username">Admin</span>
       <span class="role-chip rc-admin" id="tb-role-chip">Admin</span>
     </div>
-    <button id="theme-toggle" onclick="toggleTheme()" title="Alternar tema">🌙</button>
-    <button class="icon-btn" onclick="logout()" title="Sair do sistema" style="font-size:13px">🚪</button>
+    <button id="theme-toggle" onclick="toggleTheme()" title="Alternar tema claro/escuro" aria-label="Alternar tema" title="Alternar tema">🌙</button>
+    <button class="icon-btn" onclick="logout()" title="Sair do sistema" aria-label="Sair do sistema" title="Sair do sistema" style="font-size:13px">🚪</button>
   </div>
 </div>
 
@@ -669,7 +669,7 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
   <div class="ph">
     <div class="ph-left">
       <h1>Bom dia, NIVELZERO 👋</h1>
-      <p>Visão geral do negócio — Abril 2025</p>
+      <p>Visão geral do negócio — <span data-period>a carregar...</span></p>
     </div>
     <div class="ph-actions">
       <button class="btn" onclick="openReport('Receita por Período')">↓ Exportar</button>
@@ -720,7 +720,7 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
     </div>
     <div class="kpi" style="border-top:2px solid var(--blue)">
       <div class="kpi-icon">🏢</div>
-      <div class="kpi-label">Clientes Activos</div>
+      <div class="kpi-label">Clientes Ativos</div>
       <div class="kpi-value" style="color:var(--blue-lt)">5</div>
       <div class="kpi-sub">3 mensais · 2 pontuais</div>
       <div class="kpi-delta delta-up">+ 1 este mês</div>
@@ -746,7 +746,7 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
           <div class="alert-item al-red">
             <div class="alert-icon">💸</div>
             <div><div class="alert-title">Importações Africanas — Pagamento 12 dias em atraso</div><div class="alert-desc">18.000 MZN · Março 2025 · Notificar imediatamente</div></div>
-            <button class="btn xs danger" style="margin-left:auto;flex-shrink:0" onclick="openModal('notify-client')">Notificar</button>
+            <button class="btn xs danger" style="margin-left:auto;flex-shrink:0" onclick="openNotifyClient(this)">Notificar</button>
           </div>
           <div class="alert-item al-red">
             <div class="alert-icon">🧾</div>
@@ -756,7 +756,7 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
           <div class="alert-item al-amber">
             <div class="alert-icon">📄</div>
             <div><div class="alert-title">TechSol — Contrato a expirar em 15 dias</div><div class="alert-desc">Essential PME · 8.500 MZN/mês · Renovar</div></div>
-            <button class="btn xs" style="margin-left:auto;flex-shrink:0" onclick="openModal('edit-contract')">Renovar</button>
+            <button class="btn xs" style="margin-left:auto;flex-shrink:0" onclick="openRenewContract(this.closest('tr').querySelector('.c-name').textContent)">Renovar</button>
           </div>
           <div class="alert-item al-blue">
             <div class="alert-icon">📋</div>
@@ -765,7 +765,7 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
           <div class="alert-item al-amber">
             <div class="alert-icon">⏳</div>
             <div><div class="alert-title">Energia Verde — Pagamento Abril pendente</div><div class="alert-desc">26.000 MZN · Vence em 5 dias</div></div>
-            <button class="btn xs" style="margin-left:auto;flex-shrink:0" onclick="openModal('notify-client')">Lembrar</button>
+            <button class="btn xs" style="margin-left:auto;flex-shrink:0" onclick="openNotifyClient(this)">Enviar Lembrete</button>
           </div>
         </div>
       </div>
@@ -774,7 +774,7 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
     <!-- Revenue chart -->
     <div class="card">
       <div class="card-header">
-        <div><div class="card-title">📊 Evolução da Receita</div><div class="card-subtitle">MZN por mês — 2025</div></div>
+        <div><div class="card-title">📊 Evolução da Receita</div><div class="card-subtitle">MZN por mês — <span data-year>2025</span></div></div>
       </div>
       <div class="card-body">
         <div class="bar-chart" id="rev-chart">
@@ -843,7 +843,7 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
 
   <!-- Stats row -->
   <div class="grid-3" style="margin-bottom:16px">
-    <div class="rev-card"><div class="rc-label">Clientes Activos</div><div class="rc-value" style="color:var(--teal)">5</div><div class="rc-sub">4 com contrato activo</div></div>
+    <div class="rev-card"><div class="rc-label">Clientes Ativos</div><div class="rc-value" style="color:var(--teal)">5</div><div class="rc-sub">4 com contrato activo</div></div>
     <div class="rev-card"><div class="rc-label">Receita Total / Mês</div><div class="rc-value" style="color:var(--white)">95.500 MZN</div><div class="rc-sub">Baseado em contratos vigentes</div></div>
     <div class="rev-card"><div class="rc-label">Clientes em Atraso</div><div class="rc-value" style="color:var(--red)">2</div><div class="rc-sub">28.000 MZN em aberto</div></div>
   </div>
@@ -900,8 +900,8 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
               <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#1B4FBF">MC</div><span class="c-name">MozaCargo Lda</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">15.000 MZN</td><td>05 Abr</td><td><span class="badge b-active">Pago</span></td><td><button class="btn xs" onclick="openModal('generate-recibo')">Recibo</button></td></tr>
               <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#1a3a4a">CB</div><span class="c-name">Construções Beira Mar</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">28.000 MZN</td><td>05 Abr</td><td><span class="badge b-active">Pago</span></td><td><button class="btn xs" onclick="openModal('generate-recibo')">Recibo</button></td></tr>
               <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#4a2070">TS</div><span class="c-name">TechSol Mozambique</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">8.500 MZN</td><td>05 Abr</td><td><span class="badge b-active">Pago</span></td><td><button class="btn xs" onclick="openModal('generate-recibo')">Recibo</button></td></tr>
-              <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#7a3a00">IA</div><span class="c-name">Importações Africanas</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">18.000 MZN</td><td>05 Abr</td><td><span class="badge b-late">Atraso 12d</span></td><td><button class="btn xs danger" onclick="openModal('notify-client')">Notificar</button></td></tr>
-              <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#0d4a2a">EV</div><span class="c-name">Energia Verde Sarl</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">26.000 MZN</td><td>05 Abr</td><td><span class="badge b-pending">Pendente</span></td><td><button class="btn xs" onclick="openModal('notify-client')">Lembrar</button></td></tr>
+              <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#7a3a00">IA</div><span class="c-name">Importações Africanas</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">18.000 MZN</td><td>05 Abr</td><td><span class="badge b-late">Atraso 12d</span></td><td><button class="btn xs danger" onclick="openNotifyClient(this)">Notificar</button></td></tr>
+              <tr><td><div class="client-cell"><div class="c-avatar" style="width:28px;height:28px;background:#0d4a2a">EV</div><span class="c-name">Energia Verde Sarl</span></div></td><td style="font-weight:700;font-family:'Montserrat',sans-serif">26.000 MZN</td><td>05 Abr</td><td><span class="badge b-pending">Pendente</span></td><td><button class="btn xs" onclick="openNotifyClient(this)">Enviar Lembrete</button></td></tr>
             </tbody>
           </table>
         </div>
@@ -957,7 +957,7 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
     </div>
   </div>
   <div class="card">
-    <div class="card-header"><div class="card-title">Contratos Activos</div></div>
+    <div class="card-header"><div class="card-title">Contratos Ativos</div></div>
     <div class="card-body no-pad">
       <div class="table-wrap">
         <table>
@@ -965,9 +965,9 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
           <tbody>
             <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#1B4FBF">MC</div><span class="c-name">MozaCargo Lda</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">28.000 MZN</td><td>Jan 2024</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-active">Activo</span></td><td><div class="actions"><button class="btn xs" onclick="openModal('edit-contract')">Editar</button></div></td></tr>
             <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#1a3a4a">CB</div><span class="c-name">Construções Beira Mar</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">15.000 MZN</td><td>Mar 2024</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-active">Activo</span></td><td><div class="actions"><button class="btn xs" onclick="openModal('edit-contract')">Editar</button></div></td></tr>
-            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#4a2070">TS</div><span class="c-name">TechSol Mozambique</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">8.500 MZN</td><td>Abr 2025</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-pending">A renovar</span></td><td><div class="actions"><button class="btn xs blue" onclick="openModal('edit-contract')">Renovar</button></div></td></tr>
-            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#7a3a00">IA</div><span class="c-name">Importações Africanas</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">18.000 MZN</td><td>Jun 2023</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-late">Em atraso</span></td><td><div class="actions"><button class="btn xs danger" onclick="openModal('notify-client')">Notificar</button></div></td></tr>
-            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#0d4a2a">EV</div><span class="c-name">Energia Verde Sarl</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">26.000 MZN</td><td>Set 2023</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-pending">Pendente</span></td><td><div class="actions"><button class="btn xs" onclick="openModal('notify-client')">Lembrar</button></div></td></tr>
+            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#4a2070">TS</div><span class="c-name">TechSol Mozambique</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">8.500 MZN</td><td>Abr 2025</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-pending">A renovar</span></td><td><div class="actions"><button class="btn xs blue" onclick="openRenewContract(this.closest('tr').querySelector('.c-name').textContent)">Renovar</button></div></td></tr>
+            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#7a3a00">IA</div><span class="c-name">Importações Africanas</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">18.000 MZN</td><td>Jun 2023</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-late">Em atraso</span></td><td><div class="actions"><button class="btn xs danger" onclick="openNotifyClient(this)">Notificar</button></div></td></tr>
+            <tr><td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:#0d4a2a">EV</div><span class="c-name">Energia Verde Sarl</span></div></td><td>Mensal</td><td style="font-weight:700;font-family:'Montserrat',sans-serif">26.000 MZN</td><td>Set 2023</td><td>Mensal</td><td>05 Mai 2025</td><td><span class="badge b-pending">Pendente</span></td><td><div class="actions"><button class="btn xs" onclick="openNotifyClient(this)">Enviar Lembrete</button></div></td></tr>
           </tbody>
         </table>
       </div>
@@ -1080,7 +1080,7 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
 <!-- ══ FISCAL ══ -->
 <div class="page" id="page-fiscal">
   <div class="ph">
-    <div class="ph-left"><h1>Calendário Fiscal</h1><p>Obrigações fiscais em Moçambique — 2025</p></div>
+    <div class="ph-left"><h1>Calendário Fiscal</h1><p>Obrigações fiscais em Moçambique — <span id="fiscal-year-title"></span></p></div>
   </div>
   <!-- Calendar tabs -->
   <div class="card">
@@ -1325,7 +1325,7 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
   </div>
   <!-- Summary row -->
   <div class="three-col" style="margin-bottom:16px">
-    <div class="rev-card" style="background:var(--bg2);border:1px solid var(--border)"><div class="rc-label">Leads Activos</div><div class="rc-value" id="pipe-total">—</div><div class="rc-sub">em todas as fases</div></div>
+    <div class="rev-card" style="background:var(--bg2);border:1px solid var(--border)"><div class="rc-label">Leads Ativos</div><div class="rc-value" id="pipe-total">—</div><div class="rc-sub">em todas as fases</div></div>
     <div class="rev-card" style="background:var(--bg2);border:1px solid var(--border)"><div class="rc-label">Propostas Enviadas</div><div class="rc-value" style="color:var(--amber)" id="pipe-proposals">—</div><div class="rc-sub">aguardam resposta</div></div>
     <div class="rev-card" style="background:var(--bg2);border:1px solid var(--border)"><div class="rc-label">Aceites este mês</div><div class="rc-value" style="color:var(--teal)" id="pipe-accepted">—</div><div class="rc-sub">prontos para contrato</div></div>
   </div>
@@ -1864,7 +1864,7 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
   <!-- Main table -->
   <div class="card" style="margin-bottom:16px">
     <div class="card-header">
-      <div class="card-title">📋 Activos Registados</div>
+      <div class="card-title">📋 Ativos Registados</div>
       <div style="display:flex;gap:8px">
         <select onchange="filterImobCat(this.value)" style="background:var(--bg3);border:1px solid var(--border);color:var(--white);padding:5px 10px;border-radius:7px;font-size:12px;outline:none">
           <option value="">Todas as categorias</option>
@@ -1928,7 +1928,7 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
 <!-- ══ FATURAÇÃO ELECTRÓNICA ══ -->
 <div class="page" id="page-fat-eletronica">
   <div class="ph">
-    <div class="ph-left"><h1>🧾 Faturação Electrónica</h1><p>Emissão de facturas · IVA 16% · Integração contabilística automática</p></div>
+    <div class="ph-left"><h1>🧾 Faturação Eletrónica</h1><p>Emissão de facturas · IVA 16% · Integração contabilística automática</p></div>
     <div class="ph-actions">
       <button class="btn sm" onclick="showApuramentoIVA()">🧮 Apuramento IVA</button>
       <button class="btn primary" onclick="openModalFat('nova-fatura')">+ Nova Factura</button>
@@ -2420,7 +2420,7 @@ const ROLE_DEFS = {
 // ═══════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════
-const PAGE_TITLES = {dashboard:'Dashboard',clientes:'Clientes',financeiro:'Financeiro',contratos:'Contratos',servicos:'Serviços',tarefas:'Tarefas',documentos:'Documentos',equipa:'Equipa & Acessos',fiscal:'Calendário Fiscal',relatorios:'Relatórios',propostas:'Propostas Comerciais',config:'Configurações',pipeline:'Pipeline / CRM',faturacao:'Faturação',alertas:'Alertas',fluxo:'Fluxograma Operacional',auditoria:'Log de Auditoria',inss:'INSS',ciclo:'Ciclo Mensal','plano-contas':'Plano de Contas PGC-NIRF',diario:'Diário de Lançamentos',balancete:'Balancete de Verificação',dr:'Demonstração de Resultados',balanco:'Balanço Patrimonial',fluxocaixa:'Mapa de Fluxos de Caixa','rh-colaboradores':'Colaboradores','rh-folha':'Folha Salarial',imobilizado:'Imobilizado & Amortizações','fat-eletronica':'Faturação Electrónica'};
+const PAGE_TITLES = {dashboard:'Dashboard',clientes:'Clientes',financeiro:'Financeiro',contratos:'Contratos',servicos:'Serviços',tarefas:'Tarefas',documentos:'Documentos',equipa:'Equipa & Acessos',fiscal:'Calendário Fiscal',relatorios:'Relatórios',propostas:'Propostas Comerciais',config:'Configurações',pipeline:'Pipeline / CRM',faturacao:'Faturação',alertas:'Alertas',fluxo:'Fluxograma Operacional',auditoria:'Log de Auditoria',inss:'INSS',ciclo:'Ciclo Mensal','plano-contas':'Plano de Contas PGC-NIRF',diario:'Diário de Lançamentos',balancete:'Balancete de Verificação',dr:'Demonstração de Resultados',balanco:'Balanço Patrimonial',fluxocaixa:'Mapa de Fluxos de Caixa','rh-colaboradores':'Colaboradores','rh-folha':'Folha Salarial',imobilizado:'Imobilizado & Amortizações','fat-eletronica':'Faturação Eletrónica'};
 function navigate(id, el) {
   // Access control
   if ((id==='financeiro'||id==='contratos') && (currentRole==='tecnico'||currentRole==='viewer')) {
@@ -2477,6 +2477,7 @@ function globalSearch(q) {
 function renderDash() {
   const tb = document.querySelector('#dash-table tbody');
   if (!tb) return;
+  if (!CLIENTS.length) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--text-low)">Nenhum cliente encontrado. Adicione o primeiro cliente.</td></tr>'; updateCounters(); return; }
   tb.innerHTML = CLIENTS.map(c=>`
     <tr>
       <td><div class="client-cell"><div class="c-avatar" style="width:26px;height:26px;background:${c.color}">${c.id}</div><div><div class="c-name">${c.name}</div></div></div></td>
@@ -2488,6 +2489,7 @@ function renderDash() {
     </tr>`).join('');
 }
 
+  // sync counters
 function renderClients(filter='', statusFilter='') {
   const tb = document.querySelector('#clients-table tbody');
   if (!tb) return;
@@ -3157,7 +3159,9 @@ function openEditClient(id) {
 }
 
 function openWhatsApp(phone, type) {
-  const clean = (phone||'').replace(/[^0-9]/g,'') || '258867344276';
+  const raw = (phone||'').replace(/[^0-9]/g,'');
+  if (!raw) { toast('⚠️ Telefone não informado para este cliente'); return; }
+  const clean = raw;
   const msgs = {
     geral:'Olá, bom dia. A NIVELZERO CONSULTORES Lda está em contacto.',
     payment:'Olá, bom dia. A NIVELZERO CONSULTORES informa que o pagamento referente ao mês de Abril ainda está pendente. Por favor confirme a transferência. Obrigado.',
@@ -3465,25 +3469,25 @@ function doEditClientSave(id) {
 // CRUD: ADD TASK
 // ══════════════════════════════════════
 function doAddTask() {
-  const title = (document.getElementById('nt-title')||{}).value.trim();
+  var title    = (_fv('nt-title')  || (document.querySelectorAll('#modal-body input')[0]||{value:''}).value||'').trim();
+  var client   = _fv('nt-client') || (document.querySelectorAll('#modal-body select')[0]||{value:''}).value||'';
+  var owner    = _fv('nt-resp')   || (document.querySelectorAll('#modal-body select')[1]||{value:'Ana Silva'}).value||'Ana Silva';
+  var deadline = _fv('nt-prazo')  || (document.querySelectorAll('#modal-body input[type=date]')[0]||{value:''}).value||'';
+  var priority = _fv('nt-prio')   || (document.querySelectorAll('#modal-body select')[2]||{value:'normal'}).value||'Normal';
+  var notes    = _fv('nt-notes')  || (document.querySelector('#modal-body textarea')||{value:''}).value||'';
   if (!title) { toast('⚠️ Título da tarefa é obrigatório'); return; }
-  const newTask = {
-    id: 'T' + Date.now(),
-    title,
-    priority: (document.getElementById('nt-priority')||{}).value||'normal',
-    deadline:  (document.getElementById('nt-deadline')||{}).value||'',
-    clientId:  (document.getElementById('nt-client')||{}).value||'ALL',
-    owner:     (document.getElementById('nt-owner')||{}).value||'Ana Silva',
-    status:    'pending',
+  var task = {
+    id: 'T'+Date.now(), title:title, client:client||'', owner:owner||'Ana Silva',
+    deadline:deadline||'—', priority:priority||'Normal', status:'pending', notes:notes,
+    createdAt:new Date().toISOString().slice(0,10)
   };
-  TASKS.push(newTask);
-  saveState();
-  addAuditLog('Nova tarefa criada: ' + title, 'task');
-  closeModal();
-  renderTasks();
-  const cnt = document.getElementById('tasks-count');
-  if (cnt) cnt.textContent = TASKS.filter(t=>t.status!=='done').length;
-  toast('✅ Tarefa criada!');
+  TASKS.unshift(task);
+  if (typeof syncGlobalsToActiveCompany==='function') syncGlobalsToActiveCompany();
+  if (typeof saveState==='function') saveState();
+  if (typeof renderTasks==='function') renderTasks();
+  if (typeof updateCounters==='function') updateCounters();
+  addAuditLog('Tarefa criada: '+title+(client?' — '+client:''), 'doc');
+  closeModal(); toast('✅ Tarefa "'+title+'" criada!');
 }
 
 function _fv(id) { var el=document.getElementById(id); return el?(el.value||'').trim():''; }
@@ -3565,11 +3569,25 @@ function doAddUser() {
 }
 
 function doAddService() {
-  var inp = document.querySelector('#modal-body input');
-  var nome = inp?inp.value.trim():'';
+  var inps = document.querySelectorAll('#modal-body input, #modal-body textarea');
+  var nome  = inps[0]?inps[0].value.trim():'';
+  var preco = inps[1]?inps[1].value.trim():'';
+  var desc  = inps[2]?inps[2].value.trim():'';
+  var icone = inps[3]?inps[3].value.trim():'🔧';
   if (!nome) { toast('⚠️ Nome do serviço é obrigatório'); return; }
+  SERVICES.push({
+    name: nome,
+    icon: icone || '🔧',
+    desc: desc || nome,
+    price: preco || '',
+    clients: 0,
+    rev: preco ? preco + ' MZN/mês' : 'Pontual'
+  });
+  if (typeof syncGlobalsToActiveCompany==='function') syncGlobalsToActiveCompany();
+  if (typeof saveState==='function') saveState();
+  if (typeof renderServices==='function') renderServices();
   addAuditLog('Serviço adicionado: '+nome, 'doc');
-  closeModal(); toast('✅ Serviço adicionado!');
+  closeModal(); toast('✅ Serviço "'+nome+'" adicionado com sucesso!');
 }
 
 function doAddProposal() {
@@ -3878,7 +3896,7 @@ function renderCiclo(filter) {
       </div>
       <div style="padding:14px 16px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(6,1fr);gap:10px">${stepsHTML}</div>
     </div>`;
-  }).join('') || '<div style="text-align:center;padding:40px;color:var(--text-low)">Sem clientes activos.</div>';
+  }).join('') || '<div style="text-align:center;padding:40px;color:var(--text-low)">Sem clientes ativos.</div>';
 
   const cicloEl = document.getElementById('sb-ciclo-pending');
   if (cicloEl) cicloEl.textContent = pendingCount;
@@ -4014,6 +4032,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginUser = document.getElementById('login-user');
   if (loginUser) loginUser.focus();
   applyStoredTheme();
+  if(typeof updateCounters==='function') updateCounters();
 });
 
 // ═══════════════════════════════════════
@@ -6346,7 +6365,7 @@ function generateInsights() {
     const pct=kpis.totalRev>0?Math.round(kpis.lateRev/kpis.totalRev*100):0;
     insights.push({type:pct>25?'crit':'warn',ico:'⚠️',t:kpis.late+' cliente(s) em atraso ('+pct+'% da receita)',d:kpis.lateRev.toLocaleString('pt-MZ')+' MZN em risco.'});
   }
-  if(kpis.ticket>0) insights.push({type:'info',ico:'💡',t:'Ticket médio: '+kpis.ticket.toLocaleString('pt-MZ')+' MZN',d:kpis.active+' clientes activos — potencial de upsell.'});
+  if(kpis.ticket>0) insights.push({type:'info',ico:'💡',t:'Ticket médio: '+kpis.ticket.toLocaleString('pt-MZ')+' MZN',d:kpis.active+' clientes ativos — potencial de upsell.'});
   insights.push({type:kpis.late===0?'good':kpis.late<=1?'warn':'crit',ico:'🏦',t:'Estado financeiro: '+(kpis.late===0?'Saudável':kpis.late<=1?'Atenção':'Crítico'),d:kpis.late===0?'Todos os pagamentos em dia.':kpis.late+' pagamento(s) em falta.'});
   return insights;
 }
@@ -6361,7 +6380,7 @@ function refreshAnalytics() {
   const kpiEl=document.getElementById('an-kpis');
   if(kpiEl) kpiEl.innerHTML=[
     {ico:'💰',lbl:'Receita Mensal',val:fmt(kpis.totalRev)+' MZN',sub:'Período actual',badge:(kpis.growth>=0?'▲ +':'')+kpis.growth+'%',bc:kpis.growth>=0?'an-up':'an-dn'},
-    {ico:'🏢',lbl:'Clientes Activos',val:kpis.active,sub:kpis.clientCount+' registados',badge:kpis.late+' em atraso',bc:kpis.late>0?'an-dn':'an-up'},
+    {ico:'🏢',lbl:'Clientes Ativos',val:kpis.active,sub:kpis.clientCount+' registados',badge:kpis.late+' em atraso',bc:kpis.late>0?'an-dn':'an-up'},
     {ico:'🎫',lbl:'Ticket Médio',val:fmt(kpis.ticket)+' MZN',sub:'Por cliente',badge:kpis.urgentT+' tarefas urgentes',bc:kpis.urgentT>0?'an-dn':'an-ne'},
     {ico:'⚠️',lbl:'Em Atraso',val:fmt(kpis.lateRev)+' MZN',sub:kpis.late+' cliente(s)',badge:kpis.late===0?'✓ Em dia':'Acção necessária',bc:kpis.late===0?'an-up':'an-dn'},
     {ico:'📋',lbl:'Tarefas Abertas',val:kpis.taskCount,sub:kpis.urgentT+' urgentes',badge:kpis.urgentT>0?'Urgente':'Normal',bc:kpis.urgentT>0?'an-dn':'an-ne'},
@@ -6522,6 +6541,72 @@ function toggleTheme() {
     try { localStorage.setItem('nz_theme','light'); } catch(e){}
   }
 }
+
+
+function openNotifyClient(btn) {
+  var row = btn ? btn.closest('tr') : null;
+  var name = row ? (row.querySelector('.c-name')||{textContent:''}).textContent.trim() : '';
+  var c = name ? CLIENTS.find(function(x){ return x.name===name; }) : null;
+  var phone = c ? c.phone : '';
+  openModal('notify');
+  setTimeout(function(){
+    var inp = document.querySelector('#modal-body input');
+    if (inp && name) inp.value = name;
+    var phoneEl = document.querySelector('#modal-body input[type=tel]');
+    if (phoneEl && phone) phoneEl.value = phone;
+  }, 50);
+}
+
+function openRenewContract(id) {
+  var c = CLIENTS.find(function(x){ return x.id===id||x.name===id; });
+  if (!c) { openModal('new-contract'); return; }
+  // Pre-fill contract renewal with client data
+  openModal('new-contract');
+  setTimeout(function(){
+    var sels = document.querySelectorAll('#modal-body select');
+    var inp  = document.querySelectorAll('#modal-body input');
+    if (sels[0]) sels[0].value = c.name;
+    if (inp[0])  inp[0].value  = c.value || '';
+    var now = new Date(); var next = new Date(now); next.setMonth(now.getMonth()+1);
+    if (inp[1]) inp[1].value = next.toISOString().slice(0,10);
+    toast('Contrato de ' + c.name + ' pré-carregado para renovação.');
+  }, 80);
+}
+
+
+function updateCounters() {
+  var active   = CLIENTS.filter(function(c){ return c.status==='active'; }).length;
+  var inactive = CLIENTS.filter(function(c){ return c.status!=='active'; }).length;
+  var totalRec = CLIENTS.reduce(function(s,c){ return s+c.value; }, 0);
+  var pending  = (typeof TASKS!=='undefined') ? TASKS.filter(function(t){ return t.status!=='done'; }).length : 0;
+  var done     = (typeof TASKS!=='undefined') ? TASKS.filter(function(t){ return t.status==='done'; }).length : 0;
+  var f = function(n){ return n.toLocaleString('pt-MZ'); };
+  var months = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  var now = new Date(); var mon = months[now.getMonth()]; var yr = now.getFullYear();
+  var period = mon + ' ' + yr;
+  // Update KPI elements
+  [['kpi-active', active],['kpi-inactive', inactive],['kpi-pending', pending],['kpi-done', done]].forEach(function(p){
+    var el = document.getElementById(p[0]); if(el) el.textContent = p[1];
+  });
+  // Update revenue KPIs
+  var revEl = document.getElementById('kpi-receita');
+  if (revEl) revEl.textContent = f(totalRec) + ' MZN';
+  // Update sidebar footer
+  var sfEl = document.getElementById('sb-footer-period');
+  if (sfEl) sfEl.textContent = period;
+  // Update financial page
+  var fatEl = document.getElementById('fat-total');
+  if (fatEl) fatEl.textContent = f(totalRec) + ' MZN';
+  // Dash KPIs
+  document.querySelectorAll('.kpi-active-count').forEach(function(el){ el.textContent = active; });
+  document.querySelectorAll('.kpi-revenue').forEach(function(el){ el.textContent = f(totalRec)+' MZN'; });
+  // Tasks count badge
+  var tcEl = document.getElementById('tasks-count');
+  if (tcEl) tcEl.textContent = pending;
+  var sbTasks = document.getElementById('sb-tasks-cnt');
+  if (sbTasks) sbTasks.textContent = pending > 0 ? pending : '';
+}
+
 function applyStoredTheme() {
   var t = '';
   try { t = localStorage.getItem('nz_theme')||''; } catch(e){}
@@ -6531,6 +6616,21 @@ function applyStoredTheme() {
     if (btn) btn.textContent = '☀️';
   }
 }
+
+// ── Dynamic dates ──
+(function(){
+  var now = new Date();
+  var yr  = now.getFullYear();
+  var months = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  var mon = months[now.getMonth()];
+  var period = mon + ' ' + yr;
+  // Set fiscal year
+  var fyEl = document.getElementById('fiscal-year-title');
+  if (fyEl) fyEl.textContent = yr;
+  // Set all dynamic period elements
+  document.querySelectorAll('[data-period]').forEach(function(el){ el.textContent = period; });
+  document.querySelectorAll('[data-year]').forEach(function(el){ el.textContent = yr; });
+})();
 </script>
 
 <!-- ══ COMPANY MODAL ══ -->
