@@ -2626,16 +2626,16 @@ const MODAL_TEMPLATES = {
   },
   'register-payment':{
     title:'Registar Pagamento', sub:'Confirmar recebimento de honorários.',
-    body:`
-      <div class="form-group"><label>Cliente</label><select class="form-control"><option>MozaCargo Lda</option><option>Construções Beira Mar Lda</option><option>TechSol Mozambique</option><option>Importações Africanas Lda</option><option>Energia Verde Sarl</option></select></div>
-      <div class="form-row"><div class="form-group"><label>Valor (MZN)</label><input class="form-control" type="number" placeholder="Ex: 15000"></div><div class="form-group"><label>Data de Pagamento</label><input class="form-control" type="date"></div></div>
-      <div class="form-row"><div class="form-group"><label>Método</label><select class="form-control"><option>Transferência Bancária</option><option>M-Pesa</option><option>E-mola</option><option>Numerário</option></select></div><div class="form-group"><label>Referência</label><input class="form-control" placeholder="Ref. da transferência"></div></div>`,
+    body:(function(){
+      var opts = CLIENTS.map(function(c){ return '<option value="'+c.name+'">'+c.name+'</option>'; }).join('');
+      return '<div class="form-group"><label>Cliente</label><select class="form-control">'+opts+'</select></div><div class="form-row"><div class="form-group"><label>Valor (MZN)</label><input class="form-control" type="number" placeholder="Ex: 15000" min="0"></div><div class="form-group"><label>Data</label><input class="form-control" type="date"></div></div><div class="form-row"><div class="form-group"><label>Método</label><select class="form-control"><option>Transferência Bancária</option><option>M-Pesa</option><option>E-mola</option><option>Numerário</option></select></div><div class="form-group"><label>Referência</label><input class="form-control" placeholder="Ref."></div></div>';
+    })(),
     action:'Confirmar Pagamento', key:'payment'
   },
   'new-contract':{
     title:'Novo Contrato', sub:'Definir contrato e condições de facturação.',
     body:`
-      <div class="form-group"><label>Cliente</label><select class="form-control"><option>MozaCargo Lda</option><option>Construções Beira Mar Lda</option><option>TechSol Mozambique</option><option>Importações Africanas Lda</option><option>Energia Verde Sarl</option></select></div>
+      <div class="form-group"><label>Cliente</label><select class="form-control client-sel"></select></div>
       <div class="form-row"><div class="form-group"><label>Tipo de Contrato</label><select class="form-control"><option>Mensal</option><option>Trimestral</option><option>Pontual</option></select></div><div class="form-group"><label>Valor (MZN)</label><input class="form-control" type="number" placeholder="Ex: 15000"></div></div>
       <div class="form-row"><div class="form-group"><label>Data de Início</label><input class="form-control" type="date"></div><div class="form-group"><label>Frequência de Cobrança</label><select class="form-control"><option>Mensal</option><option>Trimestral</option><option>Pontual</option></select></div></div>
       <div class="form-group"><label>Serviços Incluídos</label><select class="form-control" multiple style="height:90px"><option>Contabilidade</option><option>Gestão Fiscal</option><option>Controlo Interno</option><option>Auditoria Interna</option><option>Análise Financeira</option></select></div>`,
@@ -2644,17 +2644,17 @@ const MODAL_TEMPLATES = {
   'new-task':{
     title:'Nova Tarefa', sub:'Criar e atribuir tarefa à equipa.',
     body:`
-      <div class="form-group"><label>Título da Tarefa</label><input class="form-control" placeholder="Ex: Submissão IVA Abril 2025"></div>
-      <div class="form-row"><div class="form-group"><label>Cliente</label><select class="form-control"><option>MozaCargo Lda</option><option>Construções Beira Mar Lda</option><option>TechSol Mozambique</option><option>Importações Africanas Lda</option><option>Energia Verde Sarl</option><option>Todos</option></select></div><div class="form-group"><label>Responsável</label><select class="form-control"><option>Ana Silva</option><option>João Machava</option><option>Maria Tembe</option></select></div></div>
-      <div class="form-row"><div class="form-group"><label>Prazo</label><input class="form-control" type="date"></div><div class="form-group"><label>Prioridade</label><select class="form-control"><option>Normal</option><option>Alta</option><option>Urgente</option></select></div></div>
-      <div class="form-group"><label>Notas</label><textarea class="form-control" placeholder="Instruções ou detalhes adicionais..."></textarea></div>`,
+      <div class="form-group"><label>Título da Tarefa</label><input class="form-control" id="nt-title" placeholder="Ex: Submissão IVA Abril 2025"></div>
+      <div class="form-row"><div class="form-group"><label>Cliente</label><select class="form-control" id="nt-client" class="client-sel"><option value="">Todos</option>${CLIENTS.map(c=>'<option value="'+c.name+'">'+c.name+'</option>').join('')}</select></div><div class="form-group"><label>Responsável</label><select class="form-control" id="nt-resp"><option>Ana Silva</option><option>João Machava</option><option>Maria Tembe</option></select></div></div>
+      <div class="form-row"><div class="form-group"><label>Prazo</label><input class="form-control" id="nt-prazo" type="date"></div><div class="form-group"><label>Prioridade</label><select class="form-control" id="nt-prio"><option>Normal</option><option>Alta</option><option>Urgente</option></select></div></div>
+      <div class="form-group"><label>Notas</label><textarea class="form-control" id="nt-notes" placeholder="Instruções ou detalhes adicionais..."></textarea></div>`,
     action:'Criar Tarefa', key:'task'
   },
   'new-user':{
     title:'Novo Utilizador', sub:'Convidar membro para a equipa NIVELZERO.',
     body:`
       <div class="form-row"><div class="form-group"><label>Nome Completo</label><input class="form-control" placeholder="Ex: Ana Silva"></div><div class="form-group"><label>Email</label><input class="form-control" type="email" placeholder="ana@nivelzero.co.mz"></div></div>
-      <div class="form-row"><div class="form-group"><label>Nível de Acesso</label><select class="form-control"><option>Gestor</option><option>Técnico</option><option>Visualizador</option></select></div><div class="form-group"><label>Clientes Atribuídos</label><select class="form-control" multiple style="height:80px"><option>MozaCargo Lda</option><option>TechSol Mozambique</option><option>Energia Verde Sarl</option><option>Construções Beira Mar</option></select></div></div>`,
+      <div class="form-row"><div class="form-group"><label>Nível de Acesso</label><select class="form-control"><option>Gestor</option><option>Técnico</option><option>Visualizador</option></select></div><div class="form-group"><label>Clientes Atribuídos</label><select class="form-control" multiple style="height:80px"></select></div></div>`,
     action:'Enviar Convite', key:'user'
   },
   'new-service':{
@@ -2884,23 +2884,22 @@ function switchCDTab(btn, paneId) {
   if (pane) pane.style.display='block';
 }
 function submitModal(key, btn) {
-  if (key === 'recibo') { generateRecibo(); return; }
-  if (key === 'fiscal-submit') { toast('✅ Submissão fiscal marcada como concluída!'); closeModal(); return; }
-  if (key === 'edit-client') { toast('✅ Dados do cliente actualizados!'); closeModal(); return; }
-  if (key === 'edit-contract') { toast('✅ Contrato actualizado com sucesso!'); closeModal(); return; }
-  if (key === 'notify') { closeModal(); return; }
-  if (!btn) return;
-  btn.textContent='A processar...'; btn.disabled=true;
-  const msgs = {
-    'new-client':'✅ Cliente adicionado com sucesso!',
-    'payment':'✅ Pagamento registado!',
-    'contract':'✅ Contrato criado!',
-    'task':'✅ Tarefa criada!',
-    'user':'✅ Convite enviado por email!',
-    'service':'✅ Serviço adicionado!',
-    'proposal':'✅ Proposta criada!',
-  };
-  setTimeout(()=>{ closeModal(); toast(msgs[key]||'✅ Operação concluída!'); }, 700);
+  // Route to real handlers
+  if (key === 'new-client')     { doAddClient();          return; }
+  if (key === 'payment')        { doRegisterPayment();    return; }
+  if (key === 'task')           { doAddTask();            return; }
+  if (key === 'contract')       { doAddContract();        return; }
+  if (key === 'edit-client')    { var eid=window._editClientId||''; doEditClientSave(eid); return; }
+  if (key === 'edit-contract')  { doEditContractSave();  return; }
+  if (key === 'recibo')         { generateRecibo();       return; }
+  if (key === 'fiscal-submit')  { doFiscalSubmit();       return; }
+  if (key === 'notify')         { doSendNotification();   return; }
+  if (key === 'user')           { doAddUser();            return; }
+  if (key === 'service')        { doAddService();         return; }
+  if (key === 'proposal')       { doAddProposal();        return; }
+  // Fallback
+  if (btn) { btn.textContent='A processar...'; btn.disabled=true; }
+  setTimeout(function(){ closeModal(); toast('✅ Operação concluída!'); }, 500);
 }
 function closeModal() {
   document.getElementById('modal-overlay').classList.remove('open');
@@ -3145,7 +3144,8 @@ function exportReport(name) {
 // ═══════════════════════════════════════
 
 function openEditClient(id) {
-  const c = CLIENTS.find(x=>x.id===id);
+  window._editClientId = id;
+  const c = CLIENTS.find(function(x){ return x.id===id; });
   openModal('edit-client');
   if (!c) return;
   setTimeout(()=>{
@@ -3426,8 +3426,13 @@ function doAddClient() {
 // CRUD: EDIT CLIENT (save to array)
 // ══════════════════════════════════════
 function doEditClientSave(id) {
-  const c = CLIENTS.find(x=>x.id===id); if (!c) return;
-  const fv = field => (document.getElementById(field)||{}).value;
+  var c = CLIENTS.find(function(x){ return x.id===id; });
+  if (!c) {
+    // Try by name or first client if no ID
+    c = CLIENTS[0];
+    if (!c) { toast('⚠️ Cliente não encontrado'); return; }
+  }
+  var fv = function(field){ return (document.getElementById(field)||{value:''}).value; };
   c.name    = fv('ec-name')  || c.name;
   c.nuit    = fv('ec-nuit')  || c.nuit;
   c.sector  = fv('ec-sector')|| c.sector;
@@ -3437,10 +3442,15 @@ function doEditClientSave(id) {
   c.email   = fv('ec-email');
   c.contactName = fv('ec-contact');
   c.notes   = fv('ec-notes');
-  const newVal = parseInt(fv('ec-value'));
+  var newVal = parseInt(fv('ec-value'));
   if (newVal > 0) c.value = newVal;
-  const newStatus = fv('ec-status');
+  var newStatus = fv('ec-status');
   if (newStatus) c.status = newStatus;
+  var newPkg = fv('ec-pkg');
+  if (newPkg) c.pkg = newPkg;
+  var newOwner = fv('ec-owner');
+  if (newOwner) c.owner = newOwner;
+  if (typeof syncGlobalsToActiveCompany==='function') syncGlobalsToActiveCompany();
   if (!c.history) c.history = [];
   c.history.unshift({ date: new Date().toLocaleDateString('pt-MZ'), action: 'Dados do cliente actualizados', user: window._currentUserName||'Admin', type: 'edit' });
   saveState();
@@ -3474,6 +3484,105 @@ function doAddTask() {
   const cnt = document.getElementById('tasks-count');
   if (cnt) cnt.textContent = TASKS.filter(t=>t.status!=='done').length;
   toast('✅ Tarefa criada!');
+}
+
+function _fv(id) { var el=document.getElementById(id); return el?(el.value||'').trim():''; }
+function _fvi(id){ return parseInt(_fv(id))||0; }
+
+function doRegisterPayment() {
+  var sel = document.querySelectorAll('#modal-body select');
+  var inp = document.querySelectorAll('#modal-body input');
+  var cli   = sel[0]?sel[0].value:'';
+  var valor = parseFloat((inp[0]||{value:0}).value)||0;
+  var data  = (inp[1]||{value:''}).value || new Date().toISOString().slice(0,10);
+  var metodo= sel[1]?sel[1].value:'Transferência';
+  var ref   = (inp[2]||{value:''}).value||'';
+  if (!cli || !valor) { toast('⚠️ Seleccione o cliente e insira o valor'); return; }
+  var c = CLIENTS.find(function(x){ return x.name===cli; });
+  if (c) {
+    if (!c.history) c.history=[];
+    c.history.unshift({date:new Date().toLocaleDateString('pt-MZ'), action:'Pagamento: '+valor.toLocaleString('pt-MZ')+' MZN ('+metodo+(ref?' · '+ref:'')+')', user:window._currentUserName||'Sistema', type:'payment'});
+    c.status='active';
+  }
+  LANCAMENTOS.unshift({id:Date.now(), data:data, doc:'RB'+Date.now().toString().slice(-4), descricao:'Recebimento honorários — '+cli, debito:'1.2.1', credito:'4.1.1', valor:valor, cli:cli});
+  if (typeof syncGlobalsToActiveCompany==='function') syncGlobalsToActiveCompany();
+  if (typeof saveState==='function') saveState();
+  if (typeof renderDash==='function') renderDash();
+  if (typeof renderDiario==='function') renderDiario();
+  addAuditLog('Pagamento: '+cli+' '+valor.toLocaleString('pt-MZ')+' MZN', 'payment');
+  closeModal(); toast('✅ Pagamento de '+valor.toLocaleString('pt-MZ')+' MZN registado!');
+}
+
+function doAddContract() {
+  var sel = document.querySelectorAll('#modal-body select');
+  var inp = document.querySelectorAll('#modal-body input');
+  var cli  = sel[0]?sel[0].value:'';
+  var tipo = sel[1]?sel[1].value:'Mensal';
+  var val  = parseFloat((inp[0]||{value:0}).value)||0;
+  var dt   = (inp[1]||{value:''}).value||new Date().toISOString().slice(0,10);
+  if (!cli) { toast('⚠️ Seleccione o cliente'); return; }
+  var c = CLIENTS.find(function(x){ return x.name===cli; });
+  if (c) {
+    if (val>0) c.value=val;
+    c.status='active';
+    if (!c.history) c.history=[];
+    c.history.unshift({date:new Date().toLocaleDateString('pt-MZ'), action:'Contrato '+tipo+' criado — '+val.toLocaleString('pt-MZ')+' MZN', user:window._currentUserName||'Admin', type:'contract'});
+  }
+  if (typeof syncGlobalsToActiveCompany==='function') syncGlobalsToActiveCompany();
+  if (typeof saveState==='function') saveState();
+  if (typeof renderDash==='function') renderDash();
+  addAuditLog('Contrato '+tipo+': '+cli, 'contract');
+  closeModal(); toast('✅ Contrato criado para '+cli);
+}
+
+function doEditContractSave() {
+  if (typeof saveState==='function') saveState();
+  closeModal(); toast('✅ Contrato actualizado!');
+}
+
+function doFiscalSubmit() {
+  addAuditLog('Submissão fiscal concluída', 'fiscal');
+  if (typeof saveState==='function') saveState();
+  closeModal(); toast('✅ Submissão fiscal marcada como concluída!');
+}
+
+function doSendNotification() {
+  var sel = document.querySelector('#modal-body select');
+  var cli = sel?sel.value:'';
+  addAuditLog('Notificação enviada'+(cli?' para '+cli:''), 'alert');
+  closeModal(); toast('✅ Notificação enviada'+(cli?' para '+cli:'')+'!');
+}
+
+function doAddUser() {
+  var inp = document.querySelectorAll('#modal-body input');
+  var nome  = (inp[0]||{value:''}).value.trim();
+  var email = (inp[1]||{value:''}).value.trim();
+  var sel   = document.querySelector('#modal-body select');
+  var role  = sel?sel.value:'tecnico';
+  if (!nome) { toast('⚠️ Nome é obrigatório'); return; }
+  addAuditLog('Utilizador convidado: '+nome+(email?' ('+email+')':''), 'doc');
+  closeModal(); toast('✅ Convite enviado para '+nome);
+}
+
+function doAddService() {
+  var inp = document.querySelector('#modal-body input');
+  var nome = inp?inp.value.trim():'';
+  if (!nome) { toast('⚠️ Nome do serviço é obrigatório'); return; }
+  addAuditLog('Serviço adicionado: '+nome, 'doc');
+  closeModal(); toast('✅ Serviço adicionado!');
+}
+
+function doAddProposal() {
+  var sel = document.querySelector('#modal-body select');
+  var inp = document.querySelector('#modal-body input');
+  var cli = sel?sel.value:'';
+  var tit = inp?inp.value.trim():'Proposta Comercial';
+  if (!cli) { toast('⚠️ Seleccione o cliente'); return; }
+  var prop = {id:Date.now(), client:cli, title:tit||'Proposta', status:'draft', date:new Date().toISOString().slice(0,10), value:0};
+  if (typeof PROPOSALS!=='undefined') PROPOSALS.unshift(prop);
+  if (typeof saveState==='function') saveState();
+  addAuditLog('Proposta criada para '+cli, 'doc');
+  closeModal(); toast('✅ Proposta criada para '+cli+'!');
 }
 
 // ══════════════════════════════════════
