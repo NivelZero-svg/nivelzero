@@ -34,6 +34,39 @@
   --shadow-lg:0 8px 40px rgba(0,0,0,.45);
 }
 
+/* Light theme */
+body.light{
+  --bg:#F0F4FF;
+  --bg2:#E4EAF7;
+  --bg3:#D8E0F0;
+  --bg4:#CAD3E8;
+  --bg5:#BCC6DC;
+  --white:#0D1B2E;
+  --text:#2A3A58;
+  --text-low:#6B82A0;
+  --border:rgba(0,0,0,.1);
+  --border2:rgba(0,0,0,.06);
+  --shadow:0 4px 20px rgba(0,0,0,.12);
+  --shadow-lg:0 8px 40px rgba(0,0,0,.18);
+  --blue-dim:rgba(59,123,248,.1);
+  --teal-dim:rgba(18,194,168,.1);
+  --amber-dim:rgba(245,166,35,.1);
+  --red-dim:rgba(240,73,73,.1);
+  --green-dim:rgba(34,197,94,.1);
+  --purple-dim:rgba(155,114,248,.1);
+}
+body.light .sidebar{background:var(--bg2)}
+body.light .topbar{background:var(--bg2)}
+body.light .card{background:var(--bg2)}
+body.light .modal-box{background:var(--bg2)}
+body.light .login-box{background:var(--bg2)}
+body.light table thead th{background:var(--bg3)}
+body.light .sb-item.active,body.light .sb-item.on{background:rgba(18,194,168,.15)}
+/* Theme toggle button */
+#theme-toggle{background:none;border:1px solid var(--border);color:var(--text);border-radius:6px;padding:4px 8px;font-size:13px;cursor:pointer;transition:all .2s}
+#theme-toggle:hover{border-color:var(--teal);color:var(--teal)}
+
+
 /* Inter + Montserrat system */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:var(--bg);color:var(--white);-webkit-font-smoothing:antialiased;overflow:hidden}
@@ -497,6 +530,7 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
       <span class="tb-uname" id="tb-username">Admin</span>
       <span class="role-chip rc-admin" id="tb-role-chip">Admin</span>
     </div>
+    <button id="theme-toggle" onclick="toggleTheme()" title="Alternar tema">🌙</button>
     <button class="icon-btn" onclick="logout()" title="Sair do sistema" style="font-size:13px">🚪</button>
   </div>
 </div>
@@ -2582,10 +2616,12 @@ const MODAL_TEMPLATES = {
   'new-client':{
     title:'Novo Cliente', sub:'Adicionar empresa ao sistema NIVELZERO.',
     body:`
-      <div class="form-row"><div class="form-group"><label>Nome da Empresa</label><input class="form-control" placeholder="Ex: MozaCargo Lda"></div><div class="form-group"><label>Sector</label><select class="form-control"><option>Comércio</option><option>Indústria</option><option>Serviços</option><option>Construção</option><option>Energia</option><option>Logística</option><option>Tecnologia</option></select></div></div>
-      <div class="form-row"><div class="form-group"><label>Pacote</label><select class="form-control"><option>Essencial</option><option>Crescimento</option><option>Estrutura</option><option>Premium</option></select></div><div class="form-group"><label>Honorário/mês (MZN)</label><input class="form-control" type="number" placeholder="Ex: 15000"></div></div>
-      <div class="form-row"><div class="form-group"><label>Responsável Interno</label><select class="form-control"><option>Ana Silva</option><option>João Machava</option><option>Maria Tembe</option></select></div><div class="form-group"><label>Início do Contrato</label><input class="form-control" type="date"></div></div>
-      <div class="form-group"><label>Email do Cliente</label><input class="form-control" type="email" placeholder="gestor@empresa.co.mz"></div>`,
+      <div class="form-row"><div class="form-group"><label>Nome da Empresa *</label><input class="form-control" id="nc-name" placeholder="Ex: MozaCargo Lda" autocomplete="off"></div><div class="form-group"><label>NUIT</label><input class="form-control" id="nc-nuit" placeholder="400XXXXXXX"></div></div>
+      <div class="form-row"><div class="form-group"><label>Sector</label><select class="form-control" id="nc-sector"><option value="">Seleccionar...</option><option>Comércio</option><option>Indústria</option><option>Serviços</option><option>Construção</option><option>Energia</option><option>Logística</option><option>Tecnologia</option></select></div><div class="form-group"><label>Localização</label><input class="form-control" id="nc-loc" placeholder="Matola, Maputo"></div></div>
+      <div class="form-row"><div class="form-group"><label>Pacote</label><select class="form-control" id="nc-pkg"><option value="essential">Essencial</option><option value="growth">Crescimento</option><option value="structure">Estrutura</option><option value="premium">Premium</option></select></div><div class="form-group"><label>Honorário/mês (MZN) *</label><input class="form-control" id="nc-value" type="number" placeholder="Ex: 15000" min="0"></div></div>
+      <div class="form-row"><div class="form-group"><label>Responsável Interno</label><select class="form-control" id="nc-owner"><option>Ana Silva</option><option>João Machava</option><option>Maria Tembe</option></select></div><div class="form-group"><label>Início do Contrato</label><input class="form-control" id="nc-date" type="date"></div></div>
+      <div class="form-row"><div class="form-group"><label>Email</label><input class="form-control" id="nc-email" type="email" placeholder="gestor@empresa.co.mz"></div><div class="form-group"><label>Telefone</label><input class="form-control" id="nc-phone" type="tel" placeholder="+258 8X XXX XXXX"></div></div>
+      <div class="form-group"><label>Notas</label><textarea class="form-control" id="nc-notes" placeholder="Observações sobre este cliente..." rows="2"></textarea></div>`,
     action:'Adicionar Cliente', key:'new-client'
   },
   'register-payment':{
@@ -2741,6 +2777,14 @@ function openModal(type, data) {
       <button class="btn primary" onclick="submitModal('${tpl.key}',this)">${tpl.action}</button>
     </div>`;
   document.getElementById('modal-overlay').classList.add('open');
+  // Reset form inputs so no stale data carries over
+  setTimeout(function(){
+    var mb = document.getElementById('modal-body');
+    if (!mb) return;
+    mb.querySelectorAll('input').forEach(function(el){ el.value=''; });
+    mb.querySelectorAll('textarea').forEach(function(el){ el.value=''; });
+    mb.querySelectorAll('select').forEach(function(el){ el.selectedIndex=0; });
+  },10);
 }
 function showClientDetail(c) {
   const histHTML = (c.history||[]).map(h=>{
@@ -3365,6 +3409,8 @@ function doAddClient() {
     history: [{ date: new Date().toLocaleDateString('pt-MZ'), action: 'Cliente adicionado ao sistema', user: window._currentUserName||'Admin', type: 'onboard' }]
   };
   CLIENTS.push(newClient);
+  // Sync to active company data for proper isolation
+  if (typeof syncGlobalsToActiveCompany === 'function') syncGlobalsToActiveCompany();
   saveState();
   addAuditLog('Novo cliente adicionado: ' + name, 'client');
   closeModal();
@@ -3858,6 +3904,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Focus the user select on login screen
   const loginUser = document.getElementById('login-user');
   if (loginUser) loginUser.focus();
+  applyStoredTheme();
 });
 
 // ═══════════════════════════════════════
@@ -6351,6 +6398,30 @@ function exportDiarioCSVNew(){
   exportToCSV('Diario',['Nº','Data','Documento','Descrição','Débito','Crédito','Valor (MZN)','Cliente'],rows,co,'Diário de Lançamentos — '+period);
 }
 
+
+// ── Theme toggle ──
+function toggleTheme() {
+  var body = document.body;
+  var btn  = document.getElementById('theme-toggle');
+  if (body.classList.contains('light')) {
+    body.classList.remove('light');
+    if (btn) btn.textContent = '🌙';
+    try { localStorage.setItem('nz_theme','dark'); } catch(e){}
+  } else {
+    body.classList.add('light');
+    if (btn) btn.textContent = '☀️';
+    try { localStorage.setItem('nz_theme','light'); } catch(e){}
+  }
+}
+function applyStoredTheme() {
+  var t = '';
+  try { t = localStorage.getItem('nz_theme')||''; } catch(e){}
+  if (t === 'light') {
+    document.body.classList.add('light');
+    var btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = '☀️';
+  }
+}
 </script>
 
 <!-- ══ COMPANY MODAL ══ -->
