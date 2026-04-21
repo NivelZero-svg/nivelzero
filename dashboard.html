@@ -76,7 +76,7 @@ input,select,textarea{-webkit-appearance:none;appearance:none}
 a{text-decoration:none}
 
 /* App shell */
-.shell{display:flex;height:100vh;flex-direction:column}
+.shell{display:flex;height:100vh;flex-direction:column;min-height:0}
 .body-area{display:flex;flex:1;overflow:hidden}
 .sidebar{width:222px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
 .content{flex:1;overflow-y:auto;background:var(--bg)}
@@ -384,7 +384,7 @@ tfoot td{background:rgba(255,255,255,.03);font-weight:700;border-top:1px solid v
 /* ═══════════════════════════════
    REPORTS
 ═══════════════════════════════ */
-.report-modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.report-.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
 .report-kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
 .report-kpi{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:14px;text-align:center}
 .report-kpi-lbl{font-size:10px;color:var(--text-low);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
@@ -455,19 +455,77 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
 .form-control { transition: border-color .15s, box-shadow .15s; }
 .form-control:focus { border-color: var(--teal) !important; box-shadow: 0 0 0 3px rgba(18,194,168,.15) !important; }
 .modal-overlay{position:fixed;inset:0;background:rgba(7,14,26,.88);backdrop-filter:blur(10px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}.modal-overlay.open{display:flex}
-#modal-box{background:var(--bg2);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:28px;width:100%;max-width:700px;position:relative;max-height:90vh;overflow-y:auto;box-shadow:0 8px 48px rgba(0,0,0,.7)}
+.modal-box { box-shadow: 0 8px 48px rgba(0,0,0,.7); border: 1px solid rgba(255,255,255,.08); }
 /* KPI cards */
 .kpi-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; transition: var(--transition); }
 .kpi-card:hover { border-color: var(--teal); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
 /* Diário compound entry builder */
 #lnc-lines-area { background: rgba(255,255,255,.02); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
 
-/* Balancete table alignment */
-#balancete-body td:first-child, #balancete-tot td:first-child{font-family:'Montserrat',sans-serif;font-weight:600;font-size:12px;padding:10px 14px;vertical-align:middle;white-space:nowrap}
-#balancete-body td:nth-child(2){font-size:12.5px;padding:10px 14px;color:var(--text)}
-#balancete-body td:nth-child(n+3){text-align:right;font-family:'Montserrat',sans-serif;font-size:12px;padding:10px 14px;white-space:nowrap}
-#balancete-tot td{padding:11px 14px;font-weight:700}
+.modal{background:var(--bg2);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:28px;width:100%;max-width:700px;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 8px 48px rgba(0,0,0,.6);animation:mIn .18s ease}
+@keyframes mIn{from{opacity:0;transform:scale(.97) translateY(6px)}to{opacity:1;transform:none}}
+.modal-close{position:absolute;top:12px;right:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text-low);width:28px;height:28px;border-radius:7px;cursor:pointer;font-size:14px;transition:all .15s}
+.modal-close:hover{background:var(--bg4);color:var(--white)}
+.modal-title{font-family:'Montserrat',sans-serif;font-size:17px;font-weight:800;color:var(--white);margin-bottom:3px;letter-spacing:-.02em}
+.modal-subtitle{font-size:12.5px;color:var(--text-low);margin-bottom:18px}
 
+/* ── Action bar ── */
+.action-bar{height:44px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:5px;overflow-x:auto;overflow-y:hidden;flex-shrink:0;scrollbar-width:none}
+.action-bar::-webkit-scrollbar{display:none}
+.ab-btn{display:inline-flex;align-items:center;gap:5px;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:5px 11px;border-radius:7px;font-size:12px;font-weight:500;white-space:nowrap;cursor:pointer;transition:all .15s;flex-shrink:0;font-family:'Inter',sans-serif}
+.ab-btn:hover{background:var(--bg4);color:var(--white);border-color:rgba(255,255,255,.15)}
+.ab-btn.primary{background:rgba(18,194,168,.15);color:var(--teal);border-color:rgba(18,194,168,.3)}
+.ab-btn.primary:hover{background:rgba(18,194,168,.25)}
+.ab-sep{width:1px;height:24px;background:var(--border);flex-shrink:0;margin:0 3px}
+
+/* ── Fiscal tabs ── */
+.fiscal-tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px}
+.fiscal-tab{background:var(--bg3);border:1px solid var(--border);color:var(--text-low);padding:5px 11px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+.fiscal-tab:hover{background:var(--bg4);color:var(--white)}
+.fiscal-tab.active{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+.fiscal-pane{display:none}.fiscal-pane.active{display:block}
+.ft{width:100%;border-collapse:collapse}
+.ft th{background:rgba(255,255,255,.035);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-low);padding:9px 13px;text-align:left;border-bottom:1px solid var(--border)}
+.ft td{padding:9px 13px;border-bottom:1px solid var(--border2);color:var(--text);font-size:12.5px;vertical-align:top}
+.ft tr:last-child td{border-bottom:none}
+.ft tr:hover td{background:rgba(255,255,255,.02)}
+
+/* ── Accordion ── */
+.accordion{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px}
+.accordion-head{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:var(--bg3);cursor:pointer;transition:background .15s;gap:10px}
+.accordion-head:hover{background:var(--bg4)}
+.accordion-title{font-size:13px;font-weight:700;color:var(--white);display:flex;align-items:center;gap:8px}
+.accordion-arrow{font-size:11px;color:var(--text-low);transition:transform .25s;flex-shrink:0}
+.accordion-body{display:none;padding:16px;background:var(--bg2)}
+.accordion.open .accordion-body{display:block}
+.accordion.open .accordion-arrow{transform:rotate(180deg)}
+
+/* ── Report cards grid ── */
+.reports-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.report-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:8px;min-height:130px}
+.report-card:hover{border-color:var(--teal);box-shadow:0 4px 20px rgba(18,194,168,.1);transform:translateY(-1px)}
+.report-card-icon{font-size:24px}
+.report-card-title{font-family:'Montserrat',sans-serif;font-size:13.5px;font-weight:700;color:var(--white)}
+.report-card-desc{font-size:12px;color:var(--text-low);flex:1}
+.report-card-link{font-size:12px;font-weight:600;color:var(--teal);display:flex;align-items:center;gap:5px;margin-top:4px}
+
+/* ── Payments table ── */
+#fat-table thead th, #fat-table tbody td{padding:10px 14px}
+#fat-table tbody tr:hover td{background:rgba(255,255,255,.025)}
+.pay-client{display:flex;align-items:center;gap:9px}
+.pay-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;font-family:'Montserrat',sans-serif;color:#fff}
+
+/* ── Balancete columns ── */
+#balancete-table{table-layout:fixed;width:100%}
+#balancete-table col:nth-child(1){width:80px}
+#balancete-table col:nth-child(2){width:auto}
+#balancete-table col:nth-child(3), #balancete-table col:nth-child(4),
+#balancete-table col:nth-child(5), #balancete-table col:nth-child(6){width:108px}
+#balancete-table th:nth-child(n+3), #balancete-table td:nth-child(n+3){text-align:right;font-family:'Montserrat',sans-serif;font-size:12px}
+#balancete-body td:first-child{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:600}
+
+@media(max-width:900px){.reports-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.reports-grid{grid-template-columns:1fr}.action-bar{padding:0 8px}}
 </style>
 </head>
 <body>
@@ -543,6 +601,26 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
 </div>
 
 <!-- MAIN AREA -->
+
+<!-- ══ GLOBAL ACTION BAR ══ -->
+<div class="action-bar" id="action-bar">
+  <button class="ab-btn primary" onclick="openModal('new-client')">👤 Novo Cliente</button>
+  <button class="ab-btn" onclick="refreshAll()">↻ Actualizar</button>
+  <div class="ab-sep"></div>
+  <button class="ab-btn" onclick="openModal('register-payment')">💳 Pagamento</button>
+  <button class="ab-btn" onclick="openModal('new-contract')">📝 Contrato</button>
+  <button class="ab-btn" onclick="openModal('new-service')">⚙️ Serviço</button>
+  <button class="ab-btn" onclick="openModal('new-task')">✅ Tarefa</button>
+  <button class="ab-btn" onclick="openModal('new-user')">👥 Utilizador</button>
+  <div class="ab-sep"></div>
+  <button class="ab-btn" onclick="openModal('new-proposal')">📄 Proposta</button>
+  <button class="ab-btn" onclick="showNewLeadModal()">🎯 Novo Lead</button>
+  <button class="ab-btn" onclick="showInvoiceModal()">🧾 Gerar Fatura</button>
+  <div class="ab-sep"></div>
+  <button class="ab-btn" onclick="processarFolha()">⚡ Processar Folha</button>
+  <button class="ab-btn" onclick="openModal('new-lancamento')">📒 Lançamento</button>
+  <button class="ab-btn primary" onclick="openRHColabModal()">👤 Novo Colaborador</button>
+</div>
 <div class="body-area">
 <input type="file" id="real-file-input" multiple accept=".pdf,.xlsx,.docx,.csv,.jpg,.png" style="display:none" onchange="handleFileUpload(event)">
 
@@ -1090,9 +1168,12 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
     <div class="ph-left"><h1>Calendário Fiscal</h1><p>Obrigações fiscais em Moçambique — <span id="fiscal-year-title"></span></p></div>
   </div>
   <!-- Calendar tabs -->
-  <div class="card">
-    <div class="card-header"><div class="card-title">📅 Obrigações por Mês</div></div>
-    <div class="card-body">
+  <div class="accordion" id="fiscal-accordion">
+    <div class="accordion-head" onclick="toggleAccordion(this)">
+      <span class="accordion-title">📅 Obrigações por Mês</span>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
       <div class="fiscal-tabs">
         <button class="fiscal-tab active" onclick="showFiscal('rec',this)">Recorrentes</button>
         <button class="fiscal-tab" onclick="showFiscal('jan',this)">Jan</button>
@@ -1358,7 +1439,7 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
     <div class="card">
       <div class="card-header"><div class="card-title">💳 Estado de Pagamentos</div></div>
       <div class="card-body no-pad"><div class="table-wrap"><table id="fat-table">
-        <thead><tr><th>Cliente</th><th>Valor</th><th>Vencimento</th><th>Estado</th><th>Acções</th></tr></thead>
+        <thead><tr><th>Cliente</th><th style="text-align:right">Valor</th><th>Data</th><th>Estado</th><th>Ação</th></tr></thead>
         <tbody></tbody>
       </table></div></div>
     </div>
@@ -1678,23 +1759,7 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
   <div class="card">
     <div class="card-header"><div class="card-title">Balancete de Verificação</div><div style="font-size:11.5px;color:var(--text-low)">Débitos = Créditos (partidas dobradas)</div></div>
     <div class="card-body no-pad"><div class="table-wrap">
-      <table style="table-layout:fixed;width:100%">
-        <colgroup>
-          <col style="width:90px">
-          <col style="width:auto">
-          <col style="width:110px">
-          <col style="width:110px">
-          <col style="width:110px">
-          <col style="width:110px">
-        </colgroup>
-        <thead><tr>
-          <th>Código</th>
-          <th>Designação</th>
-          <th style="text-align:right">Movim. Db</th>
-          <th style="text-align:right">Movim. Cr</th>
-          <th style="text-align:right">Saldo Db</th>
-          <th style="text-align:right">Saldo Cr</th>
-        </tr></thead>
+      <table id="balancete-table" style="table-layout:fixed;width:100%"><colgroup><col style="width:82px"><col style="width:auto"><col style="width:106px"><col style="width:106px"><col style="width:106px"><col style="width:106px"></colgroup><thead><tr><th>Código</th><th>Designação</th><th style="text-align:right">Débito</th><th style="text-align:right">Crédito</th><th style="text-align:right">Saldo Déb.</th><th style="text-align:right">Saldo Créd.</th></tr></thead>
       <tbody id="balancete-body"></tbody><tfoot id="balancete-tot"></tfoot></table>
     </div></div>
   </div>
@@ -2613,24 +2678,16 @@ function renderDocs() {
 function renderReports() {
   const grid = document.getElementById('reports-grid');
   if (!grid) return;
+  grid.className = 'reports-grid';
   grid.innerHTML = REPORTS.map(r=>`
-    <div class="card" style="cursor:pointer;transition:all .2s" onclick="openReport('${r.name}')"
-      onmouseover="this.style.borderColor='var(--teal)';this.style.boxShadow='0 4px 20px rgba(18,194,168,.12)'"
-      onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
-      <div class="card-body">
-        <div style="font-size:26px;margin-bottom:10px">${r.icon}</div>
-        <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:var(--white);margin-bottom:5px">${r.name}</div>
-        <div style="font-size:12px;color:var(--text-low);margin-bottom:14px">${r.desc}</div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--teal)">
-          Abrir relatório →
-        </div>
-      </div>
+    <div class="report-card" onclick="openReport('${r.name}')">
+      <div class="report-card-icon">${r.icon}</div>
+      <div class="report-card-title">${r.name}</div>
+      <div class="report-card-desc">${r.desc}</div>
+      <div class="report-card-link">Abrir relatório <span>→</span></div>
     </div>`).join('');
 }
 
-// ═══════════════════════════════════════
-// CLIENT DETAIL
-// ═══════════════════════════════════════
 function openClientDetail(id) {
   const c = CLIENTS.find(x=>x.id===id);
   openModal('client-detail', c);
@@ -2788,25 +2845,15 @@ const MODAL_TEMPLATES = {
     action:null, key:'proposal'
   },
   'new-lancamento':{
-    title:'Novo Lançamento Contabilístico', sub:'Registo de movimento em partidas dobradas — PGC-NIRF.',
-    body:`
-      <div class="form-group"><label>Data *</label><input class="form-control" id="nl-data" type="date"></div>
-      <div class="form-row">
-        <div class="form-group"><label>Documento</label><input class="form-control" id="nl-doc" placeholder="Ex: FT2025/001"></div>
-        <div class="form-group"><label>Cliente</label><select class="form-control" id="nl-cli"><option value="">— Nenhum —</option>${CLIENTS.map(c=>'<option value="'+c.name+'">'+c.name+'</option>').join('')}</select></div>
-      </div>
+    title:'Novo Lançamento Contabilístico', sub:'Registo em partidas dobradas — PGC-NIRF.',
+    body:`<div class="form-group"><label>Data *</label><input class="form-control" id="nl-data" type="date"></div>
+      <div class="form-row"><div class="form-group"><label>Documento</label><input class="form-control" id="nl-doc" placeholder="FT2025/001"></div><div class="form-group"><label>Cliente</label><select class="form-control" id="nl-cli"><option value="">— Nenhum —</option>${CLIENTS.map(c=>'<option value="'+c.name+'">'+c.name+'</option>').join('')}</select></div></div>
       <div class="form-group"><label>Descrição *</label><input class="form-control" id="nl-desc" placeholder="Ex: Honorários Abril — Cliente X"></div>
-      <div class="form-row">
-        <div class="form-group"><label>Débito (conta) *</label><input class="form-control" id="nl-db" placeholder="Ex: 4.1.1"></div>
-        <div class="form-group"><label>Crédito (conta) *</label><input class="form-control" id="nl-cr" placeholder="Ex: 7.2"></div>
-        <div class="form-group"><label>Valor (MZN) *</label><input class="form-control" id="nl-val" type="number" placeholder="0.00" step="0.01" min="0"></div>
-      </div>
-      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 13px;font-size:12px;color:var(--text-low)">
-        Contas: <b style="color:var(--white)">4.1.1</b> Clientes · <b style="color:var(--white)">7.2</b> Prest.Serviços · <b style="color:var(--white)">1.1</b> Caixa · <b style="color:var(--white)">6.2</b> Pessoal · <b style="color:var(--white)">4.4.3.3</b> IVA Liq. · <b style="color:var(--white)">3.8.2</b> Amort.Acum.
-      </div>`,
+      <div class="form-row"><div class="form-group"><label>Débito *</label><input class="form-control" id="nl-db" placeholder="Ex: 4.1.1"></div><div class="form-group"><label>Crédito *</label><input class="form-control" id="nl-cr" placeholder="Ex: 7.2"></div><div class="form-group"><label>Valor (MZN) *</label><input class="form-control" id="nl-val" type="number" placeholder="0.00" min="0" step="0.01"></div></div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:11.5px;color:var(--text-low)">Contas: <b style="color:var(--white)">4.1.1</b>=Clientes · <b style="color:var(--white)">7.2</b>=Prestação Serv. · <b style="color:var(--white)">1.1</b>=Caixa · <b style="color:var(--white)">6.2</b>=Pessoal · <b style="color:var(--white)">4.4.3.3</b>=IVA Liq.</div>`,
     action:'Registar Lançamento', key:'new-lancamento'
   },
-}; 
+};
 
 function openModal(type, data) {
   if (type==='client-detail' && data) {
@@ -3751,30 +3798,28 @@ function openLeadDetail(id) {
 // RENDER: FATURAÇÃO
 // ══════════════════════════════════════
 function renderFaturacao() {
-  const fatTotal = document.getElementById('fat-total');
-  const fatRecv  = document.getElementById('fat-recv');
-  const fatLate  = document.getElementById('fat-late');
-  const totalRev = CLIENTS.reduce((s,c)=>s+c.value,0);
-  const recvRev  = CLIENTS.filter(c=>c.status==='active').reduce((s,c)=>s+c.value,0);
-  const lateRev  = CLIENTS.filter(c=>c.status==='late').reduce((s,c)=>s+c.value,0);
-  if (fatTotal) fatTotal.textContent = fmt(totalRev) + ' MZN';
-  if (fatRecv)  fatRecv.textContent  = fmt(recvRev)  + ' MZN';
-  if (fatLate)  fatLate.textContent  = fmt(lateRev)  + ' MZN';
-
-  const tbody = document.querySelector('#fat-table tbody'); if (!tbody) return;
-  tbody.innerHTML = CLIENTS.map(c => {
-    const badgeCls = {active:'s-ok',pending:'s-pend',late:'s-late'}[c.status]||'s-pend';
-    const statusTxt = {active:'Pago',pending:'Pendente',late:'Atraso 12d'}[c.status]||c.status;
+  const fatTotal=document.getElementById('fat-total');
+  const fatRecv=document.getElementById('fat-recv');
+  const fatLate=document.getElementById('fat-late');
+  const totalRev=CLIENTS.reduce((sum,c)=>sum+c.value,0);
+  const recvRev=CLIENTS.filter(c=>c.status==='active').reduce((sum,c)=>sum+c.value,0);
+  const lateRev=CLIENTS.filter(c=>c.status==='late').reduce((sum,c)=>sum+c.value,0);
+  if(fatTotal)fatTotal.textContent=fmt(totalRev)+' MZN';
+  if(fatRecv)fatRecv.textContent=fmt(recvRev)+' MZN';
+  if(fatLate)fatLate.textContent=fmt(lateRev)+' MZN';
+  const tbody=document.querySelector('#fat-table tbody');if(!tbody)return;
+  tbody.innerHTML=CLIENTS.map(c=>{
+    const sts={active:{cls:'b-active',txt:'✅ Pago'},pending:{cls:'b-pending',txt:'⏳ Pendente'},late:{cls:'b-late',txt:'❌ Atraso'},done:{cls:'b-done',txt:'✅ Concluído'}}[c.status]||{cls:'b-off',txt:c.status};
     return `<tr>
-      <td><div class="ccell"><div class="cav" style="width:28px;height:28px;background:${c.color}">${c.id}</div><span class="cn">${c.name}</span></div></td>
-      <td style="font-weight:700;font-family:'Montserrat',sans-serif">${fmt(c.value)} MZN</td>
-      <td>05 Mai</td>
-      <td><span class="status ${badgeCls}">${statusTxt}</span></td>
-      <td style="display:flex;gap:5px">
-        <button class="btn sm teal" onclick="openReciboModal('${c.id}')" title='Gerar Recibo'>🧾 Recibo</button>
-        ${c.status==='late' ? `<button class="btn sm red" onclick="openWhatsApp('${c.phone||''}','payment')">Notificar</button>` : ''}
-        ${c.status==='pending' ? `<button class="btn sm" onclick="openWhatsApp('${c.phone||''}','payment')">Lembrar</button>` : ''}
-      </td>
+      <td><div class="pay-client"><div class="pay-avatar" style="background:${c.color||'#333'}">${c.id}</div><div><div style="font-size:13px;font-weight:600;color:var(--white)">${c.name}</div><div style="font-size:11px;color:var(--text-low)">${c.sector||''}</div></div></div></td>
+      <td style="text-align:right;font-family:'Montserrat',sans-serif;font-weight:700;color:var(--white)">${fmt(c.value)} MZN</td>
+      <td style="font-size:12.5px;color:var(--text-low)">05 Mai 2025</td>
+      <td><span class="badge ${sts.cls}">${sts.txt}</span></td>
+      <td><div style="display:flex;gap:5px;flex-wrap:wrap">
+        <button class="btn xs" onclick="openReciboModal('${c.id}')">🧾 Recibo</button>
+        ${c.status==='late'?`<button class="btn xs danger" onclick="openWhatsApp('${c.phone||''}','payment')">Notificar</button>`:''}
+        ${c.status==='pending'?`<button class="btn xs" onclick="openWhatsApp('${c.phone||''}','payment')">Lembrar</button>`:''}
+      </div></td>
     </tr>`;
   }).join('');
 }
@@ -6777,6 +6822,24 @@ function applyStoredTheme() {
   document.querySelectorAll('[data-year]').forEach(function(el){ el.textContent = yr; });
 })();
 
+// ── refreshAll ──
+function refreshAll(){
+  if(typeof renderDash==='function')renderDash();
+  if(typeof renderClients==='function')renderClients();
+  if(typeof renderTasks==='function')renderTasks();
+  if(typeof renderFaturacao==='function')renderFaturacao();
+  if(typeof refreshAnalytics==='function')refreshAnalytics();
+  if(typeof updateCounters==='function')updateCounters();
+  toast('↻ Dashboard actualizado!');
+}
+
+// ── toggleAccordion ──
+function toggleAccordion(headEl){
+  var acc=headEl.closest('.accordion');
+  if(!acc)return;
+  acc.classList.toggle('open');
+}
+
 // ── doAddLancamento ──
 function doAddLancamento(){
   var data=(document.getElementById('nl-data')||{}).value||new Date().toISOString().slice(0,10);
@@ -6786,7 +6849,7 @@ function doAddLancamento(){
   var db=(document.getElementById('nl-db')||{}).value||'';
   var cr=(document.getElementById('nl-cr')||{}).value||'';
   var val=parseFloat((document.getElementById('nl-val')||{}).value||0);
-  if(!desc||!db||!cr||!val){toast('⚠️ Preencha Descrição, Débito, Crédito e Valor');return;}
+  if(!desc||!db||!cr||!val){toast('⚠️ Preencha: Descrição, Débito, Crédito e Valor');return;}
   var nid=(typeof _lancId!=='undefined')?_lancId++:(LANCAMENTOS.length+1);
   var lanc={id:nid,data:data,doc:doc,desc:desc,db:db,cr:cr,val:val,cli:cli};
   LANCAMENTOS.unshift(lanc);
@@ -6795,24 +6858,21 @@ function doAddLancamento(){
     window.COMPANY_DATA[window.ACTIVE_COMPANY_ID].lancamentos.unshift(lanc);
   }
   if(typeof saveState==='function')saveState();
-  if(typeof addAuditLog==='function')addAuditLog('Lançamento: '+desc+' '+db+'/'+cr+' '+val.toLocaleString('pt-MZ')+' MZN','fiscal');
+  if(typeof addAuditLog==='function')addAuditLog('Lançamento: '+desc+' ('+db+'/'+cr+') '+val.toLocaleString('pt-MZ')+' MZN','fiscal');
   closeModal();
-  if(typeof renderDiario==='function')renderDiario();
-  if(typeof renderBalancete==='function')renderBalancete();
-  if(typeof renderDR==='function')renderDR();
+  if(typeof renderDiario==='function')setTimeout(renderDiario,80);
+  if(typeof renderBalancete==='function')setTimeout(renderBalancete,120);
   toast('✅ Lançamento registado!');
 }
 
 // ── changePassword ──
 function changePassword(btn){
-  var form=btn.closest('.card-body')||btn.closest('.modal-body')||document.body;
+  var form=btn.closest('.card-body')||btn.closest('#modal-body')||document.body;
   var inputs=form.querySelectorAll('input[type=password]');
-  var cur=inputs[0]?inputs[0].value:'';
-  var novo=inputs[1]?inputs[1].value:'';
-  var conf=inputs[2]?inputs[2].value:'';
+  var cur=inputs[0]?inputs[0].value:'',nw=inputs[1]?inputs[1].value:'',cf=inputs[2]?inputs[2].value:'';
   if(!cur){toast('⚠️ Introduza a senha actual.');return;}
-  if(!novo||novo.length<6){toast('⚠️ Nova senha deve ter no mínimo 6 caracteres.');return;}
-  if(novo!==conf){toast('⚠️ As senhas não coincidem.');return;}
+  if(!nw||nw.length<6){toast('⚠️ Nova senha: mínimo 6 caracteres.');return;}
+  if(nw!==cf){toast('⚠️ As senhas não coincidem.');return;}
   inputs.forEach(function(i){i.value='';});
   if(typeof addAuditLog==='function')addAuditLog('Senha alterada','security');
   toast('✅ Senha alterada com sucesso!');
@@ -6820,16 +6880,15 @@ function changePassword(btn){
 
 // ── sendEmailFromModal ──
 function sendEmailFromModal(){
-  var sel=document.getElementById('nc-client')||document.getElementById('notify-client-sel');
+  var sel=document.getElementById('nc-client');
   var msg=document.getElementById('nc-msg');
-  var clientName=sel?sel.options[sel.selectedIndex]?sel.options[sel.selectedIndex].text:'':'';
-  var client=CLIENTS.find(function(c){return clientName.indexOf(c.name)>=0;});
+  var opt=sel&&sel.options[sel.selectedIndex]?sel.options[sel.selectedIndex].text:'';
+  var client=(typeof CLIENTS!=='undefined')?CLIENTS.find(function(c){return opt.indexOf(c.name)>=0;}):null;
   var email=client&&client.email?client.email:'';
-  var subject=encodeURIComponent('NIVELZERO CONSULTORES — Notificação');
-  var body=encodeURIComponent(msg?msg.value:'Mensagem da NIVELZERO CONSULTORES LDA.');
-  if(email){window.open('mailto:'+email+'?subject='+subject+'&body='+body,'_blank');}
-  else{window.open('mailto:?subject='+subject+'&body='+body,'_blank');}
-  if(typeof addAuditLog==='function')addAuditLog('Email enviado a '+(clientName||'cliente'),'alert');
+  var sub=encodeURIComponent('NIVELZERO CONSULTORES — Notificação');
+  var body=encodeURIComponent(msg?msg.value:'');
+  window.open('mailto:'+(email||'')+'?subject='+sub+'&body='+body,'_blank');
+  if(typeof addAuditLog==='function')addAuditLog('Email enviado: '+opt,'alert');
   toast('📧 A abrir cliente de email...');
   closeModal();
 }
@@ -6838,67 +6897,90 @@ function sendEmailFromModal(){
 function sendProposalWA(){
   var company=(document.getElementById('np-company')||{}).value||'cliente';
   var phone=(document.getElementById('np-phone')||{}).value||'';
-  var pkg=document.getElementById('np-pkg');
-  var pkgText=pkg?pkg.options[pkg.selectedIndex]?pkg.options[pkg.selectedIndex].text:'':'';
+  var sel=document.getElementById('np-pkg');
+  var pkg=sel&&sel.options[sel.selectedIndex]?sel.options[sel.selectedIndex].text:'';
   var value=(document.getElementById('np-value')||{}).value||'';
   var clean=phone.replace(/[^0-9]/g,'')||'258867344276';
-  var msg=encodeURIComponent('Olá! A NIVELZERO CONSULTORES LDA preparou uma proposta comercial para '+company+(pkgText?'. Pacote: '+pkgText:'')+(value?'. Honorário: '+parseInt(value).toLocaleString('pt-MZ')+' MZN/mês.':'')+' Ficamos à disposição. Obrigado!');
-  window.open('https://wa.me/'+clean+'?text='+msg,'_blank');
-  if(typeof addAuditLog==='function')addAuditLog('Proposta enviada via WhatsApp para: '+company,'lead');
-  toast('💬 WhatsApp aberto! Confirme o envio.');
+  var txt='Olá! A NIVELZERO CONSULTORES LDA preparou uma proposta para '+company+(pkg?'. Pacote: '+pkg:'')+(value?'. Honorário: '+parseInt(value).toLocaleString('pt-MZ')+' MZN/mês.':'')+' Ficamos à disposição!';
+  window.open('https://wa.me/'+clean+'?text='+encodeURIComponent(txt),'_blank');
+  if(typeof addAuditLog==='function')addAuditLog('Proposta WA: '+company,'lead');
+  toast('💬 WhatsApp aberto!');
   closeModal();
 }
 
-// ── exportDossierFiscal extended (DR + Balanço support) ──
-var _origExportDossier = (typeof exportDossierFiscal === 'function') ? exportDossierFiscal : null;
-function exportDossierFiscal(pageHint){
-  if(pageHint==='dr'){
-    var co=(typeof getActiveCompany==='function')?getActiveCompany():null;
-    var coName=co?co.nome:'NIVELZERO CONSULTORES LDA';
-    var date=new Date().toLocaleDateString('pt-MZ');
-    var w=window.open('','_blank','width=900,height=700');
-    var _L=(typeof getLancsForPage==='function')?getLancsForPage('dr'):LANCAMENTOS;
-    var R=function(p){return _L.filter(function(l){return l.cr.startsWith(p);}).reduce(function(a,l){return a+l.val;},0);};
-    var G=function(p){return _L.filter(function(l){return l.db.startsWith(p);}).reduce(function(a,l){return a+l.val;},0);};
-    var totR=R('7.2')+R('7.1')+R('7.6')+R('7.8')+R('7.5');
-    var totG=G('6.2')+G('6.3')+G('6.5')+G('6.6')+G('6.8')+G('6.9')+G('6.4');
-    var resOp=totR-totG;var irpc=Math.max(0,Math.round(resOp*0.32));var resLiq=Math.max(0,resOp-irpc);
-    var f=function(v){return v.toLocaleString('pt-MZ',{minimumFractionDigits:2});};
-    w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>DR — '+coName+'</title><style>body{font-family:Arial,sans-serif;max-width:700px;margin:32px auto;font-size:12px;color:#1a1a2e}h1{font-size:18px;font-weight:900;border-bottom:3px solid #12C2A8;padding-bottom:10px;margin-bottom:4px}.logo{font-weight:900;font-size:18px}.logo span{color:#12C2A8}table{width:100%;border-collapse:collapse;margin-top:14px}td{padding:8px 12px;border-bottom:1px solid #eee}.tot{font-weight:700;background:#f8f9fa}.hi{background:#f0fff8;font-weight:800;color:#12C2A8}@media print{body{margin:15px}}</style></head><body>');
-    w.document.write('<div class="logo">NIVEL<span>ZERO</span> CONSULTORES</div><p style="color:#888;font-size:11px">NUIT: 400100000 · '+date+'</p><h1>📊 Demonstração de Resultados</h1><p style="color:#888;font-size:11px">Cliente: '+coName+'</p>');
-    w.document.write('<table><tr><td>+ Prestação de Serviços (7.2)</td><td style="text-align:right">'+f(R('7.2'))+'</td></tr><tr><td>+ Vendas (7.1)</td><td style="text-align:right">'+f(R('7.1'))+'</td></tr><tr class="tot"><td>= TOTAL RENDIMENTOS</td><td style="text-align:right">'+f(totR)+'</td></tr><tr><td>— Gastos com Pessoal (6.2)</td><td style="text-align:right">'+f(G('6.2'))+'</td></tr><tr><td>— Fornecimentos e Serviços (6.3)</td><td style="text-align:right">'+f(G('6.3'))+'</td></tr><tr><td>— Amortizações (6.5)</td><td style="text-align:right">'+f(G('6.5'))+'</td></tr><tr class="tot"><td>= TOTAL GASTOS</td><td style="text-align:right">'+f(totG)+'</td></tr><tr class="tot"><td>= RESULTADO OPERACIONAL</td><td style="text-align:right">'+f(resOp)+'</td></tr><tr><td>— IRPC (32%)</td><td style="text-align:right">'+f(irpc)+'</td></tr><tr class="hi"><td>= RESULTADO LÍQUIDO</td><td style="text-align:right">'+f(resLiq)+'</td></tr></table>');
-    w.document.write('</body></html>');
+// ── exportDossierFiscal — DR + Balanço ──
+var _origED=(typeof exportDossierFiscal==='function')?exportDossierFiscal:null;
+function exportDossierFiscal(hint){
+  var co=(typeof getActiveCompany==='function')?getActiveCompany():null;
+  var coName=co?co.nome:'NIVELZERO CONSULTORES LDA';
+  var date=new Date().toLocaleDateString('pt-MZ');
+  var f=function(v){return parseFloat(v||0).toLocaleString('pt-MZ',{minimumFractionDigits:2});};
+  var CSS='body{font-family:Arial,sans-serif;max-width:720px;margin:30px auto;font-size:12px;color:#1a1a2e}h1{border-bottom:3px solid #12C2A8;padding-bottom:8px;font-size:17px;margin-bottom:4px}.logo span{color:#12C2A8}table{width:100%;border-collapse:collapse;margin-top:12px}td,th{padding:8px 12px;border-bottom:1px solid #e8e8e8;font-size:12px}th{background:#f4f4f4;font-weight:700;text-align:left}.tot{font-weight:700;background:#f9f9f9}.hi{background:#f0fff8;color:#0d9e8a;font-weight:800}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:12px}h2{font-size:12px;font-weight:700;margin:8px 0 4px;border-left:3px solid #12C2A8;padding-left:7px}@media print{body{margin:10px}}';
+  if(hint==='dr'){
+    var _L=(typeof getLancsForPage==='function')?getLancsForPage('dr'):(typeof LANCAMENTOS!=='undefined'?LANCAMENTOS:[]);
+    var R=function(p){return _L.filter(function(l){return l.cr&&l.cr.startsWith(p);}).reduce(function(a,l){return a+(l.val||0);},0);};
+    var G=function(p){return _L.filter(function(l){return l.db&&l.db.startsWith(p);}).reduce(function(a,l){return a+(l.val||0);},0);};
+    var tR=R('7.2')+R('7.1')+R('7.6')+R('7.8')+R('7.5'),tG=G('6.2')+G('6.3')+G('6.5')+G('6.6')+G('6.8')+G('6.9')+G('6.4');
+    var rOp=tR-tG,irpc=Math.max(0,Math.round(rOp*0.32)),rLiq=Math.max(0,rOp-irpc);
+    var w=window.open('','_blank');
+    w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>DR — '+coName+'</title><style>'+CSS+'</style></head><body>');
+    w.document.write('<div class="logo"><b>NIVEL<span>ZERO</span> CONSULTORES LDA</b></div><p style="color:#888;font-size:11px">NUIT: 400100000 &nbsp;·&nbsp; Emitido em: '+date+'</p><h1>📊 Demonstração de Resultados</h1><p style="color:#888;margin-bottom:12px">Empresa: <b>'+coName+'</b></p>');
+    w.document.write('<table><thead><tr><th>Rúbrica</th><th style="text-align:right">Valor (MZN)</th></tr></thead><tbody>');
+    w.document.write('<tr><td>+ Prestação de Serviços (7.2)</td><td style="text-align:right">'+f(R('7.2'))+'</td></tr>');
+    w.document.write('<tr><td>+ Vendas (7.1)</td><td style="text-align:right">'+f(R('7.1'))+'</td></tr>');
+    w.document.write('<tr><td>+ Outros Rendimentos (7.5 · 7.6 · 7.8)</td><td style="text-align:right">'+f(R('7.6')+R('7.8')+R('7.5'))+'</td></tr>');
+    w.document.write('<tr class="tot"><td>= TOTAL RENDIMENTOS</td><td style="text-align:right">'+f(tR)+'</td></tr>');
+    w.document.write('<tr><td>— Gastos com Pessoal (6.2)</td><td style="text-align:right">'+f(G('6.2'))+'</td></tr>');
+    w.document.write('<tr><td>— Fornecimentos e Serviços (6.3)</td><td style="text-align:right">'+f(G('6.3'))+'</td></tr>');
+    w.document.write('<tr><td>— Amortizações (6.5)</td><td style="text-align:right">'+f(G('6.5'))+'</td></tr>');
+    w.document.write('<tr><td>— Outros Gastos (6.4 · 6.8 · 6.9)</td><td style="text-align:right">'+f(G('6.4')+G('6.8')+G('6.9'))+'</td></tr>');
+    w.document.write('<tr class="tot"><td>= TOTAL GASTOS</td><td style="text-align:right">'+f(tG)+'</td></tr>');
+    w.document.write('<tr class="tot"><td>= RESULTADO OPERACIONAL</td><td style="text-align:right">'+f(rOp)+'</td></tr>');
+    w.document.write('<tr><td>— IRPC estimado (32%)</td><td style="text-align:right">'+f(irpc)+'</td></tr>');
+    w.document.write('<tr class="hi"><td><b>= RESULTADO LÍQUIDO DO PERÍODO</b></td><td style="text-align:right"><b>'+f(rLiq)+'</b></td></tr>');
+    w.document.write('</tbody></table></body></html>');
     w.document.close();w.print();
-    if(typeof addAuditLog==='function')addAuditLog('Dossier DR exportado: '+coName,'fiscal');
+    if(typeof addAuditLog==='function')addAuditLog('Dossier DR: '+coName,'fiscal');
     return;
   }
-  if(pageHint==='balanco'){
-    var co2=(typeof getActiveCompany==='function')?getActiveCompany():null;
-    var coName2=co2?co2.nome:'NIVELZERO CONSULTORES LDA';
-    var date2=new Date().toLocaleDateString('pt-MZ');
-    var w2=window.open('','_blank','width=900,height=700');
-    var _L2=(typeof getLancsForPage==='function')?getLancsForPage('balanco'):LANCAMENTOS;
-    var sD=function(c){return _L2.filter(function(l){return l.db===c||l.db.startsWith(c+'.');}).reduce(function(a,l){return a+l.val;},0);};
-    var sC=function(c){return _L2.filter(function(l){return l.cr===c||l.cr.startsWith(c+'.');}).reduce(function(a,l){return a+l.val;},0);};
+  if(hint==='balanco'){
+    var _L2=(typeof getLancsForPage==='function')?getLancsForPage('balanco'):(typeof LANCAMENTOS!=='undefined'?LANCAMENTOS:[]);
+    var sD=function(c){return _L2.filter(function(l){return l.db===c||l.db.startsWith(c+'.');}).reduce(function(a,l){return a+(l.val||0);},0);};
+    var sC=function(c){return _L2.filter(function(l){return l.cr===c||l.cr.startsWith(c+'.');}).reduce(function(a,l){return a+(l.val||0);},0);};
     var sl=function(c){return sD(c)-sC(c);};
-    var f2=function(v){return v.toLocaleString('pt-MZ',{minimumFractionDigits:2});};
-    var caixa=Math.max(0,sl('1.1'));var bancos=Math.max(0,sl('1.2'));var clientes=Math.max(0,sl('4.1'));
-    var activos=window.ACTIVOS_FIXOS||[];
-    var imob=activos.reduce(function(a,x){return a+(x.valor||0);},0)||45000;
-    var amortAcum=activos.reduce(function(a,x){return a+(x.amort_acum||0);},0)||12000;
-    var totalAC=caixa+bancos+clientes;var totalANC=imob-amortAcum;var totalA=totalAC+totalANC;
-    var capital=50000;var reservas=8000;var resLiq2=Math.max(0,sC('7')-sD('6'));
-    var totalCP=capital+reservas+resLiq2;var totalP=totalA-totalCP;
-    w2.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Balanço — '+coName2+'</title><style>body{font-family:Arial,sans-serif;max-width:700px;margin:32px auto;font-size:12px;color:#1a1a2e}h1{font-size:18px;font-weight:900;border-bottom:3px solid #12C2A8;padding-bottom:10px}.logo{font-weight:900;font-size:18px}.logo span{color:#12C2A8}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:14px}table{width:100%;border-collapse:collapse}td{padding:7px 10px;border-bottom:1px solid #eee}.tot{font-weight:700;background:#f8f9fa}.hi{background:#f0fff8;font-weight:800;color:#12C2A8}h2{font-size:13px;font-weight:700;margin:10px 0 5px;color:#07101E;border-left:3px solid #12C2A8;padding-left:8px}@media print{body{margin:15px}}</style></head><body>');
-    w2.document.write('<div class="logo">NIVEL<span>ZERO</span> CONSULTORES</div><p style="color:#888;font-size:11px">NUIT: 400100000 · '+date2+'</p><h1>🏦 Balanço Patrimonial</h1><p style="color:#888;font-size:11px">Cliente: '+coName2+'</p><div class="grid">');
-    w2.document.write('<div><h2>ACTIVO</h2><table><tr><td>Imobilizado Bruto</td><td style="text-align:right">'+f2(imob)+'</td></tr><tr><td>(-) Amortizações</td><td style="text-align:right">('+f2(amortAcum)+')</td></tr><tr class="tot"><td>Activo Não Corrente</td><td style="text-align:right">'+f2(totalANC)+'</td></tr><tr><td>Caixa</td><td style="text-align:right">'+f2(caixa)+'</td></tr><tr><td>Bancos</td><td style="text-align:right">'+f2(bancos)+'</td></tr><tr><td>Clientes</td><td style="text-align:right">'+f2(clientes)+'</td></tr><tr class="tot"><td>Activo Corrente</td><td style="text-align:right">'+f2(totalAC)+'</td></tr><tr class="hi"><td>TOTAL ACTIVO</td><td style="text-align:right">'+f2(totalA)+'</td></tr></table></div>');
-    w2.document.write('<div><h2>CAPITAL PRÓPRIO E PASSIVO</h2><table><tr><td>Capital Social</td><td style="text-align:right">'+f2(capital)+'</td></tr><tr><td>Reservas</td><td style="text-align:right">'+f2(reservas)+'</td></tr><tr><td>Resultado Líquido</td><td style="text-align:right">'+f2(resLiq2)+'</td></tr><tr class="tot"><td>Capital Próprio</td><td style="text-align:right">'+f2(totalCP)+'</td></tr><tr class="tot"><td>Passivo Total</td><td style="text-align:right">'+f2(totalP)+'</td></tr><tr class="hi"><td>TOTAL CP + PASSIVO</td><td style="text-align:right">'+f2(totalA)+'</td></tr></table></div></div>');
-    w2.document.write('</body></html>');
+    var caixa=Math.max(0,sl('1.1')),bancos=Math.max(0,sl('1.2')),clts=Math.max(0,sl('4.1'));
+    var act=window.ACTIVOS_FIXOS||[];
+    var imob=act.reduce(function(a,x){return a+(x.valor||0);},0)||45000;
+    var amort=act.reduce(function(a,x){return a+(x.amort_acum||0);},0)||12000;
+    var tAC=caixa+bancos+clts,tANC=imob-amort,tA=tAC+tANC;
+    var cap=50000,res=8000,rLiq3=Math.max(0,sC('7')-sD('6')),tCP=cap+res+rLiq3,tP=Math.max(0,tA-tCP);
+    var w2=window.open('','_blank');
+    w2.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Balanço — '+coName+'</title><style>'+CSS+'</style></head><body>');
+    w2.document.write('<div class="logo"><b>NIVEL<span>ZERO</span> CONSULTORES LDA</b></div><p style="color:#888;font-size:11px">NUIT: 400100000 &nbsp;·&nbsp; Emitido em: '+date+'</p><h1>🏦 Balanço Patrimonial</h1><p style="color:#888;margin-bottom:12px">Empresa: <b>'+coName+'</b></p>');
+    w2.document.write('<div class="grid">');
+    w2.document.write('<div><h2>ACTIVO</h2><table><tbody>');
+    w2.document.write('<tr><td>Imobilizado Bruto</td><td style="text-align:right">'+f(imob)+'</td></tr>');
+    w2.document.write('<tr><td>(−) Amortizações Acumuladas</td><td style="text-align:right">('+f(amort)+')</td></tr>');
+    w2.document.write('<tr class="tot"><td>Activo Não Corrente</td><td style="text-align:right">'+f(tANC)+'</td></tr>');
+    w2.document.write('<tr><td>Caixa (1.1)</td><td style="text-align:right">'+f(caixa)+'</td></tr>');
+    w2.document.write('<tr><td>Bancos (1.2)</td><td style="text-align:right">'+f(bancos)+'</td></tr>');
+    w2.document.write('<tr><td>Clientes (4.1)</td><td style="text-align:right">'+f(clts)+'</td></tr>');
+    w2.document.write('<tr class="tot"><td>Activo Corrente</td><td style="text-align:right">'+f(tAC)+'</td></tr>');
+    w2.document.write('<tr class="hi"><td><b>TOTAL ACTIVO</b></td><td style="text-align:right"><b>'+f(tA)+'</b></td></tr>');
+    w2.document.write('</tbody></table></div>');
+    w2.document.write('<div><h2>CAPITAL PRÓPRIO E PASSIVO</h2><table><tbody>');
+    w2.document.write('<tr><td>Capital Social</td><td style="text-align:right">'+f(cap)+'</td></tr>');
+    w2.document.write('<tr><td>Reservas</td><td style="text-align:right">'+f(res)+'</td></tr>');
+    w2.document.write('<tr><td>Resultado Líquido</td><td style="text-align:right">'+f(rLiq3)+'</td></tr>');
+    w2.document.write('<tr class="tot"><td>Capital Próprio</td><td style="text-align:right">'+f(tCP)+'</td></tr>');
+    w2.document.write('<tr class="tot"><td>Passivo Total</td><td style="text-align:right">'+f(tP)+'</td></tr>');
+    w2.document.write('<tr class="hi"><td><b>TOTAL CP + PASSIVO</b></td><td style="text-align:right"><b>'+f(tA)+'</b></td></tr>');
+    w2.document.write('</tbody></table></div></div></body></html>');
     w2.document.close();w2.print();
-    if(typeof addAuditLog==='function')addAuditLog('Dossier Balanço exportado: '+coName2,'fiscal');
+    if(typeof addAuditLog==='function')addAuditLog('Dossier Balanço: '+coName,'fiscal');
     return;
   }
-  if(_origExportDossier)_origExportDossier();
+  if(_origED)_origED();
 }
 
 </script>
