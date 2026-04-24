@@ -473,6 +473,27 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
 
 /* ── Secondary Modal System (modal-bg) ── */
 .modal-content{background:var(--bg2);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:28px;width:100%;max-width:580px;max-height:88vh;overflow-y:auto;position:relative}
+
+/* ── Accordion Sidebar ── */
+.sb-module { }
+.sb-group-title {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 16px; cursor: pointer;
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: rgba(255,255,255,.35); font-family: 'Inter', sans-serif;
+  transition: color .15s; user-select: none;
+  border-left: 2px solid transparent;
+}
+.sb-group-title:hover { color: rgba(255,255,255,.65); }
+.sb-group-title.open { color: var(--teal); border-left-color: var(--teal); }
+.sb-group-title .sgt-arrow { margin-left: auto; font-size: 10px; transition: transform .2s; }
+.sb-group-title.open .sgt-arrow { transform: rotate(90deg); }
+.sb-submenu { display: none; }
+.sb-submenu.open { display: block; }
+.sb-submenu .sb-item { padding-left: 28px; font-size: 12.5px; }
+body.light .sb-group-title { color: rgba(0,0,30,.4); }
+body.light .sb-group-title:hover { color: rgba(0,0,30,.7); }
+body.light .sb-group-title.open { color: var(--teal); }
 </style>
 </head>
 <body>
@@ -553,120 +574,193 @@ table tbody tr:hover { background: rgba(255,255,255,.04) !important; }
 
 <!-- SIDEBAR -->
 <nav class="sidebar" id="sidebar">
-  <div class="sb-group-label">Principal</div>
+
+  <!-- ── Principal (sempre visível) ── -->
   <div class="sb-item active" data-page="dashboard" onclick="navigate('dashboard',this)">
     <span class="sb-ico">📊</span><span class="sb-label">Dashboard</span>
   </div>
   <div class="sb-item" data-page="clientes" onclick="navigate('clientes',this)">
     <span class="sb-ico">🏢</span><span class="sb-label">Clientes</span>
   </div>
-  <div class="sb-group-label">Financeiro</div>
-  <div class="sb-item" data-page="financeiro" id="nav-financeiro" onclick="navigate('financeiro',this)">
-    <span class="sb-ico">💰</span><span class="sb-label">Financeiro</span>
-    <span class="sb-count sb-c-amber">2</span>
+
+  <!-- ── Financeiro ── -->
+  <div class="sb-module" id="mod-financeiro">
+    <div class="sb-group-title" onclick="toggleSbModule('mod-financeiro')">
+      <span>💰 Financeiro</span><span class="sgt-arrow">▶</span>
+    </div>
+    <div class="sb-submenu">
+      <div class="sb-item" data-page="financeiro" id="nav-financeiro" onclick="navigate('financeiro',this)">
+        <span class="sb-ico">💰</span><span class="sb-label">Financeiro</span><span class="sb-count sb-c-amber" id="sb-fin-cnt"></span>
+      </div>
+      <div class="sb-item" data-page="contratos" id="nav-contratos" onclick="navigate('contratos',this)">
+        <span class="sb-ico">📝</span><span class="sb-label">Contratos</span>
+      </div>
+    </div>
   </div>
-  <div class="sb-item" data-page="contratos" id="nav-contratos" onclick="navigate('contratos',this)">
-    <span class="sb-ico">📝</span><span class="sb-label">Contratos</span>
+
+  <!-- ── Operações ── -->
+  <div class="sb-module" id="mod-operacoes">
+    <div class="sb-group-title" onclick="toggleSbModule('mod-operacoes')">
+      <span>🧩 Operações</span><span class="sgt-arrow">▶</span>
+    </div>
+    <div class="sb-submenu">
+      <div class="sb-item" data-page="servicos" onclick="navigate('servicos',this)">
+        <span class="sb-ico">🧩</span><span class="sb-label">Serviços</span>
+      </div>
+      <div class="sb-item" data-page="tarefas" onclick="navigate('tarefas',this)">
+        <span class="sb-ico">✅</span><span class="sb-label">Tarefas</span><span class="sb-count sb-c-red" id="tasks-count"></span>
+      </div>
+      <div class="sb-item" data-page="documentos" onclick="navigate('documentos',this)">
+        <span class="sb-ico">📁</span><span class="sb-label">Documentos</span>
+      </div>
+    </div>
   </div>
-  <div class="sb-group-label">Operações</div>
-  <div class="sb-item" data-page="servicos" onclick="navigate('servicos',this)">
-    <span class="sb-ico">🧩</span><span class="sb-label">Serviços</span>
+
+  <!-- ── Equipa ── -->
+  <div class="sb-module" id="mod-equipa">
+    <div class="sb-group-title" onclick="toggleSbModule('mod-equipa')">
+      <span>👥 Equipa</span><span class="sgt-arrow">▶</span>
+    </div>
+    <div class="sb-submenu">
+      <div class="sb-item" data-page="equipa" id="nav-equipa" onclick="navigate('equipa',this)">
+        <span class="sb-ico">👥</span><span class="sb-label">Equipa & Acessos</span>
+      </div>
+    </div>
   </div>
-  <div class="sb-item" data-page="tarefas" onclick="navigate('tarefas',this)">
-    <span class="sb-ico">✅</span><span class="sb-label">Tarefas</span>
-    <span class="sb-count sb-c-red" id="tasks-count">5</span>
+
+  <!-- ── Fiscal ── -->
+  <div class="sb-module" id="mod-fiscal">
+    <div class="sb-group-title" onclick="toggleSbModule('mod-fiscal')">
+      <span>🧾 Fiscal</span><span class="sgt-arrow">▶</span>
+    </div>
+    <div class="sb-submenu">
+      <div class="sb-item" data-page="fiscal" onclick="navigate('fiscal',this)">
+        <span class="sb-ico">🧾</span><span class="sb-label">Calendário Fiscal</span>
+      </div>
+    </div>
   </div>
-  <div class="sb-item" data-page="documentos" onclick="navigate('documentos',this)">
-    <span class="sb-ico">📁</span><span class="sb-label">Documentos</span>
+
+  <!-- ── Análise ── -->
+  <div class="sb-module" id="mod-analise">
+    <div class="sb-group-title" onclick="toggleSbModule('mod-analise')">
+      <span>📈 Análise</span><span class="sgt-arrow">▶</span>
+    </div>
+    <div class="sb-submenu">
+      <div class="sb-item" data-page="relatorios" id="nav-relatorios" onclick="navigate('relatorios',this)">
+        <span class="sb-ico">📈</span><span class="sb-label">Relatórios</span>
+      </div>
+      <div class="sb-item" data-page="inss" onclick="navigate('inss',this)">
+        <span class="sb-ico">🏛️</span><span class="sb-label">INSS</span>
+      </div>
+      <div class="sb-item" data-page="auditoria" id="nav-auditoria" onclick="navigate('auditoria',this)">
+        <span class="sb-ico">🔎</span><span class="sb-label">Log de Auditoria</span>
+      </div>
+      <div class="sb-item" data-page="fluxo" onclick="navigate('fluxo',this)">
+        <span class="sb-ico">🗺️</span><span class="sb-label">Fluxograma</span>
+      </div>
+    </div>
   </div>
-  <div class="sb-group-label">Equipa</div>
-  <div class="sb-item" data-page="equipa" id="nav-equipa" onclick="navigate('equipa',this)">
-    <span class="sb-ico">👥</span><span class="sb-label">Equipa & Acessos</span>
+
+  <!-- ── Comercial ── -->
+  <div class="sb-module" id="mod-comercial">
+    <div class="sb-group-title" onclick="toggleSbModule('mod-comercial')">
+      <span>📋 Comercial</span><span class="sgt-arrow">▶</span>
+    </div>
+    <div class="sb-submenu">
+      <div class="sb-item" data-page="propostas" onclick="navigate('propostas',this)">
+        <span class="sb-ico">📋</span><span class="sb-label">Propostas</span><span class="sb-count sb-c-blue" id="sb-prop-cnt"></span>
+      </div>
+      <div class="sb-item" data-page="pipeline" onclick="navigate('pipeline',this)">
+        <span class="sb-ico">🔍</span><span class="sb-label">Pipeline / CRM</span><span class="sb-count sb-c-blue" id="sb-pipeline-cnt"></span>
+      </div>
+    </div>
   </div>
-  <div class="sb-group-label">Fiscal</div>
-  <div class="sb-item" data-page="fiscal" onclick="navigate('fiscal',this)">
-    <span class="sb-ico">🧾</span><span class="sb-label">Calendário Fiscal</span>
+
+  <!-- ── Fluxo de Trabalho ── -->
+  <div class="sb-module" id="mod-fluxo">
+    <div class="sb-group-title" onclick="toggleSbModule('mod-fluxo')">
+      <span>🔄 Fluxo de Trabalho</span><span class="sgt-arrow">▶</span>
+    </div>
+    <div class="sb-submenu">
+      <div class="sb-item" data-page="faturacao" id="nav-faturacao" onclick="navigate('faturacao',this)">
+        <span class="sb-ico">💳</span><span class="sb-label">Faturação</span><span class="sb-count sb-c-red" id="sb-fat-cnt"></span>
+      </div>
+      <div class="sb-item" data-page="ciclo" onclick="navigate('ciclo',this)">
+        <span class="sb-ico">🔄</span><span class="sb-label">Ciclo Mensal</span>
+      </div>
+      <div class="sb-item" data-page="alertas" onclick="navigate('alertas',this)">
+        <span class="sb-ico">🚨</span><span class="sb-label">Alertas</span><span class="sb-count sb-c-red" id="sb-alerts-cnt"></span>
+      </div>
+    </div>
   </div>
-  <div class="sb-group-label">Análise</div>
-  <div class="sb-item" data-page="relatorios" id="nav-relatorios" onclick="navigate('relatorios',this)">
-    <span class="sb-ico">📈</span><span class="sb-label">Relatórios</span>
+
+  <!-- ── Contabilidade ── -->
+  <div class="sb-module" id="mod-contab">
+    <div class="sb-group-title" onclick="toggleSbModule('mod-contab')">
+      <span>📒 Contabilidade</span><span class="sgt-arrow">▶</span>
+    </div>
+    <div class="sb-submenu">
+      <div class="sb-item" data-page="plano-contas" onclick="navigate('plano-contas',this)">
+        <span class="sb-ico">📒</span><span class="sb-label">Plano de Contas</span>
+      </div>
+      <div class="sb-item" data-page="diario" onclick="navigate('diario',this)">
+        <span class="sb-ico">📝</span><span class="sb-label">Diário</span><span class="sb-count sb-c-blue" id="sb-diario-cnt">0</span>
+      </div>
+      <div class="sb-item" data-page="balancete" onclick="navigate('balancete',this)">
+        <span class="sb-ico">⚖️</span><span class="sb-label">Balancete</span>
+      </div>
+      <div class="sb-item" data-page="dr" onclick="navigate('dr',this)">
+        <span class="sb-ico">📊</span><span class="sb-label">Dem. Resultados</span>
+      </div>
+      <div class="sb-item" data-page="balanco" onclick="navigate('balanco',this)">
+        <span class="sb-ico">🏦</span><span class="sb-label">Balanço</span>
+      </div>
+      <div class="sb-item" data-page="fluxocaixa" onclick="navigate('fluxocaixa',this)">
+        <span class="sb-ico">💸</span><span class="sb-label">Fluxo de Caixa</span>
+      </div>
+    </div>
   </div>
-  <div class="sb-group-label">Comercial</div>
-  <div class="sb-item" data-page="propostas" onclick="navigate('propostas',this)">
-    <span class="sb-ico">📋</span><span class="sb-label">Propostas</span>
-    <span class="sb-count sb-c-blue">2</span>
+
+  <!-- ── Activos & Faturação ── -->
+  <div class="sb-module" id="mod-activos">
+    <div class="sb-group-title" onclick="toggleSbModule('mod-activos')">
+      <span>🏗️ Activos & Faturação</span><span class="sgt-arrow">▶</span>
+    </div>
+    <div class="sb-submenu">
+      <div class="sb-item" data-page="imobilizado" onclick="navigate('imobilizado',this)">
+        <span class="sb-ico">🏗️</span><span class="sb-label">Imobilizado</span>
+      </div>
+      <div class="sb-item" data-page="fat-eletronica" onclick="navigate('fat-eletronica',this)">
+        <span class="sb-ico">🧾</span><span class="sb-label">Faturação Elet.</span><span class="sb-count sb-c-blue" id="sb-fat-el-cnt">0</span>
+      </div>
+    </div>
   </div>
-  <div class="sb-group-label">Fluxo de Trabalho</div>
-  <div class="sb-item" data-page="pipeline" onclick="navigate('pipeline',this)">
-    <span class="sb-ico">🔍</span><span class="sb-label">Pipeline / CRM</span>
-    <span class="sb-count sb-c-blue" id="sb-pipeline-cnt">3</span>
+
+  <!-- ── Recursos Humanos ── -->
+  <div class="sb-module" id="mod-rh">
+    <div class="sb-group-title" onclick="toggleSbModule('mod-rh')">
+      <span>👥 Recursos Humanos</span><span class="sgt-arrow">▶</span>
+    </div>
+    <div class="sb-submenu">
+      <div class="sb-item" data-page="rh-colaboradores" onclick="navigate('rh-colaboradores',this)">
+        <span class="sb-ico">👥</span><span class="sb-label">Colaboradores</span><span class="sb-count sb-c-blue" id="sb-rh-cnt">0</span>
+      </div>
+      <div class="sb-item" data-page="rh-folha" onclick="navigate('rh-folha',this)">
+        <span class="sb-ico">💰</span><span class="sb-label">Folha Salarial</span>
+      </div>
+    </div>
   </div>
-  <div class="sb-item" data-page="faturacao" id="nav-faturacao" onclick="navigate('faturacao',this)">
-    <span class="sb-ico">💳</span><span class="sb-label">Faturação</span>
-    <span class="sb-count sb-c-red" id="sb-fat-cnt">2</span>
-  </div>
-  <div class="sb-item" data-page="ciclo" onclick="navigate('ciclo',this)">
-    <span class="sb-ico">🔄</span><span class="sb-label">Ciclo Mensal</span>
-  </div>
-  <div class="sb-item" data-page="alertas" onclick="navigate('alertas',this)">
-    <span class="sb-ico">🚨</span><span class="sb-label">Alertas</span>
-    <span class="sb-count sb-c-red" id="sb-alerts-cnt">3</span>
-  </div>
-  <div class="sb-group-label">Análise</div>
-  <div class="sb-item" data-page="inss" onclick="navigate('inss',this)">
-    <span class="sb-ico">🏛️</span><span class="sb-label">INSS</span>
-  </div>
-  <div class="sb-item" data-page="auditoria" id="nav-auditoria" onclick="navigate('auditoria',this)">
-    <span class="sb-ico">🔎</span><span class="sb-label">Log de Auditoria</span>
-  </div>
-  <div class="sb-item" data-page="fluxo" onclick="navigate('fluxo',this)">
-    <span class="sb-ico">🗺️</span><span class="sb-label">Fluxograma</span>
-  </div>
-  <div class="sb-group-label">Contabilidade</div>
-  <div class="sb-item" data-page="plano-contas" onclick="navigate('plano-contas',this)">
-    <span class="sb-ico">📒</span><span class="sb-label">Plano de Contas</span>
-  </div>
-  <div class="sb-item" data-page="diario" onclick="navigate('diario',this)">
-    <span class="sb-ico">📝</span><span class="sb-label">Diário</span>
-    <span class="sb-count sb-c-blue" id="sb-diario-cnt">0</span>
-  </div>
-  <div class="sb-item" data-page="balancete" onclick="navigate('balancete',this)">
-    <span class="sb-ico">⚖️</span><span class="sb-label">Balancete</span>
-  </div>
-  <div class="sb-item" data-page="dr" onclick="navigate('dr',this)">
-    <span class="sb-ico">📊</span><span class="sb-label">Dem. Resultados</span>
-  </div>
-  <div class="sb-item" data-page="balanco" onclick="navigate('balanco',this)">
-    <span class="sb-ico">🏦</span><span class="sb-label">Balanço</span>
-  </div>
-  <div class="sb-item" data-page="fluxocaixa" onclick="navigate('fluxocaixa',this)">
-    <span class="sb-ico">💸</span><span class="sb-label">Fluxo de Caixa</span>
-  </div>
-  <div class="sb-group-label">Activos e Faturação</div>
-  <div class="sb-item" data-page="imobilizado" onclick="navigate('imobilizado',this)">
-    <span class="sb-ico">🏗️</span><span class="sb-label">Imobilizado</span>
-  </div>
-  <div class="sb-item" data-page="fat-eletronica" onclick="navigate('fat-eletronica',this)">
-    <span class="sb-ico">🧾</span><span class="sb-label">Faturação Elect.</span>
-    <span class="sb-count sb-c-blue" id="sb-fat-el-cnt">0</span>
-  </div>
-  <div class="sb-group-label">Recursos Humanos</div>
-  <div class="sb-item" data-page="rh-colaboradores" onclick="navigate('rh-colaboradores',this)">
-    <span class="sb-ico">👥</span><span class="sb-label">Colaboradores</span>
-    <span class="sb-count sb-c-blue" id="sb-rh-cnt">0</span>
-  </div>
-  <div class="sb-item" data-page="rh-folha" onclick="navigate('rh-folha',this)">
-    <span class="sb-ico">💰</span><span class="sb-label">Folha Salarial</span>
-  </div>
-  <div class="sb-group-label">Sistema</div>
-  <div class="sb-item" data-page="config" id="nav-config" onclick="navigate('config',this)">
+
+  <!-- ── Sistema ── -->
+  <div class="sb-item" data-page="config" id="nav-config" onclick="navigate('config',this)" style="margin-top:6px">
     <span class="sb-ico">⚙️</span><span class="sb-label">Configurações</span>
   </div>
+
   <div class="sb-footer">
     <div class="sb-period">
       <div class="sbp-label">Período activo</div>
-      <div class="sbp-val">Abril 2025</div>
-      <div class="sbp-sub">5 clientes · 23 tarefas</div>
+      <div class="sbp-val" id="sb-footer-period">a carregar...</div>
+      <div class="sbp-sub" id="sb-footer-sub">0 clientes · 0 tarefas</div>
     </div>
   </div>
 </nav>
@@ -2200,8 +2294,7 @@ function applyAccessControl(role) {
   const rel = document.getElementById('nav-relatorios');
   if (fin) fin.style.display = hide ? 'none' : 'flex';
   if (con) con.style.display = hide ? 'none' : 'flex';
-  if (eq)  eq.style.display  = role === 'admin' ? 'flex' : 'none';
-  if (rel) rel.style.display = hide ? 'none' : 'flex';
+  if (eq)  eq.style.display  = role === 'admin' ? 'flex' : 'none'; if (rel) rel.style.display = hide ? 'none' : 'flex';
 
 }
 
@@ -2476,7 +2569,8 @@ function navigate(id, el) {
   if ((id==='faturacao'||id==='auditoria') && (currentRole==='tecnico'||currentRole==='viewer')) {
     // already blocked above for financeiro, add faturacao
   }
-}
+
+  openActiveModule();}
 function globalSearch(q) {
   if (!q) return;
   const matches = CLIENTS.filter(c=>c.name.toLowerCase().includes(q.toLowerCase()));
@@ -4053,6 +4147,7 @@ document.addEventListener('DOMContentLoaded', () => {
   applyStoredTheme();
   if(typeof updateCounters==='function') updateCounters();
   if(typeof initFiscalCalendar==='function') initFiscalCalendar();
+  setTimeout(openActiveModule, 100);
 });
 
 // ═══════════════════════════════════════
@@ -4496,8 +4591,7 @@ function exportDiarioCSV(){
   const _L=(typeof getLancsForPage==='function')?getLancsForPage('diario'):LANCAMENTOS;
   const h='Nº,Data,Documento,Descrição,Débito,Crédito,Valor MZN,Cliente\n';
   const r=_L.map(l=>`${l.id},${l.data},${l.doc},"${l.desc}",${l.db},${l.cr},${l.val},"${l.cli}"`).join('\n');
-  const url=URL.createObjectURL(new Blob([h+r],{type:'text/csv;charset=utf-8;'}));
-  Object.assign(document.createElement('a'),{href:url,download:'diario_'+(getCurrentCompany()||'nivelzero')+'_'+getCurrentPeriod().replace('-','')+'.csv'}).click();
+  const url=URL.createObjectURL(new Blob([h+r],{type:'text/csv;charset=utf-8;'}));  Object.assign(document.createElement('a'),{href:url,download:'diario_'+(getCurrentCompany()||'nivelzero')+'_'+getCurrentPeriod().replace('-','')+'.csv'}).click();
   URL.revokeObjectURL(url);
   toast('✅ CSV exportado!');
 }
@@ -6679,6 +6773,8 @@ function updateCounters() {
   // Update sidebar footer
   var sfEl = document.getElementById('sb-footer-period');
   if (sfEl) sfEl.textContent = period;
+  var subEl = document.getElementById('sb-footer-sub');
+  if (subEl) subEl.textContent = CLIENTS.length+' cliente'+(CLIENTS.length!==1?'s':'')+' · '+(typeof TASKS!=='undefined'?TASKS.filter(function(t){return t.status!=='done';}).length:0)+' tarefa'+(TASKS&&TASKS.filter(function(t){return t.status!=='done';}).length!==1?'s':'');
   // Update financial page
   var fatEl = document.getElementById('fat-total');
   if (fatEl) fatEl.textContent = f(totalRec) + ' MZN';
@@ -6724,6 +6820,37 @@ function exportBalancoDossier() {
   win.document.write('</div></div>');
   win.document.write('</body></html>');
   win.document.close();
+}
+
+
+// ── Sidebar accordion ──
+function toggleSbModule(id) {
+  var mod = document.getElementById(id);
+  if (!mod) return;
+  var title   = mod.querySelector('.sb-group-title');
+  var submenu = mod.querySelector('.sb-submenu');
+  var isOpen  = submenu.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.sb-module').forEach(function(m) {
+    m.querySelector('.sb-group-title').classList.remove('open');
+    m.querySelector('.sb-submenu').classList.remove('open');
+  });
+  // Open clicked (if was closed)
+  if (!isOpen) {
+    title.classList.add('open');
+    submenu.classList.add('open');
+  }
+}
+
+// Auto-open module containing active page
+function openActiveModule() {
+  var active = document.querySelector('.sb-item.active, .sb-item.on');
+  if (!active) return;
+  var mod = active.closest('.sb-module');
+  if (mod) {
+    mod.querySelector('.sb-group-title').classList.add('open');
+    mod.querySelector('.sb-submenu').classList.add('open');
+  }
 }
 
 function applyStoredTheme() {
